@@ -1,9 +1,18 @@
 <template>
-  <div></div>
+  <div>
+    <router-view />
+  </div>
 </template>
 
 <script>
-export default {};
+import HomeView from './views/HomeView.vue';
+
+HomeView;
+export default {
+  components: {
+    'HomeView': HomeView,
+  },
+};
 </script>
 
 <style scoped></style>
