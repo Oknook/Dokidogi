@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="App">
     <Header></Header>
     <router-view />
   </div>
@@ -17,4 +17,11 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.App {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: antiquewhite;
+}
+</style>
