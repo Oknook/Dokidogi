@@ -32,6 +32,6 @@ export default {};
 }
 
 .logo__img {
-  height: 75%;
+  height: 85%;
 }
 </style>

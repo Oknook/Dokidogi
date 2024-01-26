@@ -1,25 +1,25 @@
 <template>
-  <div class="login">
-    <KakaoLogin />
+  <div>
+    <figure>
+      <a :href="kakaoAuthUrl">
+        <img src="@/assets/images/kakaoLogo.png" alt=""
+      /></a>
+    </figure>
   </div>
 </template>
 
 <script>
-import KakaoLogin from '@/components/KakaoLogin.vue';
 export default {
   data() {
     return {
       kakaoAuthUrl: import.meta.env.VITE_KAKAO_AUTH_URL,
     };
   },
-  components: {
-    KakaoLogin,
-  },
 };
 </script>
 
 <style scoped>
-.login {
-  text-align: center;
+img {
+  width: 20%;
 }
 </style>
