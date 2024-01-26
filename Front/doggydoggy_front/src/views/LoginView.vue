@@ -1,21 +1,27 @@
 <template>
-  <div><button @click="KakaoLogin">카카오 로그인</button></div>
+  <div>
+    <a :href="KAKAO_AUTH_URL">카카오 로그인</a>
+  </div>
 </template>
 
 <script>
+import axios from 'axios';
+import { KAKAO_AUTH_URL } from '@/assets/OAuth';
 export default {
+  data() {
+    return {
+      KAKAO_AUTH_URL,
+    };
+  },
   created: function () {
     console.log(window.Kakao.isInitialized());
   },
   methods: {
-    KakaoLogin: function () {
-      if (window.Kakao.isInitialized()) {
-        window.Kakao.Auth.authorize({
-          redirectUri:
-            '${https://developers.kakao.com/docs/latest/ko/kakaologin/js#before-you-begin}',
-        });
-      }
-    },
+    // kakaoLogin: function () {
+    //   window.Kakao.Auth.authorize({
+    //     redirectUri: 'http://localhost:5173/login/wating',
+    //   });
+    // },
   },
 };
 </script>

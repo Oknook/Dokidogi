@@ -1,6 +1,11 @@
 <template>
   <div class="header">
-    <img class="logo" src="@/assets/images/logo.png" alt="도기도기 로고" />
+    <a class="logo" href="/"
+      ><img
+        class="logo__img"
+        src="@/assets/images/logo.png"
+        alt="도기도기 로고"
+    /></a>
     <span>친구 찾기</span>
     <router-link v-bind:to="{ name: 'login' }">로그인</router-link>
   </div>
@@ -18,12 +23,15 @@ export default {};
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  border-bottom: solid 1px black;
 }
 
-.header a {
+.header .logo {
+  height: 100%;
   text-decoration-line: none;
 }
-.logo {
+
+.logo__img {
   height: 75%;
 }
 </style>

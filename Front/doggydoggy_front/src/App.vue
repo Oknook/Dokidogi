@@ -22,6 +22,6 @@ export default {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: antiquewhite;
+  background-color: whitesmoke;
 }
 </style>
