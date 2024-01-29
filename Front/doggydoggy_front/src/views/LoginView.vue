@@ -1,11 +1,20 @@
 <template>
   <div class="login">
-    <KakaoLogin />
+    <h2>소셜로그인</h2>
+    <div class="login__border">
+      <div class="login__images">
+        <KakaoLogin />
+        <NaverLogin />
+      </div>
+    </div>
+    <h4>처음이신가요? 회원가입을 해주세요!</h4>
   </div>
 </template>
 
 <script>
 import KakaoLogin from '@/components/KakaoLogin.vue';
+import NaverLogin from '@/components/NaverLogin.vue';
+
 export default {
   data() {
     return {
@@ -14,12 +23,35 @@ export default {
   },
   components: {
     KakaoLogin,
+    NaverLogin,
   },
 };
 </script>
 
 <style scoped>
+h2,
+h3,
+h4 {
+  text-align: center;
+}
 .login {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.login__border {
+  height: 20%;
+  border: 1px solid black;
+  border-radius: 20px;
+}
+
+.login__images {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
   text-align: center;
 }
 </style>

@@ -1,17 +1,13 @@
 <template>
   <div class="social__img">
-    <a :href="kakaoAuthUrl">
-      <img src="@/assets/images/kakaoLogo.png" alt=""
-    /></a>
+    <a href=""> <img src="@/assets/images/naverLogo.png" alt="" /></a>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {
-      kakaoAuthUrl: import.meta.env.VITE_KAKAO_AUTH_URL,
-    };
+    return {};
   },
 };
 </script>
