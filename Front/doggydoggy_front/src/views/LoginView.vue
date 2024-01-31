@@ -7,7 +7,7 @@
         <NaverLogin />
       </div>
     </div>
-    <h4>처음이신가요? 회원가입을 해주세요!</h4>
+    <a href=""><h4>처음이신가요? 회원가입을 해주세요!</h4></a>
   </div>
 </template>
 
@@ -39,11 +39,18 @@ h4 {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  align-items: center;
 }
 .login__border {
   height: 20%;
+  width: 80%;
   border: 1px solid black;
   border-radius: 20px;
+}
+
+.login__border + a {
+  text-decoration-line: underline;
+  color: black;
 }
 
 .login__images {

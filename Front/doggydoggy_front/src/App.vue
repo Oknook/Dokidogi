@@ -8,9 +8,7 @@
 <script>
 import HomeView from './views/HomeView.vue';
 import Header from '@/components/common/Header.vue';
-// $cookies.set('key', 'hi');
 
-// console.log($cookies.get('key'));
 export default {
   components: {
     'HomeView': HomeView,

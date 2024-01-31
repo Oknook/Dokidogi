@@ -1,13 +1,22 @@
 <template>
   <div class="social__img">
-    <a href=""> <img src="@/assets/images/naverLogo.png" alt="" /></a>
+    <a :href="url"> <img src="@/assets/images/naverLogo.png" alt="" /></a>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {};
+    return {
+      // state는 인코딩해서 넣어줘야 함.
+      state: btoa(import.meta.env.VITE_NAVER_STATE),
+      reurl: encodeURIComponent(import.meta.env.VITE_NAVER_REDIRECT_URI),
+      url: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${
+        import.meta.env.VITE_NAVER_CLIENT_ID
+      }&redirect_uri=http%3a%2f%2flocalhost%3a5173%2flogin%2fwaiting&state=${
+        this.state
+      }`,
+    };
   },
 };
 </script>

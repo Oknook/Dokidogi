@@ -1,12 +1,12 @@
 <template>
-  <div><OAuth2Handler /></div>
+  <div><LoingHandler /></div>
 </template>
 
 <script>
-import OAuth2Handler from '@/components/OAuth2Handler.vue';
+import LoingHandler from '@/components/LoingHandler.vue';
 export default {
   components: {
-    OAuth2Handler,
+    LoingHandler,
   },
 };
 </script>
