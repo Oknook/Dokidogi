@@ -20,7 +20,7 @@ export default {
 
 <style scoped>
 .App {
-  height: 100vh;
+  height: 150vh;
   display: flex;
   flex-direction: column;
   background-color: whitesmoke;

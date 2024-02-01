@@ -2,18 +2,21 @@
 import { useUserStore } from '@/stores/userStore';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { loginCheck } from '@/components/common/Header.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
-
+console.log(loginCheck.value);
 const nickname = ref('');
 const birthday = ref('');
 const sex = ref('');
+
 function clickSubmit() {
   console.log(nickname.value, sex.value, birthday.value);
   localStorage.setItem('nickname', nickname.value);
   localStorage.setItem('birthday', birthday.value);
   localStorage.setItem('sex', sex.value);
+  loginCheck.value = $cookies.isKey('token');
   alert('정보 등록 완료!');
   router.push('/');
 }

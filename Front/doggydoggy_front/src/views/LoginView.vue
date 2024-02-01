@@ -35,7 +35,7 @@ h4 {
   text-align: center;
 }
 .login {
-  height: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
   flex-direction: column;
