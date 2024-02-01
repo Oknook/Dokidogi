@@ -1,4 +1,8 @@
 <script setup>
+/*
+  회원가입 후, 사용자의 정보를 입력하는 페이지
+
+*/
 import UserInput from '@/components/UserInput.vue';
 </script>
 

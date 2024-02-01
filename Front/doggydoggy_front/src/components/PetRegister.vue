@@ -1,4 +1,9 @@
-<script setup></script>
+<script setup>
+/*
+   반려동물 등록을 위한 컴포넌트
+   등록번호와 생년월일 입력
+*/
+</script>
 
 <template>
   <div class="petRegister">

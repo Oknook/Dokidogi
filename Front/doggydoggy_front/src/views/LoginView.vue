@@ -12,6 +12,10 @@
 </template>
 
 <script>
+/*
+  로그인 뷰에 카카오로그인 컴포넌트랑 네이버 로그인 컴포넌트 부착
+
+*/
 import KakaoLogin from '@/components/KakaoLogin.vue';
 import NaverLogin from '@/components/NaverLogin.vue';
 

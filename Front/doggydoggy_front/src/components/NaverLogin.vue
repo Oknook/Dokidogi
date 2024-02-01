@@ -5,6 +5,12 @@
 </template>
 
 <script>
+/* 
+  네이버 로그인 요청 URL을 이용하여 네이버에 로그인 요청
+  state와 redirect_url을 인코딩해서 넣어야한다.
+  
+
+*/
 export default {
   data() {
     return {

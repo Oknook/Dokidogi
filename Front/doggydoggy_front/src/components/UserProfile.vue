@@ -1,4 +1,8 @@
 <script setup>
+/*
+  UserProfile에 사용자 정보 표시
+
+*/
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 

@@ -20,6 +20,7 @@ import { ref } from 'vue';
 로그아웃 함수
 로그아웃 수행 시, token 쿠키 제거. 
 loginCheck 변수 갱신
+로컬스토리지에 담긴 nickname, sex, birthday 제거
 
 */
 function onClickLogout() {
@@ -32,6 +33,11 @@ function onClickLogout() {
 }
 </script>
 
+<!-- 
+  다른 컴포넌트에서 쓰기 위해 변수를 export 형태로 작성
+  이를 통해 다른 컴포넌트에서 변수를 import해 사용 가능
+
+ -->
 <script>
 export const loginCheck = ref($cookies.isKey('token'));
 </script>
