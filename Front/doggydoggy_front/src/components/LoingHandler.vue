@@ -6,12 +6,6 @@
 
    여기에 나중에 네이버 로그인 핸들러 함수도 넣어야함!
    동호남 화이팅!
-
-   
-
-
-
-
 */
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
@@ -31,22 +25,25 @@ function getCodeAndRedirect() {
 }
 
 // 인가코드를 이용하여 Spring Backend에 인가코드 전달 후 토큰 받아오기
-function kakaoLogin() {
+async function kakaoLogin() {
   axios
-    .get(`http://localhost:8080/kakao/callback?code=${code}`)
+    .get(`http://192.168.31.229:8080/kakao/callback?code=${code}`)
     .then((response) => {
       console.log(response.data);
-
+      console.log(response);
       if (response.data != null) {
         // 토큰은 로컬스토리지에 저장하면 JS를 이용한 XSS 공격에 취약, 쿠키에 HTTP Only 로 저장히기
         $cookies.set('token', response.data);
         alert('로그인 성공');
-
         // 백에서 사용자의 토큰 및 고유번호가 db에 있으면 user 정보가 있다는 것을 알려줘야 하고 없다고 알려주면 회원 정보 입력 창으로 이동한다.
-
         router.push('/user/input');
       }
     });
+  // const response = await fetch(
+  //   'http://192.168.31.229:8080/kakao/callback?code=${code}'
+  // );
+  // const jsonData = await response.json();
+  // console.log(jsonData);
 }
 
 onMounted(() => {

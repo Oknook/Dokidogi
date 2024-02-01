@@ -13,9 +13,6 @@
 env 파일에서 카카오 인증을 위한 URL을 불러와서 a:href에 넣음
 로고를 클릭하면 카카오 인증 화면으로 이동!
 
-
-
-
 */
 export default {
   data() {

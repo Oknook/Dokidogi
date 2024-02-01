@@ -7,9 +7,10 @@
 
 */
 import { useUserStore } from '@/stores/userStore';
-import { ref } from 'vue';
+import { ref, ssrContextKey } from 'vue';
 import { useRouter } from 'vue-router';
 import { loginCheck } from '@/components/common/Header.vue';
+import axios from 'axios';
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -24,8 +25,23 @@ function clickSubmit() {
   localStorage.setItem('birthday', birthday.value);
   localStorage.setItem('sex', sex.value);
   loginCheck.value = $cookies.isKey('token');
+  sendUserInfo();
   alert('정보 등록 완료!');
   router.push('/');
+}
+
+/*
+  백엔드 Spring에 입력한 정보를 보내는 Post request
+
+*/
+async function sendUserInfo() {
+  await axios
+    .post('http://192.168.31.229:8080/kakao/signup/associate', {
+      nickname: nickname.value,
+    })
+    .then((response) => {
+      console.log(response);
+    });
 }
 </script>
 
