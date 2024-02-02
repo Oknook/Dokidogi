@@ -70,6 +70,7 @@ async function press() {
   <div class=".home">
     <button @click="press">button</button>
   </div>
+  <p>hihihi</p>
 </template>
 
 <style scoped>
