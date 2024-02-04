@@ -6,6 +6,7 @@ import UserInputView from '@/views/UserInputView.vue';
 import UserProfileView from '@/views/UserProfileView.vue';
 import PetRegistListView from '@/views/PetRegistListView.vue';
 import PetRegisterView from '@/views/PetRegisterView.vue';
+import PetRegisterDetailViewVue from '@/views/PetRegisterDetailView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,11 @@ const router = createRouter({
       name: 'register',
       component: PetRegisterView,
     },
+    {
+      path: '/pet/register-detail',
+      name: 'register-detail',
+      component: PetRegisterDetailViewVue,
+    }
   ],
 });
 
