@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { usePetStore } from './stores/petStore'
 
 /*
    반려동물 등록을 위한 컴포넌트
@@ -10,22 +11,24 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const petregisterNm = ref('')
 const username = ref('')
-const petAPI = function () {
-  axios({
-    method: 'get',
-    url:  `//apis.data.go.kr/1543061/animalInfoSrvc/animalInfo?dog_reg_no=${petregisterNm}&owner_nm=${username}&serviceKey=${API_key}`,
+const API_key = ref('')
+const petStore = usePetStore()
 
-  })
-  .then((res) => {
-    router.push({
-      name: 'register-detail',
-      query: {data: JSON.stringify(res.data)}
-     });
-  })
-  .catch((err) => {
-    console.log(err)
-  })
-}
+const petAPI = async () => {
+  try {
+    const response = await axios.get(`//apis.data.go.kr/1543061/animalInfoSrvc/animalInfo?dog_reg_no=${petregisterNm}&owner_nm=${username}&serviceKey=${API_key}`);
+    petStore.setPetData(response.data); // 스토어에 데이터 저장
+    
+    router.push('/register-detail'); // 페이지 이동
+    
+    // 백엔드로 데이터 전송 
+    await axios.post('http://your-backend-url.com/pet/register', petStore.petData);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
 </script>
 
 <template>
