@@ -9,14 +9,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
-@Entity
+@Entity(name = "users")
 @Getter
-@Table(name = "user")
 public class User {
     @Id @GeneratedValue
+    @Column(name = "USER_ID")
     private long userId;
 
     // 소셜 로그인 회사에서 관리하는 아이디
@@ -50,17 +51,12 @@ public class User {
     private long regUsrSeq;
     private long modUsrSeq;
 
-    @ManyToOne
-    @JoinColumn(name = "RELATION_ID")
-    private Relation relation;
-
-    @OneToMany(mappedBy = "blocking")
-    private List<Block> blockingList;
-
-    @OneToMany(mappedBy = "blocked")
-    private List<Block> blockedList;
+    @OneToMany(mappedBy = "user")
+    private List<Relation> pets = new ArrayList<>();
+//    @OneToMany(mappedBy = "")
+//    private Relation dog;
     
     // 랭크, 뱃지랑 관계
-    private String rank;
+    private String ranking;
     private long badgeId;
 }

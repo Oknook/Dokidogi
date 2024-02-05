@@ -5,14 +5,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 
-@Entity
+@Entity(name = "pet")
 @Getter
 public class Pet {
     @Id @GeneratedValue
+    @Column(name = "PET_ID")
     private Long petId;
 
     // 동물 등록 번호 or rfid_cd 번호
@@ -51,7 +58,8 @@ public class Pet {
     private LocalDateTime modDttm;
     private long modUsrSeq;
 
-    @ManyToOne
-    @JoinColumn(name = "RELATION_ID")
-    private Relation relation;
+    @OneToMany(mappedBy = "pet")
+    private List<Relation> users = new ArrayList<>();
+//    @ManyToOne
+//    private Relation owner;
 }
