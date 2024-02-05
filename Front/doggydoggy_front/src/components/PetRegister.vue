@@ -16,6 +16,8 @@ const petStore = usePetStore()
 
 const petAPI = async () => {
   try {
+    petStore.setUsername(username.value)
+    
     const response = await axios.get(`//apis.data.go.kr/1543061/animalInfoSrvc/animalInfo?dog_reg_no=${petregisterNm}&owner_nm=${username}&serviceKey=${API_key}`);
     if (response.data) {
       petStore.setPetData(response.data); // 스토어에 데이터 저장
