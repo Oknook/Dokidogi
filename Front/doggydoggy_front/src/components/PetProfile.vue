@@ -9,7 +9,7 @@ export default {
 
 <template>
     <div>
-        <Header></Header>W
+        <Header></Header>
     </div>
 
 
