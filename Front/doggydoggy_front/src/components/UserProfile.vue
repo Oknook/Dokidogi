@@ -3,13 +3,43 @@
   UserProfile에 사용자 정보 표시
 
 */
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
-const nickanme = ref(localStorage.getItem('nickname'));
-const birthday = ref(localStorage.getItem('birthday'));
-const sex = ref(localStorage.getItem('sex'));
+const route = useRoute()
+
+const nickname = ref('')
+const birthday = ref('');
+const sex = ref('');
+// 백엔드에서 사용자 정보를 가져오는 함수
+async function fetchUserInfo() {
+  try {
+    const response = await axios.get(`http://your-backend-url.com/user/${userID.value}`);
+    const data = response.data;
+    // 데이터를 로컬 상태에 할당
+    nickname.value = data.nickname;
+    birthday.value = data.birthday;
+    sex.value = data.sex;
+    // 필요한 경우 localStorage에 저장
+    localStorage.setItem('nickname', data.nickname);
+    localStorage.setItem('birthday', data.birthday);
+    localStorage.setItem('sex', data.sex);
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+  }
+}
+
+
+const userID = ref(null)
+onMounted(() => {
+  userID.value = route.params.userid
+  if (userID.value) {
+    fetchUserInfo()
+  }
+})
+
+
 
 function onClickRegisterPet() {
   router.push('/pet/register-list');
