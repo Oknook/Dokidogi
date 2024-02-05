@@ -8,7 +8,10 @@ export default {
 </script>
 
 <template>
-<Header></Header>
+    <div>
+        <Header></Header>W
+    </div>
+
 
 
 
