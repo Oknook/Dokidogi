@@ -3,6 +3,12 @@
         <Header></Header>
         <form @submit.prevent="addInfo" class="post-form">
           <div>
+              <input type="file" @change="handleFileUpload" accept="image/*">
+              <div v-if="imageUrl">
+                <img :src="imageUrl" alt="Uploaded Image" style="max-width: 200px; max-height: 200px;">
+              </div>
+          </div>
+          <div>
               <label for="title">이름:</label>
               <input type="text" name="title" v-model="title" class="form-control">
           </div>
