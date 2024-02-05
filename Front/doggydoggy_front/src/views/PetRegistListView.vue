@@ -11,7 +11,8 @@ function onClickRegisterPet() {
   router.push('/pet/register');
 }
 </script>
-dad
+
+
 <template>
   <div class="petList">
     반려동물 목록 리스트
