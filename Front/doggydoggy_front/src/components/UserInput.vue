@@ -1,3 +1,4 @@
+
 <script setup>
 /*
   카카오 로그인 요청 후, 토큰을 받아오면 토큰을 쿠키에 저장하고 UserInput Page로 넘어온다.
@@ -18,6 +19,40 @@ console.log(loginCheck.value);
 const nickname = ref('');
 const birthday = ref('');
 const sex = ref('');
+
+const postcode = ref('');
+const address = ref('');
+const detailAddress = ref('');
+
+
+
+const loadDaumPostcode = () => {
+  return new Promise((resolve, reject) => {
+    if (window.daum && window.daum.Postcode) {
+      return resolve();
+    }
+    const script = document.createElement('script');
+    script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load the Daum Postcode script'));
+    document.head.appendChild(script);
+  });
+};
+
+const openPostcodePopup = async () => {
+  await loadDaumPostcode();
+  new window.daum.Postcode({
+    oncomplete: (data) => {
+      postcode.value = data.zonecode;
+      address.value = data.address;
+      detailAddress.value = ''; // Clear the detail address field for user input
+    }
+  }).open();
+};
+
+
+
+
 
 function clickSubmit() {
   console.log(nickname.value, sex.value, birthday.value);
@@ -43,6 +78,10 @@ async function sendUserInfo() {
       console.log(response);
     });
 }
+
+
+
+
 </script>
 
 <template>
@@ -69,6 +108,28 @@ async function sendUserInfo() {
         v-model="birthday"
       />
     </div>
+
+
+
+
+    <div class="form__address">
+      <label><b>우편 번호:</b></label>
+      <input type="text" v-model="postcode" readonly />
+      <button type="button" @click="openPostcodePopup">우편 번호 찾기</button>
+    </div>
+    <div>
+      <label><b>주소:</b></label>
+      <input type="text" v-model="address" readonly />
+    </div>
+    <div>
+      <label><b>상세 주소:</b></label>
+      <input type="text" v-model="detailAddress" />
+    </div>
+
+    
+    <!-- Submit button -->
+
+
     <button>등록</button>
   </form>
 </template>

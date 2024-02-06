@@ -1,6 +1,6 @@
 <template>
   <div class="social__img" @click="naverLogin">
-    <a :href="url"> <img src="@/assets/images/naverLogo.png" alt="" /></a>
+    <a :href="naverAuthUrl"> <img src="@/assets/images/naverLogo.png" alt="" /></a>
   </div>
 </template>
 
@@ -10,22 +10,10 @@
 
 export default {
   data() {
-    return {};
+    return {
+      naverAuthUrl: import.meta.env.VITE_NAVER_AUTH_URL,
+    };
   },
-  methods: {
-    naverLogin() {
-      // Make sure to encode the URI components
-
-      // const url = `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=wSK7zMTqUwDvFhN1jbcm&client_secret=zlN_NLlxGh&code=J3nfBLR98QdZfXWjgv&state={state}`
-      const url = import.meta.env.VITE_NAVER_AUTH_URL
-
-      console.log("================================url=====");
-      console.log(url);
-
-      // Redirect the user to the Naver login page
-      window.location.href = url;
-    }
-  }
 };
 
 
