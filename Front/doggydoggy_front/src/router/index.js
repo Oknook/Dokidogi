@@ -6,7 +6,8 @@ import UserInputView from '@/views/UserInputView.vue';
 import UserProfileView from '@/views/UserProfileView.vue';
 import PetRegistListView from '@/views/PetRegistListView.vue';
 import PetRegisterView from '@/views/PetRegisterView.vue';
-import PetRegisterDetailViewVue from '@/views/PetRegisterDetailView.vue';
+import PetRegisterDetailView from '@/views/PetRegisterDetailView.vue';
+import BanneduserView from '@/views/BanneduserView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,7 +50,12 @@ const router = createRouter({
     {
       path: '/pet/register-detail',
       name: 'register-detail',
-      component: PetRegisterDetailViewVue,
+      component: PetRegisterDetailView,
+    },
+    {
+      path: '/user/banned',
+      name: 'banned-user',
+      component: BanneduserView,
     }
   ],
 });

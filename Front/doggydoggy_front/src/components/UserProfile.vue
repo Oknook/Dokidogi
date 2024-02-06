@@ -45,6 +45,10 @@ onMounted(() => {
 function onClickRegisterPet() {
   router.push('/pet/register-list');
 }
+
+function seebannedusers() {
+  router.push({name: 'banned-user'})
+}
 </script>
 
 <template>
@@ -61,8 +65,10 @@ function onClickRegisterPet() {
       <b>성별</b>
       <p>{{ sex }}</p>
       <button @click="onClickRegisterPet">반려동물 등록</button>
-      <button>프로필 수정</button>
-      <button>차단 목록</button>
+      <button @click="profileupdate">프로필 수정</button>
+      <!-- 유저일때만 채팅방 참여 버튼 보이게 만들기 -->
+      <button v-if="howdareyou" @click="gotochatroom">채팅방 참여</button>
+      <button @click="seebannedusers">차단 목록</button>
     </div>
   </div>
   </div>

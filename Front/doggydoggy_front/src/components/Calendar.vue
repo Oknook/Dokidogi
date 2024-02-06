@@ -19,7 +19,7 @@
                 :width="squareSize" 
                 :height="squareSize" 
                 :fill="getColor(value)"
-                v-tooltip="tooltip && value.count ? '${value.count} ${tooltip} on ${value.date}' : noDataText">
+                v-tooltip="tooltip && value ? '${value.value} ${tooltipUnit} on ${value.date}' : noDataText">
         </rect>
         </g>
       </svg>
