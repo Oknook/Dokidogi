@@ -56,6 +56,13 @@ const router = createRouter({
       path: '/user/banned',
       name: 'banned-user',
       component: BanneduserView,
+    },
+    {
+      path: '/websocketurl',
+      name: 'web-socket',
+      beforeEnter(to, from, next) {
+        window.location.href = 'websocketurl'
+      }
     }
   ],
 });
