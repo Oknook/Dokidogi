@@ -5,6 +5,7 @@
 */
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import header from '@/components/common/Header.vue'
 
 const router = useRouter();
 const route = useRoute()
@@ -47,7 +48,9 @@ function onClickRegisterPet() {
 </script>
 
 <template>
-  <div class="userProfile">
+  <div>
+    <header></header>
+    <div class="userProfile">
     <div class="userProfile__detail">
       <b>견주 프로필</b>
       <br />
@@ -62,6 +65,8 @@ function onClickRegisterPet() {
       <button>차단 목록</button>
     </div>
   </div>
+  </div>
+  
 </template>
 
 <style scoped>
