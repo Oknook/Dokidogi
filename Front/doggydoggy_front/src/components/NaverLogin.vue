@@ -1,30 +1,54 @@
 <template>
-  <div class="social__img">
+  <div class="social__img" @click="naverLogin">
     <a :href="url"> <img src="@/assets/images/naverLogo.png" alt="" /></a>
   </div>
 </template>
 
 <script>
+
+  
+
+export default {
+  data() {
+    return {};
+  },
+  methods: {
+    naverLogin() {
+      // Make sure to encode the URI components
+
+      // const url = `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=wSK7zMTqUwDvFhN1jbcm&client_secret=zlN_NLlxGh&code=J3nfBLR98QdZfXWjgv&state={state}`
+      const url = import.meta.env.VITE_NAVER_AUTH_URL
+
+      console.log("================================url=====");
+      console.log(url);
+
+      // Redirect the user to the Naver login page
+      window.location.href = url;
+    }
+  }
+};
+
+
 /* 
   네이버 로그인 요청 URL을 이용하여 네이버에 로그인 요청
   state와 redirect_url을 인코딩해서 넣어야한다.
-  
 
-*/
-export default {
-  data() {
-    return {
-      // state는 인코딩해서 넣어줘야 함.
-      state: btoa(import.meta.env.VITE_NAVER_STATE),
-      reurl: encodeURIComponent(import.meta.env.VITE_NAVER_REDIRECT_URI),
-      url: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${
-        import.meta.env.VITE_NAVER_CLIENT_ID
-      }&redirect_uri=http%3a%2f%2flocalhost%3a5173%2flogin%2fwaiting&state=${
-        this.state
-      }`,
-    };
-  },
-};
+// */ 
+// 민관님 코드
+// export default {
+//   data() {
+//     return {
+//       // state는 인코딩해서 넣어줘야 함.
+//       state: btoa(import.meta.env.VITE_NAVER_STATE),
+//       reurl: encodeURIComponent(import.meta.env.VITE_NAVER_REDIRECT_URI),
+//       url: `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${
+//         import.meta.env.VITE_NAVER_CLIENT_ID
+//       }&redirect_uri=http%3a%2f%2flocalhost%3a5173%2flogin%2fwaiting&state=${
+//         this.state
+//       }`,
+//     };
+//   },
+// };
 </script>
 
 <style scoped>
