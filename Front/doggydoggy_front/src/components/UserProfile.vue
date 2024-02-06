@@ -6,6 +6,7 @@
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import header from '@/components/common/Header.vue'
+import Calendar from './Calendar.vue';
 
 const router = useRouter();
 const route = useRoute()
@@ -49,6 +50,10 @@ function onClickRegisterPet() {
 function seebannedusers() {
   router.push({name: 'banned-user'})
 }
+
+function gotochatroom() {
+  router.push({name: 'webSocket'})
+}
 </script>
 
 <template>
@@ -71,6 +76,9 @@ function seebannedusers() {
       <button @click="seebannedusers">차단 목록</button>
     </div>
   </div>
+    <Calendar></Calendar>
+    <!-- 태그 정보 -->
+    <!-- 기타 로그 데이터 -->
   </div>
   
 </template>
