@@ -42,7 +42,6 @@ onMounted(() => {
 })
 
 
-
 function onClickRegisterPet() {
   router.push('/pet/register-list');
 }
