@@ -1,6 +1,7 @@
 package com.ssafy.dokidog2.user.dto;
 
 import com.ssafy.dokidog2.user.entity.Grass;
+import com.ssafy.dokidog2.user.entity.Pet;
 import com.ssafy.dokidog2.user.entity.Relation;
 import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;
@@ -11,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.json.simple.JSONObject;
 
 @Getter
 @Setter
@@ -24,4 +26,6 @@ public class UserDTO {
     private String address;
     private Long imageId;
     private Integer point;
+    private JSONObject grass;
+    private List<Pet> pets;
 }

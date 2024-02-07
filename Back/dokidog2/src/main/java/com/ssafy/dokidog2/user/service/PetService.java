@@ -3,13 +3,18 @@ package com.ssafy.dokidog2.user.service;
 import com.ssafy.dokidog2.user.dto.PetDTO;
 import com.ssafy.dokidog2.user.entity.Pet;
 import com.ssafy.dokidog2.user.repository.PetRepository;
+import com.ssafy.dokidog2.user.repository.RelationRepository;
+import com.ssafy.dokidog2.user.repository.UserRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PetService {
     private final PetRepository petRepository;
-    public PetService(PetRepository petRepository) {
+    private final RelationRepository relationRepository;
+    public PetService(PetRepository petRepository, RelationRepository relationRepository) {
         this.petRepository = petRepository;
+        this.relationRepository = relationRepository;
     }
 
     public PetDTO getPetProfile(long petId) {

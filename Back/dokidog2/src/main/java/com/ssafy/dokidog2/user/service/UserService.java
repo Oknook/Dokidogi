@@ -144,17 +144,15 @@ public class UserService {
         UserDTO userDTO = new UserDTO();
 
         User user = userRepository.findByUserId(userId);
-//        private String nickname;
-//        private String email;
-//        private Boolean sex;
-//        private Integer birth;
-//        private String address;
-//        private Long imageId;
-//        private Integer point;
-        // + grass list + pet list
-
-        // blockservice 차단 등록, 목록, 해제 3개 해야 함!
-
+        userDTO.setNickname(user.getNickname());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setSex(user.getSex());
+        userDTO.setBirth(user.getBirth());
+        userDTO.setAddress(user.getAddress());
+        userDTO.setImageId(user.getImageId());
+        userDTO.setGrass(grassData(userId));
+        userDTO.setPets(relationRepository.findPetsByUserId(userId));
         return userDTO;
     }
+    // blockservice 차단 등록, 목록, 해제 3개 해야 함!
 }
