@@ -33,10 +33,9 @@ dependencies {
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation "io.jsonwebtoken:jjwt:0.12.3"
 
-    //	// DB mySQL 사용시
+    // DB mySQL 사용시
     runtimeOnly 'com.mysql:mysql-connector-j'
-    // DB H2 사용시
-//    runtimeOnly 'com.h2database:h2'
+
 }
 
 tasks.named('test') {

@@ -26,7 +26,7 @@ public class Pet {
     private Long regNo;
     private Long rfidNo;
     private String name;
-    // 성별, 4글자 (예시 : 암컷)
+    // 성별, // true, false
     private Boolean sex;
     // 품종
     private String kind;
