@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 위도, 경도, 거리 기준으로 distance 내의 모든 사용자 위치 검색하는 코드
     // 하버 사인 공식
-    @Query(value = "SELECT * FROM UserLocation WHERE (6371 * acos(cos(radians(:latitude)) * cos(radians(latitude)) * cos(radians(longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(latitude)))) < :distance", nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE (6371 * acos(cos(radians(:latitude)) * cos(radians(latitude)) * cos(radians(longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(latitude)))) < :distance", nativeQuery = true)
     List<User> findUsersWithinDistance(double latitude, double longitude, double distance);
 
 

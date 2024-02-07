@@ -15,5 +15,9 @@ public interface RelationRepository extends JpaRepository<Relation, Long> {
     List<Pet> findPetsByUserId(@Param("userId") Long userId);
 //    List<User> findUsersByPetId(@Param("petId") Long petId);
 //    User findOwnerByPetId(@Param("petId") Long petId);
-    List<Relation> findRelationsByUser(User user);
+//    List<Relation> findRelationsByUser(User userId);
+//    List<?> findRelationsByUserUserId(Relation user);
+    @Query("SELECT r FROM Relation r WHERE r.user.userId IN :userIds")
+    List<Relation> findRelationsby(List<Long> userIds);
+
 }

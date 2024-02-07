@@ -33,6 +33,7 @@ public class UserController {
     @GetMapping("/profile")
     public JSONObject grass() {
         JSONObject result = userService.grassData(1);
+        System.out.println("@");
         return result;
     }
 
