@@ -3,14 +3,11 @@ package com.ssafy.dokidog2.user.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 
 @Entity
@@ -18,7 +15,7 @@ import lombok.Getter;
 public class Relation {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "RELATION_ID")
     private long relationId;
 
@@ -39,11 +36,11 @@ public class Relation {
     // 연관관계
 
     // 주양육자여부
-    private boolean prime;
+    private Boolean prime;
 
-    private long regUsrSeq;
+    private Long regUsrSeq;
     private LocalDateTime regDttm;
-    private boolean delYN;
-    private long modUsrSeq;
+    private Boolean delYN;
+    private Long modUsrSeq;
     private LocalDateTime modDttm;
 }
