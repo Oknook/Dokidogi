@@ -54,22 +54,13 @@ export const loginCheck = ref($cookies.isKey('token'));
     <router-link to="/" class="header__chat">채팅</router-link>
 
     <div class="header__user">
-      <router-link
-        :to="{ name: 'user-profile' }"
-        v-if="loginCheck"
-        class="header__user--profile"
-        >프로필</router-link
-      >
-      <router-link :to="{ name: 'login' }" class="header__user--login" v-else
-        >로그인</router-link
-      >
-      <button
-        v-if="loginCheck"
-        class="header__user--logout"
-        @click="onClickLogout"
-      >
-        로그아웃
-      </button>
+      <router-link :to="{ name: 'user-profile' }"
+        v-if="loginCheck" class="header__user--profile">
+        프로필</router-link>
+      <router-link :to="{ name: 'login' }" class="header__user--login" v-else>
+        로그인</router-link>
+      <button v-if="loginCheck" class="header__user--logout" @click="onClickLogout">
+        로그아웃</button>
     </div>
   </div>
 </template>
