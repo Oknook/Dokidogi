@@ -4,8 +4,6 @@ import com.ssafy.dokidog2.user.dto.PetDTO;
 import com.ssafy.dokidog2.user.entity.Pet;
 import com.ssafy.dokidog2.user.repository.PetRepository;
 import com.ssafy.dokidog2.user.repository.RelationRepository;
-import com.ssafy.dokidog2.user.repository.UserRepository;
-import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 public interface RelationRepository extends JpaRepository<Relation, Long> {
     @Query("SELECT r.pet FROM Relation r WHERE r.user.userId = :userId")
     List<Pet> findPetsByUserId(@Param("userId") Long userId);
-
 //    List<User> findUsersByPetId(@Param("petId") Long petId);
 //    User findOwnerByPetId(@Param("petId") Long petId);
+    List<Relation> findRelationsByUser(User user);
 }
