@@ -7,6 +7,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import header from '@/components/common/Header.vue'
 import Calendar from './Calendar.vue';
+import axios from 'axios'
 
 const router = useRouter();
 const route = useRoute()
@@ -35,7 +36,7 @@ async function fetchUserInfo() {
 
 const userID = ref(null)
 onMounted(() => {
-  userID.value = route.params.userid
+  userID.value = route.params.userId
   if (userID.value) {
     fetchUserInfo()
   }
@@ -46,12 +47,12 @@ function onClickRegisterPet() {
   router.push('/pet/register-list');
 }
 
-function seebannedusers() {
-  router.push({name: 'banned-user'})
+function seebannedusers(userID) {
+  router.push({name: 'banned-user', params: {userID:'userID'}})
 }
 
-function gotochatroom() {
-  router.push({name: 'webSocket'})
+function gotochatroom(userID) {
+  router.push({name: 'webSocket', params: {userID:'userID'}})
 }
 </script>
 
@@ -71,11 +72,11 @@ function gotochatroom() {
       <button @click="onClickRegisterPet">반려동물 등록</button>
       <button @click="profileupdate">프로필 수정</button>
       <!-- 유저일때만 채팅방 참여 버튼 보이게 만들기 -->
-      <button v-if="howdareyou" @click="gotochatroom">채팅방 참여</button>
-      <button @click="seebannedusers">차단 목록</button>
+      <button v-if="howdareyou" @click="gotochatroom(userID)">채팅방 참여</button>
+      <button v-if="howdareyou" @click="seebannedusers(userID)">차단 목록</button>
     </div>
   </div>
-    <Calendar></Calendar>
+    <Calendar :userID="userID.value"/>
     <!-- 태그 정보 -->
     <!-- 기타 로그 데이터 -->
   </div>

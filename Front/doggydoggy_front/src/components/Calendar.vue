@@ -27,8 +27,12 @@
 </template>
   
 <script setup>
-  import { ref, computed, onMounted } from 'vue';
+  import { ref, computed, onMounted, defineProps } from 'vue';
   import axios from 'axios';
+  
+  const props = defineProps({
+    userID: String
+  });
 
   const data = ref([]) //백엔드에서 받아온 데이터를 저장할 반응형 변수
   const backendUrl = 'https://'
@@ -37,6 +41,7 @@
   // 데이터를 가져오는 함수
   async function fetchData() {
     try {
+        // backend url 로 보낼때 props 된 userID 넣기
         const response = await axios.get(backendUrl);
         data.value = response.data; // 백엔드에서 받은 데이터를 data 변수에 할당
     } catch (error) {
@@ -50,7 +55,6 @@
   
   // Tooltip 플러그인 설정 (v-tooltip 설치 필요)
   import VTooltip from 'v-tooltip';
-  import 'v-tooltip/dist/v-tooltip.css';
   
   // 히트맵 데이터와 설정
   const endDate = ref(new Date()); // 예시로 현재 날짜 사용
@@ -94,6 +98,24 @@
   VTooltip.options.defaultTemplate = '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>';
   
   
+  // 월 정보를 추출하여 고유한 월 목록 생성
+  const months = computed(() => {
+    const monthSet = new Set();
+    data.value.forEach(weekData => {
+        weekData.week.forEach(dayData => {
+        const date = new Date(dayData.date);
+        const month = date.getMonth(); // 0(1월)부터 11(12월)까지의 숫자
+        monthSet.add(month);
+        });
+    });
+
+    return Array.from(monthSet).sort().map(month => {
+        // 월 이름을 얻기 위해 임시 날짜 객체를 생성합니다.
+        const tempDate = new Date();
+        tempDate.setMonth(month);
+        return tempDate.toLocaleString('default', { month: 'long' }); // 'January', 'February', ...
+    });
+  });
 </script>
   
 

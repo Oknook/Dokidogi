@@ -32,7 +32,7 @@ onMounted(async () => {
 
 // 반려견 주인 프로필로 이동하는 라우터
 function goToOwnerProfile() {
-  router.push({name: 'user-profile', params: {userid: ownerID}});
+  router.push({name: 'user-profile', params: {userId: ownerID}});
 }
 </script>
 
