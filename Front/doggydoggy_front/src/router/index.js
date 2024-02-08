@@ -9,6 +9,13 @@ import PetRegisterView from '@/views/PetRegisterView.vue';
 import PetRegisterDetailView from '@/views/PetRegisterDetailView.vue';
 import BanneduserView from '@/views/BanneduserView.vue';
 
+import BoardView from '@/views/BoardView.vue' 
+import PostCreateView from '@/views/PostCreateView.vue'
+import PostDetailView from '@/views/PostDetailView.vue'
+import PostDetailUpdateView from '@/views/PostDetailUpdate.vue'
+import KakaoMapView from '@/views/KakaoMapView.vue'
+import CommentCreateView from '@/views/CommentCreateView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -63,7 +70,43 @@ const router = createRouter({
       beforeEnter(to, from, next) {
         window.location.href = 'websocketurl'
       }
-    }
+    },
+
+    {
+      path: '/api/board',
+      name: 'communities',
+      component: BoardView
+    },
+    {
+      path: '/api/board/save',
+      name: 'postcreate',
+      component: PostCreateView
+    },
+    {
+      path: '/api/board/:boardId',
+      name: 'detail',
+      component: PostDetailView
+    },
+
+    {
+      path: '/api/board/:boardId/update',
+      name: 'detailupdate',
+      component: PostDetailUpdateView
+    },
+
+    {
+      path: '/kakaomaps',
+      name: 'kakaomaps',
+      component: KakaoMapView
+    },
+
+    {
+      path: '/comments',
+      name: 'comments',
+      component: CommentCreateView
+    },
+
+
   ],
 });
 
