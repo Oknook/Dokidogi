@@ -2,6 +2,7 @@ package com.ssafy.dokidog2.user.repository;
 
 import com.ssafy.dokidog2.user.dto.GrassDTO;
 import com.ssafy.dokidog2.user.entity.Grass;
+
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

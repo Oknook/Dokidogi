@@ -5,13 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +26,7 @@ public class Pet {
     private Long regNo;
     private Long rfidNo;
     private String name;
-    // 성별, 4글자 (예시 : 암컷)
+    // 성별, // true, false
     private Boolean sex;
     // 품종
     private String kind;
@@ -48,7 +42,7 @@ public class Pet {
     private Byte age;
     // 주인이 적은 정보, 주의점 등등?
     private String info;
-    // 크기 - 소,중,대
+    // 크기 - 소,중,대, 상관없음 0 1 2 3
     private Byte size;
     // 활동점수
     private Integer point;
