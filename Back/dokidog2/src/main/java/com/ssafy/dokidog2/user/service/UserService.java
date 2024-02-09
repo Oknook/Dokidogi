@@ -11,6 +11,7 @@ import com.ssafy.dokidog2.user.repository.PetRepository;
 import com.ssafy.dokidog2.user.repository.RelationRepository;
 import com.ssafy.dokidog2.user.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -34,6 +35,24 @@ public class UserService {
         this.relationRepository = relationRepository;
         this.grassRepository = grassRepository;
     }
+
+    public void updateGenders() {
+        ArrayList<Long> userIds = new ArrayList<>();
+        for (long i = 1; i <= 300; i++) {
+            userIds.add(i);
+        }
+        List<User> users = userRepository.findAllById(userIds);
+        Random random = new Random();
+        for (User user : users) {
+            if (random.nextInt() % 2 == 0) {
+                user.setSex(false);
+            }
+            else {
+                user.setSex(true);
+            }
+        }
+    }
+
     public void associate(long userId, UserDTO userDTO) {
         User user = userRepository.findByUserId(userId);
         user.setSex(userDTO.getSex());
