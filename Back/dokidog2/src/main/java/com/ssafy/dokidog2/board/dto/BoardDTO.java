@@ -25,8 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoardDTO {
 
     private Long boardId;
-    private String boardWriter;
-    private String boardPass;
+    private Long userId;
+    private String boardWriter; // 사용자 닉네임
     private String title;
     private String contents;
     private int boardHits;
@@ -49,7 +49,6 @@ public class BoardDTO {
     public BoardDTO(Long boardId, String boardWriter, String title, int boardHits,
         LocalDateTime boardCreatedTime, int likes, BoardCategory boardCategory) {
         this.boardId = boardId;
-        this.boardWriter = boardWriter;
         this.title = title;
         this.boardHits = boardHits;
         this.boardCreatedTime = boardCreatedTime;
@@ -61,8 +60,8 @@ public class BoardDTO {
     public static BoardDTO toBoardDTO(BoardEntity boardEntity) {
         BoardDTO boardDTO = new BoardDTO();
         boardDTO.setBoardId(boardEntity.getBoardId());
-        boardDTO.setBoardWriter(boardEntity.getBoardWriter());
-        boardDTO.setBoardPass(boardEntity.getBoardPass());
+        // BoardDTO에 nickname 설정
+        boardDTO.setBoardWriter(boardEntity.getUser().getNickname());
         boardDTO.setTitle(boardEntity.getTitle());
         boardDTO.setContents(boardEntity.getContents());
         boardDTO.setBoardHits(boardEntity.getBoardHits());

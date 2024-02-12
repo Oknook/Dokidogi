@@ -11,6 +11,8 @@ import com.ssafy.dokidog2.board.entity.BoardFileEntity;
 import com.ssafy.dokidog2.board.repository.BoardFileRepository;
 import com.ssafy.dokidog2.board.repository.BoardLikeRepository;
 import com.ssafy.dokidog2.board.repository.BoardRepository;
+import com.ssafy.dokidog2.user.entity.User;
+import com.ssafy.dokidog2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +31,13 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardFileRepository boardFileRepository;
     private final BoardLikeRepository boardLikeRepository;
+    private final UserRepository userRepository;
 
     public BoardDTO save(BoardDTO boardDTO) throws IOException {
         BoardEntity savedBoardEntity;
+        // 사용자 ID를 통해 User 엔티티 조회
+        User user = userRepository.findById(boardDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         if (boardDTO.getBoardFile() != null && !boardDTO.getBoardFile().isEmpty()) {
             // 파일 첨부가 있는 경우의 로직
             // 첨부 파일 있음.
@@ -55,8 +61,8 @@ public class BoardService {
             // 파일 저장 경로 확인 및 생성
 //            String directoryPath = "C:\\Users\\SSAFY\\imgtest\\";
 //
-            String directoryPath = "C:/Users/SSAFY/imgtest/"; // 저장할 디렉토리 경로 싸트북
-//            String directoryPath = "C:/Users/zxcas/imgtest/"; // 저장할 디렉토리 경로 집트북
+//            String directoryPath = "C:/Users/SSAFY/imgtest/"; // 저장할 디렉토리 경로 싸트북
+            String directoryPath = "C:/Users/zxcas/imgtest/"; // 저장할 디렉토리 경로 집트북
             String imgUrl = "/images/" + storedFileName; // 이미지 url 생성
             File directory = new File(directoryPath);
             if (!directory.exists()) {
@@ -77,7 +83,7 @@ public class BoardService {
             boardDTO.setImgUrl(imgUrl);
 
             // 엔티티 저장 로직...
-            BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
+            BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO, user);
             Long savedId = boardRepository.save(boardEntity).getBoardId();
             savedBoardEntity = boardRepository.findById(savedId).get();
 
@@ -86,14 +92,12 @@ public class BoardService {
             boardFileRepository.save(boardFileEntity);
         } else {
             // 첨부 파일 없음.
-            BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
-            System.out.println("bf22");
-            System.out.println(boardEntity);
+            BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO, user);
             savedBoardEntity = boardRepository.save(boardEntity);
         }
-        System.out.println("'boardDTO'");
-        System.out.println(boardDTO);
+        boardDTO.setBoardWriter(user.getNickname());
         boardDTO.setBoardId(savedBoardEntity.getBoardId());
+
         return boardDTO;
     }
 

@@ -2,6 +2,8 @@ package com.ssafy.dokidog2.board.entity;
 
 
 import com.ssafy.dokidog2.board.dto.BoardDTO;
+import com.ssafy.dokidog2.user.entity.User;
+import com.ssafy.dokidog2.user.repository.UserRepository;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,12 +20,6 @@ public class BoardEntity extends BaseEntity {
     @Id // pk 컬럼 지정. 필수
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
     private Long boardId;
-
-    @Column(length = 20) // 크기 20, null 가능
-    private String boardWriter;
-
-    @Column // 크기 255, null 가능
-    private String boardPass;
 
     @Enumerated(EnumType.STRING)
     private BoardCategory boardCategory;
@@ -52,10 +48,13 @@ public class BoardEntity extends BaseEntity {
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BoardLikeEntity> boardLikeEntitiyList = new ArrayList<>();
 
-    public static BoardEntity toSaveEntity(BoardDTO boardDTO) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public static BoardEntity toSaveEntity(BoardDTO boardDTO, User user) {
         BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
-        boardEntity.setBoardPass(boardDTO.getBoardPass());
+        boardEntity.setUser(user);
         boardEntity.setTitle(boardDTO.getTitle());
         boardEntity.setContents(boardDTO.getContents());
         boardEntity.setBoardHits(0);
@@ -68,25 +67,18 @@ public class BoardEntity extends BaseEntity {
     public static BoardEntity toUpdateEntity(BoardDTO boardDTO) {
         BoardEntity boardEntity = new BoardEntity();
         boardEntity.setBoardId(boardDTO.getBoardId());
-        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
-        boardEntity.setBoardPass(boardDTO.getBoardPass());
         boardEntity.setTitle(boardDTO.getTitle());
         boardEntity.setContents(boardDTO.getContents());
         boardEntity.setBoardHits(boardDTO.getBoardHits());
-
         boardEntity.setFileAttached(0); // 파일 없음.
-
         boardEntity.setBoardCategory(boardDTO.getBoardCategory());
-
         boardEntity.setLikes(boardDTO.getLikes());
-
         return boardEntity;
     }
 
-    public static BoardEntity toSaveFileEntity(BoardDTO boardDTO) {
+    public static BoardEntity toSaveFileEntity(BoardDTO boardDTO , User user) {
         BoardEntity boardEntity = new BoardEntity();
-        boardEntity.setBoardWriter(boardDTO.getBoardWriter());
-        boardEntity.setBoardPass(boardDTO.getBoardPass());
+        boardEntity.setUser(user);
         boardEntity.setTitle(boardDTO.getTitle());
         boardEntity.setContents(boardDTO.getContents());
         boardEntity.setBoardCategory(boardDTO.getBoardCategory());

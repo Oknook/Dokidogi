@@ -31,6 +31,7 @@ public class BoardController {
     //    // 게시글 저장
     @PostMapping("/save")
     public ResponseEntity<?> save(@ModelAttribute BoardDTO boardDTO) throws IOException {
+        // userId가 같이 들어온다고 가정
         BoardDTO savedBoardDTO = boardService.save(boardDTO);
         return ResponseEntity.ok(savedBoardDTO);
     }
