@@ -52,7 +52,7 @@ export const loginCheck = ref($cookies.isKey('token'));
     /></a>
     <router-link to="/" class="header__friend">친구 찾기</router-link>
     <router-link to="/" class="header__chat">채팅</router-link>
-    <RouterLink :to="{name: 'kakaomaps'}" class="header__map">지도</RouterLink>
+    <RouterLink :to="{name: 'kakaomaps'}" class="header__map">지도수정</RouterLink>
     <RouterLink :to="{name: 'communities'}" class="header__post">자유게시판</RouterLink>
 
     <div class="header__user">
