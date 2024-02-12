@@ -6,7 +6,7 @@
       document.getElementById('map')
       과 같이 div id 를 map으로 지정해야 오류가 발생하지 않음
     -->
-    <div id="map" style="width:100%;height:700px;"></div>
+    <div id="map" style="width:100%;height:620px;"></div>
     <!-- if="isModalOpen" 조건은 isModalOpen 변수의 값에 따라 모달이 표시되거나 숨겨짐을 결정 -->
     <div class="modal-component">
       <MarkerModal
@@ -15,10 +15,8 @@
           :latitude="latitude"
           :longitude="longitude"
           @marker-added="addNewMarkerToMap"/>
-      <button class="create-marker-btn" @click="openModalForCreatingMarker">마커 생성</button>
+      <button v-if="!isModalOpen" class="create-marker-btn" @click="openModalForCreatingMarker">마커 생성</button>
     </div>
-
-
     <DestinationModal
         v-if="isDestinationModalOpen"
         :close="closeModal"
@@ -44,6 +42,7 @@
 import {onMounted, reactive, ref} from 'vue';
 import MarkerModal from './MarkerModal.vue'; // 모달 컴포넌트 가져오기
 import DestinationModal from './DestinationModal.vue';
+import MarkerUpdateModal from './MarkerUpdateModal.vue'
 import axios from 'axios';
 
 const isModalOpen = ref(false); // 모달 상태 관리
@@ -379,25 +378,24 @@ function createOverlay(markerData, marker) {
 
 
   const overlayDiv = document.createElement('div');
-  overlayDiv.style.cssText = "width: 250px; height: 400px; overflow-y: auto; position: relative;";
-
+  overlayDiv.style.cssText = "width: 400px; height: 400px; overflow-y: auto; position: relative; border-radius: 15px;";
   // Add title
   const titleDiv = document.createElement('div');
   titleDiv.textContent = markerData.title;
-  titleDiv.style.fontWeight = '600';
+  titleDiv.style.cssText = "font-weight: 600; text-align: center;"; // Added text-align: center
   overlayDiv.appendChild(titleDiv);
 
-  // Add latitude
-  const latitudeDiv = document.createElement('div');
-  latitudeDiv.textContent = `Latitude: ${markerData.latitude}`;
-  latitudeDiv.style.fontWeight = '600';
-  overlayDiv.appendChild(latitudeDiv);
-
-  // Add longitude
-  const longitudeDiv = document.createElement('div');
-  longitudeDiv.textContent = `Longitude: ${markerData.longitude}`;
-  longitudeDiv.style.fontWeight = '600';
-  overlayDiv.appendChild(longitudeDiv);
+  // // Add latitude
+  // const latitudeDiv = document.createElement('div');
+  // latitudeDiv.textContent = `Latitude: ${markerData.latitude}`;
+  // latitudeDiv.style.fontWeight = '600';
+  // overlayDiv.appendChild(latitudeDiv);
+  //
+  // // Add longitude
+  // const longitudeDiv = document.createElement('div');
+  // longitudeDiv.textContent = `Longitude: ${markerData.longitude}`;
+  // longitudeDiv.style.fontWeight = '600';
+  // overlayDiv.appendChild(longitudeDiv);
 
   // Add image if it exists
   // 사진 값 넣기
@@ -405,7 +403,7 @@ function createOverlay(markerData, marker) {
     const image = document.createElement('img');
     let fullImgUrl = `http://localhost:8080/images/${markerData.image}`;
     image.src = fullImgUrl;
-    image.style.cssText = 'max-width: 100%; height: auto;';
+    image.style.cssText = 'width: 100%; height: 350px; object-fit: cover; margin-top: 20px;';
     overlayDiv.appendChild(image);
   }
 
@@ -529,7 +527,7 @@ async function getCarDirection(map, postLat, postLng, markerLat, markerLng) {
     if (currentPolyline) {
       currentPolyline.setMap(null); // 이전 폴리라인 제거
     }
-
+    console.log(linePath)
     currentPolyline = new kakao.maps.Polyline({
       path: linePath,
       strokeWeight: 5,
@@ -583,7 +581,8 @@ async function createNewOverlay(markerData, marker) {
         routeButton.textContent = '경로 보기';
         routeButton.addEventListener('click', () => {
           // 경로 그리기 함수 호출
-          getCarDirection(map, post.walkEnd, post.walkStart, markerData.latitude, markerData.longitude);
+          console.log(post.walkEnd, post.walkStart, markerData.latitude, markerData.longitude)
+          getCarDirection(map, post.walkStart, post.walkEnd, markerData.latitude, markerData.longitude);
         });
 
         // 삭제 버튼
@@ -1199,18 +1198,32 @@ async function refreshOverlay(markerData, marker) {
   /* Your other styles... */
 }
 
-.create-marker-btn {
-
-
-}
 
 .modal-component {
   position: absolute;
-  top: 80%; /* adjust as necessary */
+  top: 71%; /* adjust as necessary */
   left: 50%; /* adjust as necessary */
   transform: translate(-50%, -50%); /* centers the modal */
   z-index: 10; /* ensure it's above other content */
   /* rest of your styles */
 }
+
+.create-marker-btn {
+  position: absolute;
+  width: 90px;
+  height: 30px;
+  margin-top: 80px;
+  border: none; /* Remove border */
+  background-color: rgb(0, 123, 255);
+  border-radius: 15px;
+  color: white;
+  font-size: small;
+  left: 50%; /* Adjust as necessary */
+  z-index: 10; /* Ensure it's above other content */
+  box-shadow: none; /* Remove box shadow */
+  -webkit-appearance: none; /* Reset default styling for buttons in WebKit browsers */
+  appearance: none; /* Reset default styling for buttons in modern browsers */
+}
+
 
 </style>
