@@ -5,8 +5,6 @@ LABEL authors="SSAFY"
 # Set the working directory in the Docker container
 WORKDIR /src
 
-./gradlew build
-
 # COPY build/libs/*.jar app.jar !나중에 gradle version 관리할때 적절하게 수정
 COPY build/libs/dokidog2-0.0.1-SNAPSHOT.jar app.jar
 
