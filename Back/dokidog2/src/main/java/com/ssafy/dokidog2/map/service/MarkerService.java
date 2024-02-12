@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.ssafy.dokidog2.user.entity.User;
+import com.ssafy.dokidog2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +25,12 @@ public class MarkerService {
 
     private final MarkerRepository markerRepository;
     private final MarkerFileRepository markerFileRepository;
+    private final UserRepository userRepository;
 
     public MarkerDTO markerSave(MarkerDTO markerDTO) throws IOException {
         MarkerEntity savedMarkerEntity; // Declare a variable to hold the saved entity
+        User user = userRepository.findById(markerDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
         if (markerDTO.getMarkerBoardFile() != null && !markerDTO.getMarkerBoardFile().isEmpty()) {
             // If there is a file attachment
@@ -51,7 +57,8 @@ public class MarkerService {
             markerDTO.setMarkerStoredFileName(markerStoredFileName);
 
             // Save entity with file
-            MarkerEntity markerEntity = MarkerEntity.toSaveFileMarkerEntity(markerDTO);
+            MarkerEntity markerEntity = MarkerEntity.toSaveFileMarkerEntity(markerDTO, user);
+            markerEntity.setMarkerWriter(user.getNickname());
             savedMarkerEntity = markerRepository.save(markerEntity); // Save and get saved entity
 
             MarkerFileEntity markerFileEntity = MarkerFileEntity.toMarkerFileEntity(
@@ -59,13 +66,15 @@ public class MarkerService {
             markerFileRepository.save(markerFileEntity);
         } else {
             // No attachments
-            MarkerEntity markerEntity = MarkerEntity.toSaveMarkerEntity(markerDTO);
+            MarkerEntity markerEntity = MarkerEntity.toSaveMarkerEntity(markerDTO, user);
+            markerEntity.setMarkerWriter(user.getNickname());
             savedMarkerEntity = markerRepository.save(markerEntity); // Save and get saved entity
         }
 
         // After saving, update the DTO with the generated ID
         markerDTO.setMarkerId(
             savedMarkerEntity.getMarkerId()); // Set the saved marker's ID back to DTO
+        markerDTO.setMarkerWriter(user.getNickname());
         return markerDTO; // Return the updated DTO
     }
 

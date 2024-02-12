@@ -32,9 +32,10 @@ public class CommentController {
     @PostMapping("/{boardId}/comment/save")
     public ResponseEntity<?> save(@RequestBody CommentDTO commentDTO,
         @PathVariable("boardId") Long boardId) {
-        System.out.println("commentDTO = " + commentDTO);
+        System.out.println("받는 commentDTO = " + commentDTO);
         commentDTO.setBoardId(boardId); // 여기에서 boardId를 설정
         Long saveResult = commentService.save(commentDTO);
+        System.out.println("주는 commentDTO = " + commentDTO);
         if (saveResult != null) {
             List<CommentDTO> commentDTOList = commentService.findAll(boardId);
             return new ResponseEntity<>(commentDTOList, HttpStatus.OK);

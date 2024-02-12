@@ -7,6 +7,8 @@ import com.ssafy.dokidog2.map.entity.MarkerEntity;
 import com.ssafy.dokidog2.map.entity.WalkPostEntity;
 import com.ssafy.dokidog2.map.repository.MarkerRepository;
 import com.ssafy.dokidog2.map.repository.WalkPostRepository;
+import com.ssafy.dokidog2.user.entity.User;
+import com.ssafy.dokidog2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +22,11 @@ public class WalkPostService {
 
     private final WalkPostRepository walkPostRepository;
     private final MarkerRepository markerRepository;
+    private final UserRepository userRepository;
 
     public Long save(WalkPostDTO walkPostDTO) {
+        User user = userRepository.findById(walkPostDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         // 게시글 ID(markerId)를 검사합니다.
         if (walkPostDTO.getMarkerId() == null) {
             return null; // 게시글 ID가 없으면 null을 반환합니다.
@@ -34,7 +39,8 @@ public class WalkPostService {
             MarkerEntity markerEntity = optionalMarkerEntity.get();
             // WalkPostEntity를 생성하여 댓글 정보를 저장합니다.
             WalkPostEntity walkPostEntity = WalkPostEntity.toSaveWalkPostEntity(walkPostDTO,
-                    markerEntity);
+                    markerEntity, user);
+            walkPostEntity.setWalkPostWriter(user.getNickname());
             return walkPostRepository.save(walkPostEntity).getWalkPostId();
         } else {
             return null; // 게시글 존재하지 않으면 null 반환

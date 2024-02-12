@@ -2,6 +2,7 @@ package com.ssafy.dokidog2.map.entity;
 
 import com.ssafy.dokidog2.board.entity.BaseEntity;
 import com.ssafy.dokidog2.map.dto.WalkPostDTO;
+import com.ssafy.dokidog2.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,9 +39,14 @@ public class WalkPostEntity extends BaseEntity {
     @Column
     private String walkPostWriter;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     // MarkerEntity를 받아 WalkPostEntity 객체를 생성하고 markerTitle을 설정하는 메소드
-    public static WalkPostEntity toSaveWalkPostEntity(WalkPostDTO walkPostDTO, MarkerEntity markerEntity) {
+    public static WalkPostEntity toSaveWalkPostEntity(WalkPostDTO walkPostDTO, MarkerEntity markerEntity, User user) {
         WalkPostEntity walkPostEntity = new WalkPostEntity();
+        walkPostEntity.setUser(user);
         walkPostEntity.setMarkerEntity(markerEntity);
         walkPostEntity.setWalkStart(walkPostDTO.getWalkStart());
         walkPostEntity.setWalkEnd(walkPostDTO.getWalkEnd());

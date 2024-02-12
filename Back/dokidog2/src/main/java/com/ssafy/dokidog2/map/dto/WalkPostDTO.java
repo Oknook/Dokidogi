@@ -19,6 +19,7 @@ public class WalkPostDTO {
     private String walkPostDate;
     private String walkPostTime;
     private Long markerId;
+    private Long userId;
     private String walkStart;
     private String walkEnd;
     private String walkPostWriter;

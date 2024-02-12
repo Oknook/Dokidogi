@@ -6,6 +6,8 @@ import com.ssafy.dokidog2.map.entity.MarkerCommentEntity;
 import com.ssafy.dokidog2.map.entity.MarkerEntity;
 import com.ssafy.dokidog2.map.repository.MarkerCommentRepository;
 import com.ssafy.dokidog2.map.repository.MarkerRepository;
+import com.ssafy.dokidog2.user.entity.User;
+import com.ssafy.dokidog2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +21,11 @@ public class MarkerCommentService {
 
     private final MarkerCommentRepository markerCommentRepository;
     private final MarkerRepository markerRepository;
+    private final UserRepository userRepository;
 
     public Long save(MarkerCommentDTO markerCommentDTO) {
+        User user = userRepository.findById(markerCommentDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         // 게시글 ID(markerId)를 검사합니다.
         if (markerCommentDTO.getMarkerId() == null) {
             return null; // 게시글 ID가 없으면 null을 반환합니다.
@@ -33,7 +38,8 @@ public class MarkerCommentService {
             MarkerEntity markerEntity = optionalMarkerEntity.get();
             // MarkerCommentEntity를 생성하여 댓글 정보를 저장합니다.
             MarkerCommentEntity markerCommentEntity = MarkerCommentEntity.toSaveMarkerCommentEntity(
-                    markerCommentDTO, markerEntity);
+                    markerCommentDTO, markerEntity, user);
+            markerCommentEntity.setMarkerCommentWriter(user.getNickname());
             return markerCommentRepository.save(markerCommentEntity).getMarkerCommentId();
         } else {
             return null; // 게시글 존재하지 않으면 null 반환

@@ -4,15 +4,9 @@ package com.ssafy.dokidog2.map.entity;
 
 import com.ssafy.dokidog2.board.entity.BaseEntity;
 import com.ssafy.dokidog2.map.dto.MarkerDTO;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.ssafy.dokidog2.user.entity.User;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -65,8 +59,14 @@ public class MarkerEntity extends BaseEntity {
     @OneToMany(mappedBy = "markerEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<MarkerLikeEntity> markerLikeEntityList = new ArrayList<>();
 
-    public static MarkerEntity toSaveMarkerEntity(MarkerDTO markerDTO) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public static MarkerEntity toSaveMarkerEntity(MarkerDTO markerDTO, User user) {
         MarkerEntity markerEntity = new MarkerEntity();
+        markerEntity.setUser(user);
+        markerEntity.setMarkerWriter(user.getNickname());
         markerEntity.setMarkerId(markerDTO.getMarkerId());
         markerEntity.setMarkerTitle(markerDTO.getMarkerTitle());
         markerEntity.setMarkerLatitude(markerDTO.getMarkerLatitude());
@@ -77,8 +77,10 @@ public class MarkerEntity extends BaseEntity {
         return markerEntity;
     }
 
-    public static MarkerEntity toSaveFileMarkerEntity(MarkerDTO markerDTO) {
+    public static MarkerEntity toSaveFileMarkerEntity(MarkerDTO markerDTO, User user) {
         MarkerEntity markerEntity = new MarkerEntity();
+        markerEntity.setUser(user);
+        markerEntity.setMarkerWriter(user.getNickname());
         markerEntity.setMarkerId(markerDTO.getMarkerId());
         markerEntity.setMarkerTitle(markerDTO.getMarkerTitle());
         markerEntity.setMarkerContents(markerDTO.getMarkerContents());

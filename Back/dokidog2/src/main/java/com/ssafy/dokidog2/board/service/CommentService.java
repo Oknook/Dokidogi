@@ -6,6 +6,8 @@ import com.ssafy.dokidog2.board.entity.BoardEntity;
 import com.ssafy.dokidog2.board.entity.CommentEntity;
 import com.ssafy.dokidog2.board.repository.BoardRepository;
 import com.ssafy.dokidog2.board.repository.CommentRepository;
+import com.ssafy.dokidog2.user.entity.User;
+import com.ssafy.dokidog2.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,8 +23,11 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     public Long save(CommentDTO commentDTO) {
+        User user = userRepository.findById(commentDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         // 게시글 ID(boardId)를 검사합니다.
         if (commentDTO.getBoardId() == null) {
             return null; // 게시글 ID가 없으면 null을 반환합니다.
@@ -34,9 +39,11 @@ public class CommentService {
         if (optionalBoardEntity.isPresent()) {
             BoardEntity boardEntity = optionalBoardEntity.get();
             // CommentEntity를 생성하여 댓글 정보를 저장합니다.
-            CommentEntity commentEntity = CommentEntity.toSaveEntity(commentDTO, boardEntity);
+            CommentEntity commentEntity = CommentEntity.toSaveEntity(commentDTO, boardEntity, user);
 //            log.info("asd",boardEntity);
             System.out.println(boardEntity);
+            commentEntity.setCommentWriter(user.getNickname());
+            System.out.println("저장전" + commentEntity);
             return commentRepository.save(commentEntity).getCommentId();
         } else {
             return null; // 게시글 존재하지 않으면 null 반환

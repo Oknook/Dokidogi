@@ -3,6 +3,7 @@ package com.ssafy.dokidog2.map.entity;
 
 import com.ssafy.dokidog2.board.entity.BaseEntity;
 import com.ssafy.dokidog2.map.dto.MarkerCommentDTO;
+import com.ssafy.dokidog2.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,10 +29,15 @@ public class MarkerCommentEntity extends BaseEntity {
     @JoinColumn(name = "marker_id")
     private MarkerEntity markerEntity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     public static MarkerCommentEntity toSaveMarkerCommentEntity(MarkerCommentDTO markerCommentDTO,
-        MarkerEntity markerEntity) {
+        MarkerEntity markerEntity, User user) {
         MarkerCommentEntity markerCommentEntity = new MarkerCommentEntity();
+        markerCommentEntity.setUser(user);
         markerCommentEntity.setMarkerCommentWriter(markerCommentDTO.getMarkerCommentWriter());
         markerCommentEntity.setMarkerCommentContents(markerCommentDTO.getMarkerCommentContents());
         markerCommentEntity.setMarkerEntity(markerEntity);

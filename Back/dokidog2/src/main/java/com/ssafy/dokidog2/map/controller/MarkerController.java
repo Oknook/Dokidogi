@@ -32,7 +32,12 @@ public class MarkerController {
     //  마커 저장
     @PostMapping("/save")
     public ResponseEntity<?> save(@ModelAttribute MarkerDTO markerDTO) throws IOException {
+        // userId가 들어온다고 가정
+        System.out.println("받는DTO");
+        System.out.println(markerDTO);
         MarkerDTO savedMarkerDTO = markerService.markerSave(markerDTO);
+        System.out.println("주는DTO");
+        System.out.println(savedMarkerDTO);
         return ResponseEntity.ok(savedMarkerDTO);
     }
 //    @PostMapping("/save")

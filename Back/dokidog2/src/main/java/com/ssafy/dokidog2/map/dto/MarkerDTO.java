@@ -21,8 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class MarkerDTO {
 
     private Long markerId;
+    private Long userId;
     private Double markerLatitude;
     private Double markerLongitude;
+    private String markerWriter;
     private String markerTitle;
     private String markerContents;
     private LocalDateTime markerCreatedTime;
@@ -41,6 +43,8 @@ public class MarkerDTO {
     public static MarkerDTO toMarkerDTO(MarkerEntity markerEntity) {
         MarkerDTO markerDTO = new MarkerDTO();
         markerDTO.setMarkerId(markerEntity.getMarkerId());
+        markerDTO.setUserId(markerEntity.getUser().getUserId());
+        markerDTO.setMarkerWriter(markerEntity.getMarkerWriter());
         markerDTO.setMarkerLatitude(markerEntity.getMarkerLatitude());
         markerDTO.setMarkerLongitude(markerEntity.getMarkerLongitude());
         markerDTO.setMarkerTitle(markerEntity.getMarkerTitle());

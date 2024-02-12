@@ -16,6 +16,7 @@ public class MarkerCommentDTO {
     private Long markerCommentId;
     private String markerCommentWriter;
     private String markerCommentContents;
+    private Long userId;
     private Long markerId;
     private LocalDateTime markerCommentCreatedTime;
 
@@ -27,6 +28,7 @@ public class MarkerCommentDTO {
         markerCommentDTO.setMarkerCommentContents(markerCommentEntity.getMarkerCommentContents());
         markerCommentDTO.setMarkerCommentCreatedTime(markerCommentEntity.getCreatedTime());
         markerCommentDTO.setMarkerId(markerId);
+        markerCommentDTO.setUserId(markerCommentEntity.getUser().getUserId());
         return markerCommentDTO;
     }
 }

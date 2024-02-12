@@ -21,11 +21,7 @@ public class MarkerCommentController {
     // 댓글 목록 조회
     @GetMapping("/{markerId}/markerComment")
     public ResponseEntity<List<MarkerCommentDTO>> findAll(@PathVariable Long markerId) {
-        System.out.println("controll_id");
-        System.out.println(markerId);
         List<MarkerCommentDTO> markerComments = markerCommentService.findAll(markerId);
-        System.out.println("markerTest");
-        System.out.println(markerComments);
         return ResponseEntity.ok(markerComments);
     }
 
@@ -34,9 +30,10 @@ public class MarkerCommentController {
     public ResponseEntity<?> save(
             @RequestBody MarkerCommentDTO markerCommentDTO,
             @PathVariable("markerId") Long markerId) {
-        System.out.println("markerCommentDTO = " + markerCommentDTO);
+        System.out.println("주는 markerCommentDTO = " + markerCommentDTO);
         markerCommentDTO.setMarkerId(markerId); // 여기에서 markerId를 설정
         Long saveResult = markerCommentService.save(markerCommentDTO);
+        System.out.println("받는 markerCommentDTO = " + markerCommentDTO);
         if (saveResult != null) {
             List<MarkerCommentDTO> markerCommentDTOList = markerCommentService.findAll(markerId);
             return new ResponseEntity<>(markerCommentDTOList, HttpStatus.OK);
