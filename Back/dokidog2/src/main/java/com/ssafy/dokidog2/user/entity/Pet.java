@@ -9,14 +9,20 @@ import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "pet")
 @Getter
-//@SequenceGenerator(
-//    name = "PET_SEQ_GENERATOR",
-//    sequenceName = "PET_SEQ"
-//)
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Pet {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PET_ID")
@@ -27,7 +33,7 @@ public class Pet {
     private Long rfidNo;
     private String name;
     // 성별, // true, false
-    private Boolean sex;
+    private Character sex;
     // 품종
     private String kind;
     // 중성화 여부, 6글자 (예시 : 미중성)
@@ -38,12 +44,11 @@ public class Pet {
     ////////////////// api결과 /////////////////////
 
     // 강아지 나이, mysql (unsigned) tinyint 0~255 매핑
-    @Column(columnDefinition = "tinyint unsigned")
-    private Byte age;
+    private Integer age;
     // 주인이 적은 정보, 주의점 등등?
     private String info;
     // 크기 - 소,중,대, 상관없음 0 1 2 3
-    private Byte size;
+    private Integer size;
     // 활동점수
     private Integer point;
     private Long imageId;
@@ -52,10 +57,10 @@ public class Pet {
     private Boolean delYN;
     // 등록 시간
     private LocalDateTime regDttm;
-    // 등록 유저 정보
-    private Long regUsrSeq;
     // 탈퇴처리 시간
     private LocalDateTime modDttm;
+    // 안씀
+    private Long regUsrSeq;
     private Long modUsrSeq;
 
     @OneToMany(mappedBy = "pet")

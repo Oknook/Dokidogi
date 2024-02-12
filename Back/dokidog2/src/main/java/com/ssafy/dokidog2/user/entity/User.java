@@ -1,5 +1,6 @@
 package com.ssafy.dokidog2.user.entity;
 
+import com.ssafy.dokidog2.util.UserGrade;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,14 +36,16 @@ public class User {
     // 소셜 로그인 회사 이름
     @Column(nullable = false)
     private String companyName;
+    private UserGrade grade;
 
     private String nickname;
     private String email;
     // 성별, tinyint(1)와 매핑 - 0, 1 // null 도 들어갈 수 있다
-    private Boolean sex;
+    private Character sex;
     // 생년월일(동물등록 정보조회 서비스 이용 시 필요, 이름으로 한다고 하면 어떻게 하지?)
-    private Integer birth;
-    private String address;
+    private String birth;
+    private Double latitude;
+    private Double longitude;
 
     private Long imageId;
     private Integer point;
@@ -60,9 +63,6 @@ public class User {
     private Long regUsrSeq;
     private Long modUsrSeq;
 
-    private Double latitude;
-    private Double longitude;
-
     @OneToMany(mappedBy = "user")
     private List<Relation> pets = new ArrayList<>();
 
@@ -72,11 +72,6 @@ public class User {
         Grass grass = new Grass(this, dateTime);
         this.grasses.add(grass);
     }
-    
-    // 랭크, 뱃지랑 관계
-    private String ranking;
-    private Long badgeId;
-
 
     public int calculateAge(int birth) {
         // int 타입의 birth를 String으로 변환
@@ -95,8 +90,6 @@ public class User {
 
         // 오늘 날짜를 기준으로 나이 계산
         long age = ChronoUnit.YEARS.between(birthDateLocal, LocalDate.now());
-
         return (int) age;
     }
-
 }
