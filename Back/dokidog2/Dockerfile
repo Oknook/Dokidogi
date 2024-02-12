@@ -5,6 +5,8 @@ LABEL authors="SSAFY"
 # Set the working directory in the Docker container
 WORKDIR /src
 
+./gradlew build
+
 COPY build/libs/*.jar app.jar
 
 # Expose port 8080 to the outside
