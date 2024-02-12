@@ -1,4 +1,4 @@
-FROM node:12 as build-stage
+FROM node:16 as build-stage
 WORKDIR /src
 COPY package*.json ./
 RUN npm install
