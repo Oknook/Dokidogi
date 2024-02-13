@@ -36,6 +36,11 @@ public class UserController {
         this.blockService = blockService;
     }
 
+    @GetMapping
+    public String test3() {
+        return "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjM4LCJ1c2VyR3JhZGUiOiJSRUdVTEFSIiwiaWF0IjoxNzA3ODAxNDY5LCJleHAiOjE3MDc4MTIyNjl9.1e72y_f9unhRMIDSHxrG-6eBgd8I4H5YR4_S7VEHD0g";
+    }
+
     @PutMapping("/user/signup")
     public Response associateMember(@RequestHeader("Authorization") String authorizationHeader, @RequestParam PutUserDTO dto) {
         String jwt = authorizationHeader.replace("Bearer ", "");

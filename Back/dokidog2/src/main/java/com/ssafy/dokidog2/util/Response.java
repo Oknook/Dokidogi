@@ -11,7 +11,6 @@ import lombok.Setter;
 @Setter
 @Builder
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 public class Response<T> {
     private String code;

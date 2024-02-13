@@ -109,10 +109,10 @@ public class MatchService {
         Random random = new Random();
         for (User user : users) {
             if (random.nextInt() % 3 == 0) {
-                user.setSex(false);
+                user.setSex('F');
             }
             else {
-                user.setSex(true);
+                user.setSex('M');
             }
             userRepository.save(user);
         }

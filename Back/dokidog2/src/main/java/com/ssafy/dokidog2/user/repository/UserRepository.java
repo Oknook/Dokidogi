@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserId(Long id);
 
+    @Query("select u.userId from users u where u.companyId = :companyId and u.companyName = :companyName")
+    Long findByCompanyIdAndCompanyName(String companyId, String companyName);
+
     // 위도, 경도, 거리 기준으로 distance 내의 모든 사용자 위치 검색하는 코드
     // from users 는 UserEntity 이름
     // 하버 사인 공식

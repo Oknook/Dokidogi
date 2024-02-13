@@ -73,9 +73,8 @@ public class User {
         this.grasses.add(grass);
     }
 
-    public int calculateAge(int birth) {
-        // int 타입의 birth를 String으로 변환
-        String birthDateStr = String.format("%06d", birth);
+    public int calculateAge(String  birth) {
+        String birthDateStr = birth;
 
         // YYMMDD 형식의 생년월일을 LocalDate 객체로 파싱
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
