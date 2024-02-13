@@ -1,28 +1,8 @@
 <script setup>
-/*
-Header.vue는 공통 컴포넌트에 속한다.
-Header에 필요한 Nav가 들어있다.
 
-도기도기 로고, 친구 찾기, 채팅, 로그인
-도기도기 로고: 클릭하면 Home 화면으로 이동
-로그인: 소셜 로그인 페이지로 이동
-
-로그인 완료 여부는 loginCheck 변수를 통해 확인한다.
-로그인 완료 되면 로그인이 프로필로 바뀐다.
-
-프로필: 프로필 페이지 이동
-로그아웃: 로그아웃 실시
-
-*/
 import { ref } from 'vue';
 
-/*
-로그아웃 함수
-로그아웃 수행 시, token 쿠키 제거. 
-loginCheck 변수 갱신
-로컬스토리지에 담긴 nickname, sex, birthday 제거
 
-*/
 function onClickLogout() {
   $cookies.remove('token');
   loginCheck.value = $cookies.isKey('token');
@@ -33,11 +13,6 @@ function onClickLogout() {
 }
 </script>
 
-<!-- 
-  다른 컴포넌트에서 쓰기 위해 변수를 export 형태로 작성
-  이를 통해 다른 컴포넌트에서 변수를 import해 사용 가능
-
- -->
 <script>
 export const loginCheck = ref($cookies.isKey('token'));
 </script>
@@ -79,16 +54,31 @@ export const loginCheck = ref($cookies.isKey('token'));
 }
 
 .header .logo {
-  height: 100%;
+  height: 50%;
+  margin-top: 5%;
   text-decoration-line: none;
+  display: flex;
+  justify-content: center;
 }
 
 .logo__img {
-  height: 60%;
+  height: 100px;
+  padding-bottom: 20px;
+  -webkit-transform: rotate(0) scale(1);
+  transform: rotate(0) scale(1);
+  -webkit-transition: .3s ease-in-out;
+  transition: .3s ease-in-out;
+}
+
+.logo__img:hover {
+  -webkit-transform: rotate(15deg) scale(1.4);
+  transform: rotate(15deg) scale(1.4);
 }
 
 .header__friend,
 .header__chat {
+  position: relative; 
+  display: inline-block; 
   color: black;
   font-weight: bold;
   text-decoration-line: none;
@@ -98,6 +88,7 @@ export const loginCheck = ref($cookies.isKey('token'));
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
 }
 
 .header__user--login,
@@ -105,5 +96,159 @@ export const loginCheck = ref($cookies.isKey('token'));
   text-decoration-line: none;
   color: black;
   font-weight: bold;
+}
+
+
+
+
+.header__friend:before, 
+.header__friend:after {
+  content: '';
+  position: absolute;
+  bottom: -5px; /* 선의 위치 조정, 요소 아래에 위치 */
+  width: 0;
+  height: 3px; /* 선의 두께 */
+  background-color: black; /* 선의 색상 */
+  transition: width 0.2s ease; /* 애니메이션 효과 */
+}
+
+.header__friend:before {
+  left: 0;
+}
+
+.header__friend:after {
+  right: 0;
+}
+
+.header__friend:hover:before, 
+.header__friend:hover:after {
+  width: 50%;  
+}
+
+
+.header__chat:before, 
+.header__chat:after {
+  content: '';
+  position: absolute;
+  bottom: -5px; /* 선의 위치 조정, 요소 아래에 위치 */
+  width: 0;
+  height: 3px; /* 선의 두께 */
+  background-color: black; /* 선의 색상 */
+  transition: width 0.2s ease; /* 애니메이션 효과 */
+}
+
+.header__chat:before {
+  left: 0;
+}
+
+.header__chat:after {
+  right: 0;
+}
+
+.header__chat:hover:before, 
+.header__chat:hover:after {
+  width: 50%;  
+}
+
+
+
+
+.header__map:before, 
+.header__map:after {
+  content: '';
+  position: absolute;
+  bottom: -5px; /* 선의 위치 조정, 요소 아래에 위치 */
+  width: 0;
+  height: 3px; /* 선의 두께 */
+  background-color: black; /* 선의 색상 */
+  transition: width 0.2s ease; /* 애니메이션 효과 */
+}
+
+.header__map:before {
+  left: 0;
+}
+
+.header__map:after {
+  right: 0;
+}
+
+.header__map:hover:before, 
+.header__map:hover:after {
+  width: 50%;  
+}
+
+
+
+.header__post:before, 
+.header__post:after {
+  content: '';
+  position: absolute;
+  bottom: -5px; /* 선의 위치 조정, 요소 아래에 위치 */
+  width: 0;
+  height: 3px; /* 선의 두께 */
+  background-color: black; /* 선의 색상 */
+  transition: width 0.2s ease; /* 애니메이션 효과 */
+}
+
+.header__post:before {
+  left: 0;
+}
+
+.header__post:after {
+  right: 0;
+}
+
+.header__post:hover:before, 
+.header__post:hover:after {
+  width: 50%;  
+}
+
+
+
+
+
+
+
+
+
+
+
+/* 작은 화면 크기에 대한 스타일 */
+@media (max-width: 600px) {
+  .header__friend,
+  .header__chat,
+  .header__user,
+  .header__user--login,
+  .header__user--profile,
+  .header__map,
+  .header__post {
+    font-size: 20px; /* 화면 너비가 600px 이하일 때 글자 크기 조정 */
+  }
+}
+
+/* 중간 화면 크기에 대한 스타일 */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .header__friend,
+  .header__chat,
+  .header__user,
+  .header__user--login,
+  .header__user--profile,
+  .header__map,
+  .header__post  {
+    font-size: 30px; /* 화면 너비가 601px에서 1024px 사이일 때 글자 크기 조정 */
+  }
+}
+
+/* 큰 화면 크기에 대한 스타일 */
+@media (min-width: 1025px) {
+  .header__friend,
+  .header__chat,
+  .header__user,
+  .header__user--login,
+  .header__user--profile,
+  .header__map,
+  .header__post  {
+    font-size: 40px; /* 화면 너비가 1025px 이상일 때 글자 크기 조정 */
+  }
 }
 </style>
