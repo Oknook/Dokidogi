@@ -76,6 +76,8 @@ export const loginCheck = ref($cookies.isKey('token'));
 }
 
 .header__friend,
+.header__map,
+.header__post,
 .header__chat {
   position: relative; 
   display: inline-block; 
@@ -83,6 +85,8 @@ export const loginCheck = ref($cookies.isKey('token'));
   font-weight: bold;
   text-decoration-line: none;
 }
+
+.header__map
 
 .header__user {
   display: flex;
@@ -93,6 +97,8 @@ export const loginCheck = ref($cookies.isKey('token'));
 
 .header__user--login,
 .header__user--profile {
+  position: relative; 
+  display: inline-block; 
   text-decoration-line: none;
   color: black;
   font-weight: bold;
@@ -205,6 +211,29 @@ export const loginCheck = ref($cookies.isKey('token'));
 
 
 
+.header__user--login:before, 
+.header__user--login:after {
+  content: '';
+  position: absolute;
+  bottom: -5px; /* 선의 위치 조정, 요소 아래에 위치 */
+  width: 0;
+  height: 3px; /* 선의 두께 */
+  background-color: black; /* 선의 색상 */
+  transition: width 0.2s ease; /* 애니메이션 효과 */
+}
+
+.header__user--login:before {
+  left: 0;
+}
+
+.header__user--login:after {
+  right: 0;
+}
+
+.header__user--login:hover:before, 
+.header__user--login:hover:after {
+  width: 50%;  
+}
 
 
 
