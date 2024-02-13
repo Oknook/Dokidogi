@@ -12,7 +12,7 @@ public class MatchDTO {
 
 //    private int birth; // 견주 생년월일 YYMMDD
     private int age;
-    private Boolean sex; // 견주 성별
+    private char sex; // 견주 성별
     private byte size; // 애견 소형, 중형, 대형, 상관없음
 
 
@@ -46,7 +46,7 @@ public class MatchDTO {
     }
 
     @Builder
-    public MatchDTO(int age, Boolean sex, byte size){
+    public MatchDTO(int age, char sex, byte size){
 //        this.birth = birth;
         this.age = age;
         this.sex = sex;

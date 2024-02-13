@@ -73,13 +73,11 @@ public class User {
         this.grasses.add(grass);
     }
 
-    public int calculateAge(int birth) {
-        // int 타입의 birth를 String으로 변환
-        String birthDateStr = String.format("%06d", birth);
+    public int calculateAge(String birth) {
 
         // YYMMDD 형식의 생년월일을 LocalDate 객체로 파싱
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
-        LocalDate birthDateLocal = LocalDate.parse(birthDateStr, formatter);
+        LocalDate birthDateLocal = LocalDate.parse(birth, formatter);
 
         // 2000년 이전과 이후의 구분 처리
         // 예를 들어, 990101은 1999년 1월 1일이 되어야 하고, 010101은 2001년 1월 1일이 되어야 합니다.

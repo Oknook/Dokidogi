@@ -40,7 +40,6 @@ public class UserController {
     public Response associateMember(@RequestHeader("Authorization") String authorizationHeader, @RequestParam PutUserDTO dto) {
         String jwt = authorizationHeader.replace("Bearer ", "");
         Long id = jwtTokenProvider.getUserId(jwt);
-
         return Response.builder()
             .code("200")
             .message("서버 응답")
@@ -52,7 +51,6 @@ public class UserController {
     public Response regularMember(@RequestHeader("Authorization") String authorizationHeader, @RequestParam PutPetDTO dto) {
         String jwt = authorizationHeader.replace("Bearer ", "");
         long userId = jwtTokenProvider.getUserId(jwt);
-
         return Response.builder()
             .code("200")
             .message("서버 응답")
@@ -64,7 +62,6 @@ public class UserController {
     public Response modifyMember(@RequestHeader("Authorization") String authorizationHeader, @RequestParam PutUserDTO dto) {
         String jwt = authorizationHeader.replace("Bearer ", "");
         long userId = jwtTokenProvider.getUserId(jwt);
-
         return Response.builder()
             .code("200")
             .message("서버 응답")

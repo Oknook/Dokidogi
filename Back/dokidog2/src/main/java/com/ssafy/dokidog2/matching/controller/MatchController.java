@@ -10,14 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,10 +27,10 @@ public class MatchController {
 
 
     // 매칭 요청 클릭시 매칭 필터
-    @GetMapping("/api/match/{userId}")
+    @PostMapping("/api/match/{userId}")
     public ResponseEntity<?> match(@PathVariable Long userId, @RequestBody MatchDTO matchDTO) {
-//        System.out.println(userId);
-//        System.out.println(matchDTO);
+        System.out.println(userId);
+        System.out.println(matchDTO);
 
         // userId에 맞는 데이터 찾기
         Optional<User> optionalUser = userRepository.findById(userId);
