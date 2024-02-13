@@ -8,6 +8,10 @@ import com.ssafy.dokidog2.map.repository.MarkerFileRepository;
 import com.ssafy.dokidog2.map.repository.MarkerRepository;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,51 +27,52 @@ public class MarkerService {
     private final MarkerRepository markerRepository;
     private final MarkerFileRepository markerFileRepository;
 
+    private final String imageDirectoryPath = "C:/Users/SSAFY/imgtest/";
+//    private final String imageDirectoryPath = "C:/Users/zxcas/imgtest/";
+
     public MarkerDTO markerSave(MarkerDTO markerDTO) throws IOException {
-        MarkerEntity savedMarkerEntity; // Declare a variable to hold the saved entity
+        MarkerEntity savedMarkerEntity;
 
         if (markerDTO.getMarkerBoardFile() != null && !markerDTO.getMarkerBoardFile().isEmpty()) {
-            // If there is a file attachment
+            // 파일 첨부가 있는 경우
             MultipartFile markerBoardFile = markerDTO.getMarkerBoardFile();
-
             String markerOriginalFileName = markerBoardFile.getOriginalFilename();
             String markerStoredFileName = System.currentTimeMillis() + "_" + markerOriginalFileName;
-            String directoryPath = "C:/Users/SSAFY/imgtest/"; // Directory path to save
-//            String directoryPath = "C:/Users/zxcas/imgtest/"; // Directory path to save
-            File directory = new File(directoryPath);
+
+            // imageDirectoryPath를 직접 사용하여 파일 저장 경로 설정
+            File directory = new File(imageDirectoryPath);
             if (!directory.exists()) {
-                directory.mkdirs(); // Create directory if it does not exist
+                directory.mkdirs(); // 디렉토리가 존재하지 않으면 생성
             }
-            File targetFile = new File(directoryPath + markerStoredFileName);
+            File targetFile = new File(imageDirectoryPath + markerStoredFileName);
             try {
-                markerBoardFile.transferTo(targetFile); // save file
+                markerBoardFile.transferTo(targetFile); // 파일 저장
             } catch (IOException e) {
-                e.printStackTrace();
-                // Error handling logic (logging exceptions, notifying users of errors, etc.)
+                e.printStackTrace(); // 오류 처리
             }
 
-            // set dto file name
+            // DTO에 파일 이름 설정
             markerDTO.setMarkerOriginalFileName(markerOriginalFileName);
             markerDTO.setMarkerStoredFileName(markerStoredFileName);
 
-            // Save entity with file
+            // 엔티티 저장 로직
             MarkerEntity markerEntity = MarkerEntity.toSaveFileMarkerEntity(markerDTO);
-            savedMarkerEntity = markerRepository.save(markerEntity); // Save and get saved entity
+            savedMarkerEntity = markerRepository.save(markerEntity);
 
             MarkerFileEntity markerFileEntity = MarkerFileEntity.toMarkerFileEntity(
                 savedMarkerEntity, markerOriginalFileName, markerStoredFileName);
             markerFileRepository.save(markerFileEntity);
         } else {
-            // No attachments
+            // 첨부 파일이 없는 경우
             MarkerEntity markerEntity = MarkerEntity.toSaveMarkerEntity(markerDTO);
-            savedMarkerEntity = markerRepository.save(markerEntity); // Save and get saved entity
+            savedMarkerEntity = markerRepository.save(markerEntity);
         }
 
-        // After saving, update the DTO with the generated ID
-        markerDTO.setMarkerId(
-            savedMarkerEntity.getMarkerId()); // Set the saved marker's ID back to DTO
-        return markerDTO; // Return the updated DTO
+        // 저장 후 DTO에 ID 설정
+        markerDTO.setMarkerId(savedMarkerEntity.getMarkerId());
+        return markerDTO; // 업데이트된 DTO 반환
     }
+
 
     @Transactional
     public List<MarkerDTO> findAll() {
@@ -91,54 +96,50 @@ public class MarkerService {
         }
     }
 
-    // MarkerService.java에 마커 업데이트 로직 추가
-    public MarkerDTO updateMarker(Long markerId, MarkerDTO markerDTO, MultipartFile file)
-        throws IOException {
-        MarkerEntity markerEntity = markerRepository.findById(markerId)
-            .orElseThrow(
-                () -> new IllegalArgumentException("Marker not found with ID: " + markerId));
+    @Transactional
+    public MarkerDTO updateMarker(Long markerId, MarkerDTO markerDTO) throws IOException {
+        // 마커 정보 조회
+        MarkerEntity existingMarker = markerRepository.findById(markerId)
+            .orElseThrow(() -> new IllegalArgumentException("마커를 찾을 수 없습니다. ID: " + markerId));
 
-        // 기존 파일 처리 로직 (기존 파일이 있다면 삭제)
-        if (!markerEntity.getMarkerFileEntityList().isEmpty()) {
-            MarkerFileEntity existingFile = markerEntity.getMarkerFileEntityList()
-                .get(0); // 예시는 단일 파일을 가정
-            File oldFile = new File("your_storage_path" + existingFile.getMarkerStoredFileName());
-            if (oldFile.exists()) {
-                oldFile.delete(); // 실제 파일 삭제
-                markerFileRepository.delete(existingFile); // DB에서 파일 엔티티 삭제
-                markerEntity.getMarkerFileEntityList().clear(); // 엔티티 리스트에서 제거
+        // 기존 이미지 파일 삭제
+        if (!existingMarker.getMarkerFileEntityList().isEmpty()) {
+            for (MarkerFileEntity fileEntity : existingMarker.getMarkerFileEntityList()) {
+                Path filePath = Paths.get(
+                    imageDirectoryPath + fileEntity.getMarkerStoredFileName());
+                Files.deleteIfExists(filePath); // 파일 시스템에서 파일 삭제
+                markerFileRepository.delete(fileEntity); // 데이터베이스에서 파일 정보 삭제
             }
+            existingMarker.getMarkerFileEntityList().clear(); // 엔티티 내 파일 리스트 클리어
         }
 
-        // 새 파일 처리
-        if (file != null && !file.isEmpty()) {
-            String originalFileName = file.getOriginalFilename();
-            String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
-            File targetFile = new File("your_storage_path" + storedFileName);
-            file.transferTo(targetFile);
+        // 새 이미지 파일 저장
+        if (markerDTO.getMarkerBoardFile() != null && !markerDTO.getMarkerBoardFile().isEmpty()) {
+            MultipartFile newImageFile = markerDTO.getMarkerBoardFile();
+            String originalFilename = newImageFile.getOriginalFilename();
+            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
+            Path storagePath = Paths.get(imageDirectoryPath + storedFileName);
+            Files.copy(newImageFile.getInputStream(), storagePath,
+                StandardCopyOption.REPLACE_EXISTING); // 파일 시스템에 파일 저장
 
-            // 파일 엔티티 생성 및 저장
+            // 파일 정보 엔티티 생성 및 저장
             MarkerFileEntity newFileEntity = new MarkerFileEntity();
-            newFileEntity.setMarkerOriginalFileName(originalFileName);
+            newFileEntity.setMarkerOriginalFileName(originalFilename);
             newFileEntity.setMarkerStoredFileName(storedFileName);
-            newFileEntity.setMarkerEntity(markerEntity); // 관계 설정
+            newFileEntity.setMarkerEntity(existingMarker);
             markerFileRepository.save(newFileEntity);
 
-            // 엔티티 리스트에 추가
-            markerEntity.getMarkerFileEntityList().add(newFileEntity);
-            markerEntity.setMarkerFileAttached(1); // 파일 첨부 여부 업데이트
-        } else {
-            markerEntity.setMarkerFileAttached(0); // 파일 미첨부 상태로 업데이트
+            existingMarker.getMarkerFileEntityList().add(newFileEntity); // 마커 엔티티에 파일 정보 추가
         }
 
         // 마커 정보 업데이트
-        markerEntity.setMarkerTitle(markerDTO.getMarkerTitle());
-        markerEntity.setMarkerContents(markerDTO.getMarkerContents());
+        existingMarker.setMarkerTitle(markerDTO.getMarkerTitle());
+        existingMarker.setMarkerContents(markerDTO.getMarkerContents());
         // 필요한 추가 정보 업데이트
 
-        markerRepository.save(markerEntity);
+        markerRepository.save(existingMarker); // 마커 엔티티 저장
 
-        return MarkerDTO.toMarkerDTO(markerEntity);
+        return MarkerDTO.toMarkerDTO(existingMarker); // 업데이트된 마커 정보를 DTO로 변환하여 반환
     }
 
 

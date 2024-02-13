@@ -77,8 +77,8 @@ public class MarkerController {
     @PostMapping("/{markerId}/update")
     public ResponseEntity<?> update(@PathVariable Long markerId,
         @ModelAttribute MarkerDTO markerDTO) throws IOException {
-        MarkerDTO updatedMarkerDTO = markerService.updateMarker(markerId, markerDTO,
-            markerDTO.getMarkerBoardFile());
+        MarkerDTO updatedMarkerDTO = markerService.updateMarker(markerId, markerDTO
+            );
         return ResponseEntity.ok(updatedMarkerDTO);
     }
 

@@ -11,6 +11,9 @@ import com.ssafy.dokidog2.board.entity.BoardFileEntity;
 import com.ssafy.dokidog2.board.repository.BoardFileRepository;
 import com.ssafy.dokidog2.board.repository.BoardLikeRepository;
 import com.ssafy.dokidog2.board.repository.BoardRepository;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,53 +33,38 @@ public class BoardService {
     private final BoardFileRepository boardFileRepository;
     private final BoardLikeRepository boardLikeRepository;
 
+    // 이미지 파일을 저장할 기본 경로
+//    private final String imageDirectoryPath = "C:/Users/zxcas/imgtest/";
+    private final String imageDirectoryPath = "C:/Users/SSAFY/imgtest/";
+
     public BoardDTO save(BoardDTO boardDTO) throws IOException {
         BoardEntity savedBoardEntity;
         if (boardDTO.getBoardFile() != null && !boardDTO.getBoardFile().isEmpty()) {
             // 파일 첨부가 있는 경우의 로직
-            // 첨부 파일 있음.
-            /*
-                1. DTO에 담긴 파일을 꺼냄
-                2. 파일의 이름 가져옴
-                3. 서버 저장용 이름을 만듦
-                // 내사진.jpg => 839798375892_내사진.jpg
-                4. 저장 경로 설정
-                5. 해당 경로에 파일 저장
-                6. board_table에 해당 데이터 save 처리
-                7. board_file_table에 해당 데이터 save 처리
-             */
-            MultipartFile boardFile = boardDTO.getBoardFile(); // 1.
-            String originalFilename = boardFile.getOriginalFilename(); // 2.
-            String storedFileName = System.currentTimeMillis() + "_" + originalFilename; // 3.
-//            String savePath = "C:/springboot_img/" + storedFileName; // 4. C:/springboot_img/9802398403948_내사진.jpg
-//            String savePath = "C:/Users/SSAFY/imgtest/" + storedFileName; // 4. C:/springboot_img/9802398403948_내사진.jpg // 싸트북
-//            String savePath = "C:/Users/SSAFY/imgtest/"; // 4. C:/springboot_img/9802398403948_내사진.jpg // 싸트북
-//            String savePath = "C:\\Users\\zxcas\\imgtest\\" + storedFileName; // C:/springboot_img/9802398403948_내사진.jpg // 집트북
-            // 파일 저장 경로 확인 및 생성
-//            String directoryPath = "C:\\Users\\SSAFY\\imgtest\\";
-//
-            String directoryPath = "C:/Users/SSAFY/imgtest/"; // 저장할 디렉토리 경로 싸트북
-//            String directoryPath = "C:/Users/zxcas/imgtest/"; // 저장할 디렉토리 경로 집트북
-            String imgUrl = "/images/" + storedFileName; // 이미지 url 생성
-            File directory = new File(directoryPath);
+            MultipartFile boardFile = boardDTO.getBoardFile(); // 1. DTO에 담긴 파일을 꺼냄
+            String originalFilename = boardFile.getOriginalFilename(); // 2. 파일의 이름 가져옴
+            String storedFileName =
+                System.currentTimeMillis() + "_" + originalFilename; // 3. 서버 저장용 이름을 만듦
+
+            // 이미 선언된 imageDirectoryPath를 사용하여 저장 경로 설정
+            String imgUrl = "/images/" + storedFileName; // 이미지 URL 생성
+            File directory = new File(imageDirectoryPath);
             if (!directory.exists()) {
                 directory.mkdirs(); // 디렉토리가 존재하지 않으면 생성
             }
-            File targetFile = new File(directoryPath + storedFileName);
+            File targetFile = new File(imageDirectoryPath + storedFileName); // 파일 저장 경로
             try {
-                boardFile.transferTo(targetFile); // 파일 저장
+                boardFile.transferTo(targetFile); // 5. 해당 경로에 파일 저장
             } catch (IOException e) {
-                e.printStackTrace();
-                // 오류 처리 로직 (예외 로깅, 사용자에게 오류 알림 등)
+                e.printStackTrace(); // 오류 처리 로직
             }
 
-            System.out.println(storedFileName);
-            // 여기서 BoardDTO에 파일 이름 설정
+            // BoardDTO에 파일 이름 설정
             boardDTO.setOriginalFileName(originalFilename);
             boardDTO.setStoredFileName(storedFileName);
             boardDTO.setImgUrl(imgUrl);
 
-            // 엔티티 저장 로직...
+            // 엔티티 저장 로직
             BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
             Long savedId = boardRepository.save(boardEntity).getBoardId();
             savedBoardEntity = boardRepository.findById(savedId).get();
@@ -85,17 +73,14 @@ public class BoardService {
                 originalFilename, storedFileName, imgUrl);
             boardFileRepository.save(boardFileEntity);
         } else {
-            // 첨부 파일 없음.
+            // 첨부 파일 없음
             BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDTO);
-            System.out.println("bf22");
-            System.out.println(boardEntity);
             savedBoardEntity = boardRepository.save(boardEntity);
         }
-        System.out.println("'boardDTO'");
-        System.out.println(boardDTO);
         boardDTO.setBoardId(savedBoardEntity.getBoardId());
-        return boardDTO;
+        return boardDTO; // 업데이트된 BoardDTO 반환
     }
+
 
     @Transactional
     public List<BoardDTO> findAll() {
@@ -124,19 +109,49 @@ public class BoardService {
         }
     }
 
-    public BoardDTO update(BoardDTO boardDTO) {
-        // 현재 게시글의 '좋아요' 수 조회
-        BoardEntity currentBoard = boardRepository.findById(boardDTO.getBoardId())
-            .orElseThrow(
-                () -> new IllegalArgumentException("게시글이 존재하지 않습니다. ID: " + boardDTO.getBoardId()));
-        int currentLikes = currentBoard.getLikes();
-        // DTO를 Entity로 변환
-        BoardEntity boardEntity = BoardEntity.toUpdateEntity(boardDTO);
-        // '좋아요' 수 설정
-        boardEntity.setLikes(currentLikes);
-        // 업데이트 진행
-        boardRepository.save(boardEntity);
-        return findById(boardDTO.getBoardId());
+    @Transactional
+    public BoardDTO update(BoardDTO boardDTO, Long boardId) throws IOException {
+        // 게시글 정보 조회
+        BoardEntity existingBoard = boardRepository.findById(boardId)
+            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다. ID: " + boardId));
+
+        // 기존 이미지 파일 삭제
+        if (!existingBoard.getBoardFileEntityList().isEmpty()) {
+            for (BoardFileEntity fileEntity : existingBoard.getBoardFileEntityList()) {
+                Path filePath = Paths.get(imageDirectoryPath + fileEntity.getStoredFileName());
+                Files.deleteIfExists(filePath); // 파일 시스템에서 파일 삭제
+                boardFileRepository.delete(fileEntity); // DB에서 파일 정보 삭제
+            }
+            existingBoard.getBoardFileEntityList().clear(); // 엔티티 내 파일 리스트 클리어
+        }
+
+        // 새 이미지 파일 저장
+        MultipartFile newImageFile = boardDTO.getBoardFile();
+        if (newImageFile != null && !newImageFile.isEmpty()) {
+            String originalFilename = newImageFile.getOriginalFilename();
+            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
+            Path storagePath = Paths.get(imageDirectoryPath + storedFileName);
+            Files.copy(newImageFile.getInputStream(), storagePath); // 파일 시스템에 파일 저장
+
+            // 파일 정보 엔티티 생성 및 저장
+            BoardFileEntity newFileEntity = new BoardFileEntity();
+            newFileEntity.setOriginalFileName(originalFilename);
+            newFileEntity.setStoredFileName(storedFileName);
+            newFileEntity.setImgUrl("/images/" + storedFileName);
+            newFileEntity.setBoardEntity(existingBoard);
+            boardFileRepository.save(newFileEntity);
+
+            existingBoard.getBoardFileEntityList().add(newFileEntity); // 게시글 엔티티에 파일 정보 추가
+        }
+
+        // 게시글 정보 업데이트
+        existingBoard.setTitle(boardDTO.getTitle());
+        existingBoard.setContents(boardDTO.getContents());
+        // 필요한 추가 정보 업데이트
+
+        boardRepository.save(existingBoard); // 게시글 엔티티 저장
+
+        return BoardDTO.toBoardDTO(existingBoard); // 업데이트된 게시글 정보를 DTO로 변환하여 반환
     }
 
     public void delete(Long boardId) {
