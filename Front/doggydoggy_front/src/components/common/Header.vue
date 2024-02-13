@@ -80,7 +80,6 @@ export const loginCheck = ref($cookies.isKey('token'));
 
 .header .logo {
   height: 100%;
-  margin-top: 10%;
   text-decoration-line: none;
 }
 
