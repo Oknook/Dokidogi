@@ -11,7 +11,7 @@
           <img :src="imageData" class="preview-image"/>
         </div>
         <div v-else class="preview-container" @click="triggerFileInput">
-          <!-- <img class="placeholder-image" src="@/image-solid.svg"/> -->
+           <img class="placeholder-image" src="@/assets/images/image-solid.svg"/>
         </div>
         <div class="input-container">
           <input v-model="title" placeholder="Please enter a location." type="text"/>

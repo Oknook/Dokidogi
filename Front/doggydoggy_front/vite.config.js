@@ -24,10 +24,12 @@ export default defineConfig({
       // For example, if you make a request to '/api/users' in a Vue.js application,
       // This request is forwarded to 'http://localhost:8080/api/users'.
       '/api': {
-        target: 'http://43.202.57.175:8080',
-        changeOrigin: true, // Corrected: semicolon to comma
+        // target: 'http://43.202.57.175:8080',
+        target: 'http://localhost:8080',
+        changeOrigin: true, // Corrected: semicolon to coma
         secure: false,
       },
     },
+    historyApiFallback: true,
   },
 });

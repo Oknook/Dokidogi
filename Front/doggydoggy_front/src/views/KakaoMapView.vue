@@ -6,7 +6,7 @@
       document.getElementById('map')
       과 같이 div id 를 map으로 지정해야 오류가 발생하지 않음
     -->
-    <div id="map" style="width:100%;height:620px;"></div>
+    <div id="map" style="width:100%;height:930px"></div>
     <!-- if="isModalOpen" 조건은 isModalOpen 변수의 값에 따라 모달이 표시되거나 숨겨짐을 결정 -->
     <div class="modal-component">
       <MarkerModal
@@ -25,13 +25,14 @@
         @destination-confirmed="handleDestinationConfirmed(d_marker)"
     />
 
+    <div class="modal-component">
     <MarkerUpdateModal
         v-if="isUpdateModalOpen"
         :close="closeModal"
         :latitude="latitude"
         :longitude="longitude"
         @marker-added="addNewMarkerToMap"/>
-
+    </div>
 
   </div>
 
@@ -44,6 +45,9 @@ import MarkerModal from './MarkerModal.vue'; // 모달 컴포넌트 가져오기
 import DestinationModal from './DestinationModal.vue';
 import MarkerUpdateModal from './MarkerUpdateModal.vue'
 import axios from 'axios';
+import editIcon from '@/assets/images/edit.png';
+import removeIcon from '@/assets/images/remove.png';
+import createIcon from '@/assets/images/plus.png';
 
 const isModalOpen = ref(false); // 모달 상태 관리
 const isDestinationModalOpen = ref(false);
@@ -378,11 +382,11 @@ function createOverlay(markerData, marker) {
 
 
   const overlayDiv = document.createElement('div');
-  overlayDiv.style.cssText = "width: 400px; height: 400px; overflow-y: auto; position: relative; border-radius: 15px;";
+  overlayDiv.style.cssText = "width: 400px; height: 400px; overflow-y: auto; position: relative; ";
   // Add title
   const titleDiv = document.createElement('div');
   titleDiv.textContent = markerData.title;
-  titleDiv.style.cssText = "font-weight: 600; text-align: center;"; // Added text-align: center
+  titleDiv.style.cssText = "font-weight: 600; text-align: center; margin-top: 5px; margin-bottom: 10px; "; // Added text-align: center
   overlayDiv.appendChild(titleDiv);
 
   // // Add latitude
@@ -403,30 +407,28 @@ function createOverlay(markerData, marker) {
     const image = document.createElement('img');
     let fullImgUrl = `http://localhost:8080/images/${markerData.image}`;
     image.src = fullImgUrl;
-    image.style.cssText = 'width: 100%; height: 350px; object-fit: cover; margin-top: 20px;';
+    image.style.cssText = 'width: 90%; height: 350px; object-fit: cover; margin-top: 10px; margin: auto;' +
+        '    display: block;';
     overlayDiv.appendChild(image);
   }
 
   // Add content
   const contentDiv = document.createElement('div');
   contentDiv.textContent = markerData.content;
-  contentDiv.style.fontWeight = '600';
+  contentDiv.style.cssText = 'margin: auto; width: 90%; margin-top: 20px;';
   overlayDiv.appendChild(contentDiv);
-
-  // 댓글 리스트 표시를 위한 Div 추가
-  const commentsDiv = document.createElement('div');
-  commentsDiv.className = 'comments';
-  overlayDiv.appendChild(commentsDiv);
 
   // 댓글 입력 필드 추가
   const commentInput = document.createElement('input');
   commentInput.type = 'text';
   commentInput.placeholder = '댓글을 입력하세요';
+  commentInput.style.cssText = ' width: 250px; margin-top: 20px; margin-bottom: 10px; margin-left: 20px; margin-right: auto;';
   overlayDiv.appendChild(commentInput);
 
   // 댓글 생성 버튼 추가
   const commentButton = document.createElement('button');
   commentButton.textContent = '댓글 생성';
+  commentButton.style.cssText = ' margin-left: 12px;';
   commentButton.addEventListener('click', () => {
     addComment(markerData, commentInput.value);
     commentInput.value = '';
@@ -436,6 +438,12 @@ function createOverlay(markerData, marker) {
 
   });
   overlayDiv.appendChild(commentButton);
+
+  // 댓글 리스트 표시를 위한 Div 추가
+  const commentsDiv = document.createElement('div');
+  commentsDiv.className = 'comments';
+  commentsDiv.style.cssText = 'margin: auto; width: 90%';
+  overlayDiv.appendChild(commentsDiv);
 
   loadComments(markerData, commentsDiv);
 
@@ -451,8 +459,38 @@ function createOverlay(markerData, marker) {
   overlayDiv.appendChild(closeButton);
 
 
+  // 마커 수정 버튼 추가
+  const editButton = document.createElement('button');
+  editButton.textContent = 'Edit Marker';
+  editButton.style.cssText = 'margin-left: 16px; margin-top: 12px; margin-right: 12px;';
+  editButton.className = 'overlay-edit-btn';
+  editButton.addEventListener('click', () => {
+
+    if (currentOpenOverlay) {
+      currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
+    }
+    openUpdateModal()
+
+
+
+  });
+  overlayDiv.appendChild(editButton);
+
+
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Delete Marker';
+  deleteButton.className = 'overlay-delete-btn';
+
+  deleteButton.addEventListener('click', () => {
+    // 마커와 오버레이 삭제 처리
+    deleteMarker(markerData, marker);
+  });
+  overlayDiv.appendChild(deleteButton);
+
+
   const switchButton = document.createElement('button');
   switchButton.textContent = '산책 게시판';
+  switchButton.style.cssText = 'margin: auto; width: 93%; margin-top: 10px; margin-left: 15px; margin-bottom: 8px';
   switchButton.addEventListener('click', async () => { // async 키워드 추가
     if (currentOpenOverlay) {
       currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
@@ -463,27 +501,6 @@ function createOverlay(markerData, marker) {
     console.log('산책게시판', currentOpenOverlay)
   });
   overlayDiv.appendChild(switchButton);
-
-
-  const deleteButton = document.createElement('button');
-  deleteButton.textContent = 'Delete Marker';
-  deleteButton.className = 'overlay-delete-btn';
-  deleteButton.addEventListener('click', () => {
-    // 마커와 오버레이 삭제 처리
-    deleteMarker(markerData, marker);
-  });
-  overlayDiv.appendChild(deleteButton);
-
-
-  // 마커 수정 버튼 추가
-  const editButton = document.createElement('button');
-  editButton.textContent = 'Edit Marker';
-  editButton.className = 'overlay-edit-btn';
-  editButton.addEventListener('click', () => {
-    openUpdateModal()
-
-  });
-  overlayDiv.appendChild(editButton);
 
 
   const position = new kakao.maps.LatLng(markerData.latitude, markerData.longitude);
@@ -550,10 +567,26 @@ async function getCarDirection(map, postLat, postLng, markerLat, markerLng) {
 async function createNewOverlay(markerData, marker) {
   console.log('post', currentOpenOverlay)
   const newOverlayDiv = document.createElement('div');
-  newOverlayDiv.style.cssText = "width: 250px; height: 400px; overflow-y: auto; position: relative;";
+  newOverlayDiv.style.cssText = "width: 400px; height: 400px; overflow-y: auto; position: relative; background-color: #FFF; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.5); border-radius: 10px;";
+
+
+
+  const postButton = document.createElement('button');
+  postButton.textContent = '글쓰기';
+  postButton.addEventListener('click', () => {
+    if (currentOpenOverlay) {
+      currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
+    }
+    currentOpenOverlay = createPostOverlay(markerData, marker);
+    console.log('click', currentOpenOverlay);
+    currentOpenOverlay.open(map, marker);
+  });
+  newOverlayDiv.appendChild(postButton);
 
   const postsListDiv = document.createElement('div');
-  postsListDiv.style.cssText = "margin-top: 10px;";
+  postsListDiv.style.cssText = "margin-top: 30px;";
+
+
 
   try {
     // axios를 사용하여 서버로부터 산책 게시글 데이터 가져오기
@@ -565,20 +598,27 @@ async function createNewOverlay(markerData, marker) {
     if (posts && posts.length > 0) {
       posts.forEach(post => {
         // 게시글 정보를 기반으로 UI 요소 생성
+
+        const postContainer = document.createElement('div');
+        postContainer.style.cssText = "margin-top: 15px; background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);";
+
         const postTitleDiv = document.createElement('div');
         postTitleDiv.textContent = `제목: ${post.walkPostTitle}`;
-        postTitleDiv.style.fontWeight = 'bold';
+        postTitleDiv.style.cssText = "font-weight: bold; text-align: center; font-size: 1.5em; margin-bottom: 10px;";
 
         const postDateDiv = document.createElement('div');
         postDateDiv.textContent = `날짜: ${post.walkPostDate}`;
-        postDateDiv.style.marginBottom = '5px';
+        postDateDiv.style.cssText = "text-align: center; margin-bottom: 5px;";
 
         const postTimeDiv = document.createElement('div');
         postTimeDiv.textContent = `시간: ${post.walkPostTime}`;
-        postTimeDiv.style.marginBottom = '10px';
+        postTimeDiv.style.cssText = "text-align: center; margin-bottom: 20px;";
 
         const routeButton = document.createElement('button');
         routeButton.textContent = '경로 보기';
+        routeButton.style.cssText = "text-align: center; margin-bottom: 20px; width:80%; margin-left: 35px;" +
+            "border-radius: 15px; background-color: rgb(0, 123, 255); color: white; border: none; box-shadow: none;" +
+            " appearance: none;  appearance: none; height: 30px" ;
         routeButton.addEventListener('click', () => {
           // 경로 그리기 함수 호출
           console.log(post.walkEnd, post.walkStart, markerData.latitude, markerData.longitude)
@@ -593,6 +633,7 @@ async function createNewOverlay(markerData, marker) {
         // 수정 버튼
         const postUpdateButton = document.createElement('button');
         postUpdateButton.textContent = '게시글 수정';
+        postUpdateButton.style.cssText = 'margin-left: 210px;';
         postUpdateButton.addEventListener('click', () => {
           if (currentOpenOverlay) {
             currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
@@ -604,11 +645,15 @@ async function createNewOverlay(markerData, marker) {
         postsListDiv.appendChild(postUpdateButton);
 
 
-        postsListDiv.appendChild(postTitleDiv);
-        postsListDiv.appendChild(postDateDiv);
-        postsListDiv.appendChild(postTimeDiv);
-        postsListDiv.appendChild(routeButton);
-        postsListDiv.appendChild(deleteButton);
+        postContainer.appendChild(postTitleDiv);
+        postContainer.appendChild(postDateDiv);
+        postContainer.appendChild(postTimeDiv);
+        postContainer.appendChild(routeButton);
+        postContainer.appendChild(deleteButton);
+        postContainer.appendChild(postUpdateButton);
+
+        postsListDiv.appendChild(postContainer);
+
       });
     } else {
       const noPostsDiv = document.createElement('div');
@@ -636,6 +681,9 @@ async function createNewOverlay(markerData, marker) {
 
   const ResetButton = document.createElement('button');
   ResetButton.textContent = '경로 초기화';
+  ResetButton.style.cssText = "margin-top: 20px; text-align: center; margin-bottom: 10px; width:80%; margin-left: 35px;" +
+      "border-radius: 15px; background-color: rgb(0, 123, 255); color: white; border: none; box-shadow: none;" +
+      " appearance: none;  appearance: none; height: 30px" ;
   ResetButton.addEventListener('click', () => {
     if (currentPolyline) {
       currentPolyline.setMap(null); // 지도에서 폴리라인 제거
@@ -646,6 +694,9 @@ async function createNewOverlay(markerData, marker) {
 
   const switchButton = document.createElement('button');
   switchButton.textContent = '이전 오버레이 보기';
+  switchButton.style.cssText = "margin-top: 10px; text-align: center; margin-bottom: 20px; width:80%; margin-left: 35px;" +
+      "border-radius: 15px; background-color: rgb(0, 123, 255); color: white; border: none; box-shadow: none;" +
+      " appearance: none;  appearance: none; height: 30px" ;
   switchButton.addEventListener('click', () => {
     if (currentOpenOverlay) {
       currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
@@ -657,17 +708,16 @@ async function createNewOverlay(markerData, marker) {
   newOverlayDiv.appendChild(switchButton);
 
 
-  const postButton = document.createElement('button');
-  postButton.textContent = '게시글 생성';
-  postButton.addEventListener('click', () => {
-    if (currentOpenOverlay) {
-      currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
-    }
-    currentOpenOverlay = createPostOverlay(markerData, marker);
-    console.log('click', currentOpenOverlay);
-    currentOpenOverlay.open(map, marker);
-  });
-  newOverlayDiv.appendChild(postButton);
+
+
+  // const buttonStyle = "padding: 10px 20px; margin: 5px; width: calc(100% - 10px); box-sizing: border-box;";
+  //
+  // ResetButton.style.cssText = buttonStyle;
+  // switchButton.style.cssText = buttonStyle;
+  // postButton.style.cssText = buttonStyle;
+
+// Close button styles
+  closeButton.style.cssText = "position: absolute; top: 5px; right: 5px;";
 
   const position = new kakao.maps.LatLng(markerData.latitude, markerData.longitude);
   // 기존 오버레이 닫기 (필요한 경우)
@@ -748,6 +798,7 @@ function createPostOverlay(markerData, marker) {
 
       // Assuming createNewOverlay returns a promise that resolves to an overlay
       const backOverlay2 = await createNewOverlay(markerData, marker); // Await this call
+      console.log('가짜테스트',backOverlay2)
       backOverlay2.open(map, marker);
       currentOpenOverlay = backOverlay2;
     } catch (error) {
@@ -771,13 +822,14 @@ function createPostOverlay(markerData, marker) {
 
   const switchButton = document.createElement('button');
   switchButton.textContent = '뒤로가기';
-  switchButton.addEventListener('click', () => {
+  switchButton.addEventListener('click', async () => {
     if (currentOpenOverlay) {
       currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
     }
-    const backOverlay = createNewOverlay(markerData, marker);
-    backOverlay.open(map, marker); // 첫 번째 오버레이 다시 열기(마커 위에 오버레이 띄우는 메서드)
-    currentOpenOverlay = backOverlay; // 현재 열린 오버레이 업데이트
+    const test2 = await createNewOverlay(markerData, marker);
+    console.log('테스트',test2)
+    test2.open(map, marker); // 첫 번째 오버레이 다시 열기(마커 위에 오버레이 띄우는 메서드)
+    currentOpenOverlay = test2; // 현재 열린 오버레이 업데이트
   });
   newOverlayDiv.appendChild(switchButton);
 
@@ -882,11 +934,11 @@ function createUpdatePostOverlay(markerData, marker) {
 
   const switchButton = document.createElement('button');
   switchButton.textContent = '뒤로가기';
-  switchButton.addEventListener('click', () => {
+  switchButton.addEventListener('click', async () => {
     if (currentOpenOverlay) {
       currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
     }
-    const backOverlay = createNewOverlay(markerData, marker);
+    const backOverlay = await createNewOverlay(markerData, marker);
     backOverlay.open(map, marker); // 첫 번째 오버레이 다시 열기(마커 위에 오버레이 띄우는 메서드)
     currentOpenOverlay = backOverlay; // 현재 열린 오버레이 업데이트
   });
@@ -1019,6 +1071,7 @@ function closeModal() {
   }
   isModalOpen.value = false; // 모달 상태를 닫힘으로 설정
   isDestinationModalOpen.value = false;
+  isUpdateModalOpen.value = false;
 }
 
 
@@ -1123,7 +1176,12 @@ async function loadComments(markerData, commentsDiv) {
 
 
       const editButton = document.createElement('button');
-      editButton.textContent = '수정';
+      editButton.style.cssText = 'margin-left:30px';
+      const image = document.createElement('img');
+      image.src = editIcon
+      image.style.width = '20px'; // 적당한 크기로 설정
+      image.style.height = '20px'; // 적당한 크기로 설정
+      editButton.appendChild(image);
       editButton.onclick = async () => {
         // 사용자로부터 새로운 댓글 내용을 입력받습니다.
         const newComment = prompt("댓글을 수정하세요", comment.markerCommentContents);
@@ -1145,7 +1203,12 @@ async function loadComments(markerData, commentsDiv) {
 
       // 삭제 버튼 추가
       const deleteButton = document.createElement('button');
-      deleteButton.textContent = '삭제';
+      deleteButton.style.cssText = 'margin-left:5px';
+      const image2 = document.createElement('img');
+      image2.src = removeIcon
+      image2.style.width = '20px'; // 적당한 크기로 설정
+      image2.style.height = '20px'; // 적당한 크기로 설정
+      deleteButton.appendChild(image2);
       deleteButton.onclick = async () => {
         // 댓글 삭제 API 호출
         try {
@@ -1212,7 +1275,7 @@ async function refreshOverlay(markerData, marker) {
   position: absolute;
   width: 90px;
   height: 30px;
-  margin-top: 80px;
+  margin-top: 150px;
   border: none; /* Remove border */
   background-color: rgb(0, 123, 255);
   border-radius: 15px;

@@ -5,6 +5,7 @@
       <div class="login__images">
         <KakaoLogin />
         <NaverLogin />
+        <GoogleLogin />
       </div>
     </div>
     <a href=""><h4>처음이신가요? 회원가입을 해주세요!</h4></a>
@@ -18,6 +19,7 @@
 */
 import KakaoLogin from '@/components/KakaoLogin.vue';
 import NaverLogin from '@/components/NaverLogin.vue';
+import GoogleLogin from '@/components/GoogleLogin.vue';
 
 export default {
   data() {
@@ -28,6 +30,7 @@ export default {
   components: {
     KakaoLogin,
     NaverLogin,
+    GoogleLogin,
   },
 };
 </script>

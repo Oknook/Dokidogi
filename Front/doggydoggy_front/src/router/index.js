@@ -9,12 +9,12 @@ import PetRegisterView from '@/views/PetRegisterView.vue';
 import PetRegisterDetailView from '@/views/PetRegisterDetailView.vue';
 import BanneduserView from '@/views/BanneduserView.vue';
 
-import BoardView from '@/views/BoardView.vue' 
-import PostCreateView from '@/views/PostCreateView.vue'
-import PostDetailView from '@/views/PostDetailView.vue'
-import PostDetailUpdateView from '@/views/PostDetailUpdate.vue'
-import KakaoMapView from '@/views/KakaoMapView.vue'
-import CommentCreateView from '@/views/CommentCreateView.vue'
+import BoardView from '@/views/BoardView.vue';
+import PostCreateView from '@/views/PostCreateView.vue';
+import PostDetailView from '@/views/PostDetailView.vue';
+import PostDetailUpdateView from '@/views/PostDetailUpdate.vue';
+import KakaoMapView from '@/views/KakaoMapView.vue';
+import CommentCreateView from '@/views/CommentCreateView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -64,49 +64,47 @@ const router = createRouter({
       name: 'banned-user',
       component: BanneduserView,
     },
+    // 웹소켓 URL 직접 접근 처리를 위한 라우트
     {
       path: '/websocketurl',
       name: 'web-socket',
       beforeEnter(to, from, next) {
-        window.location.href = 'websocketurl'
-      }
+        window.location.href = 'websocketurl';
+      },
     },
-
+    // 게시판 및 게시글 관련 라우트
     {
-      path: '/api/board',
+      path: '/board',
       name: 'communities',
-      component: BoardView
+      component: BoardView,
     },
     {
-      path: '/api/board/save',
+      path: '/board/create',
       name: 'postcreate',
-      component: PostCreateView
+      component: PostCreateView,
     },
     {
-      path: '/api/board/:boardId',
+      path: '/board/:boardId',
       name: 'detail',
-      component: PostDetailView
+      component: PostDetailView,
     },
-
     {
-      path: '/api/board/:boardId/update',
+      path: '/board/:boardId/update',
       name: 'detailupdate',
-      component: PostDetailUpdateView
+      component: PostDetailUpdateView,
     },
-
+    // 카카오 맵 뷰
     {
       path: '/kakaomaps',
       name: 'kakaomaps',
-      component: KakaoMapView
+      component: KakaoMapView,
     },
-
+    // 댓글 생성 뷰
     {
       path: '/comments',
       name: 'comments',
-      component: CommentCreateView
+      component: CommentCreateView,
     },
-
-
   ],
 });
 

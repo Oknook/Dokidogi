@@ -1,27 +1,27 @@
 <template>
-  <div class="social__img" @click="naverLogin">
-    <a :href="naverAuthUrl"> <img src="@/assets/images/naverLogo.png" alt="" /></a>
+  <div class="social__img" @click="googleLogin">
+    <a :href="googleAuthUrl"> <img src="@/assets/images/google.png" alt="" /></a>
   </div>
 </template>
 
 <script>
 
-  
+
 
 export default {
   data() {
     return {
-      naverAuthUrl: `https://nid.naver.com/oauth2.0/authorize?client_id=vUqy0Bu7rsgnsZgs11EW&redirect_uri=http://localhost:8080/api/callback/naver&response_type=code`
+      googleAuthUrl: 'https://accounts.google.com/o/oauth2/v2/auth?client_id=25526902806-o0qoq0iel49ca0sev5vrptq86i6kdmed.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/callback/google&response_type=code&scope=profile',
     };
   },
 };
 
 
-/* 
+/*
   네이버 로그인 요청 URL을 이용하여 네이버에 로그인 요청
   state와 redirect_url을 인코딩해서 넣어야한다.
 
-// */ 
+// */
 // 민관님 코드
 // export default {
 //   data() {
