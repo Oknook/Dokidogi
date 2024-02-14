@@ -1,7 +1,5 @@
 package com.ssafy.dokidog2.user.Controller;
 
-import com.ssafy.dokidog2.user.dto.KakaoDTO;
-import com.ssafy.dokidog2.user.dto.SocialDTO;
 import com.ssafy.dokidog2.user.service.GoogleService;
 import com.ssafy.dokidog2.user.service.KakaoService;
 import com.ssafy.dokidog2.user.service.NaverService;
@@ -24,9 +22,7 @@ public class CallbackController {
 
     @GetMapping("/kakao")
     public String kallback(HttpServletRequest request) throws Exception {
-        System.out.println("1");
         String code = request.getParameter("code");
-        System.out.println(code);
         String  kakaoInfo = kakaoService.getKakaoInfo(code);
         log.info("kakao dto : "+ kakaoInfo);
         return kakaoInfo;
@@ -35,7 +31,6 @@ public class CallbackController {
     @GetMapping("/naver")
     public String nallback(HttpServletRequest request) throws Exception {
         String naverInfo = naverService.getNaverInfo(request.getParameter("code"));
-        log.info("naver code : "+ request.getParameter("code"));
         log.info("naver dto ; "+ naverInfo);
         return naverInfo;
     }
@@ -43,7 +38,6 @@ public class CallbackController {
     @GetMapping("/google")
     public String gallback(HttpServletRequest request) throws Exception {
         String googleInfo = googleService.getGoogleInfo(request.getParameter("code"));
-        log.info("google code : "+ request.getParameter("code"));
         log.info("google dto : "+ googleInfo);
         return googleInfo;
     }

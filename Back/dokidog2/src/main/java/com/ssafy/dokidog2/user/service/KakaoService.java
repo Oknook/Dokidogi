@@ -104,6 +104,7 @@ public class KakaoService {
         String id = Long.toString((long) jsonObj.get("id"));
 
         Long checkId = userRepository.findByCompanyIdAndCompanyName(id, "kakao");
+        long time = System.currentTimeMillis();
         if (checkId == null) {
             User user = new User();
             user.setCompanyId(id);
@@ -115,13 +116,13 @@ public class KakaoService {
             System.out.println(savedUser);
             long userId = savedUser.getUserId();
             UserGrade grade = savedUser.getGrade();
-            return jwtTokenProvider.createAccessToken(userId, grade);
+            return jwtTokenProvider.createAccessToken(userId, grade, time);
         }
         else {
             User user = userRepository.findByUserId(checkId);
             long userId = user.getUserId();
             UserGrade grade = user.getGrade();
-            return jwtTokenProvider.createAccessToken(userId, grade);
+            return jwtTokenProvider.createAccessToken(userId, grade, time);
         }
     }
 }
