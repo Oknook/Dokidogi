@@ -1,5 +1,6 @@
 package com.ssafy.dokidog2.user.service;
 
+import com.ssafy.dokidog2.user.dto.PetAPIDTO;
 import com.ssafy.dokidog2.user.dto.PetDTO;
 import com.ssafy.dokidog2.user.dto.PutPetDTO;
 import com.ssafy.dokidog2.user.entity.Pet;
@@ -52,6 +53,41 @@ public class PetService {
                 .message("입력 오류")
                 .build();
         }
+        return response;
+    }
+
+    public Response setPetInfos(PetAPIDTO dto) {
+        Response response = new Response();
+
+        try {
+            Pet pet = petRepository.findById(dto.getPetId()).orElse(null);
+            pet.builder()
+                .regNo(dto.getRegNo())
+                .rfidNo(dto.getRfidNo())
+                .name(dto.getName())
+                .sex(dto.getSex())
+                .kind(dto.getKind())
+                .neuter(dto.getNeuter())
+                .orgNm(dto.getOrgNm())
+                .build();
+            Pet savedpet = petRepository.save(pet);
+            if (savedpet != null) {
+                response.builder()
+                    .code("200")
+                    .message("입력 성공")
+                    .build();
+            }
+            else {
+                response.builder()
+                    .code("400")
+                    .message("입력 오류")
+                    .build();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return response;
     }
 

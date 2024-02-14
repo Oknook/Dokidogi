@@ -23,7 +23,7 @@ public class PetDTO {
     // 품종
     private String kind;
     // 중성화 여부
-    private Boolean neuter;
+    private String neuter;
     private String orgNm;
     // 애견 나이
     private Integer age;

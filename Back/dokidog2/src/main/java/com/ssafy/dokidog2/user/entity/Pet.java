@@ -36,7 +36,7 @@ public class Pet {
     // 품종
     private String kind;
     // 중성화 여부, 6글자 (예시 : 미중성)
-    private Boolean neuter;
+    private String neuter;
     // 관할기관명, 200글자 (서울특별시 강남구)
     private String orgNm;
 
