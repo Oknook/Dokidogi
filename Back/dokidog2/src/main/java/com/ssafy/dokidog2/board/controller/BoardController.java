@@ -83,7 +83,7 @@ public class BoardController {
     // 카테고리별 게시글 리스트 검색 및 반환
     @PostMapping("/category")
     public ResponseEntity<List<BoardDTO>> findByCategory(@RequestBody CategoryDTO categoryDTO) {
-        List<BoardDTO> boardDTOs = boardService.findByCategory(categoryDTO.getCategory());
+        List<BoardDTO> boardDTOs = boardService.findByCategory(categoryDTO.getBoardCategory());
         if (boardDTOs.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

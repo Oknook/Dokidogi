@@ -9,7 +9,7 @@ export const usePostStore = defineStore('post', () => {
   const getPostList = function () {
     axios({
       method: 'get',
-      url: '/api/board/', // URL을 Spring Boot 백엔드 엔드포인트로 변경
+      url: '/api/board', // URL을 Spring Boot 백엔드 엔드포인트로 변경
       // headers 부분은 Spring Boot 백엔드의 보안 설정에 따라 필요할 수 있습니다.
       // headers: {
       //   Authorization: `Bearer ${store.token}`b
@@ -123,12 +123,12 @@ export const usePostStore = defineStore('post', () => {
   };
 
   // 카테고리 찾는 로직
-  const getPostsByCategory = function (categoryName) {
+  const getPostsByCategory = function (boardCategory) {
     axios({
       method: 'post', // POST 메소드 사용
       url: '/api/board/category', // 백엔드의 카테고리별 게시글 조회 엔드포인트
       data: {
-        category: categoryName, // 카테고리 이름을 JSON 객체로 전송
+        boardCategory: boardCategory, // 카테고리 이름을 JSON 객체로 전송
       },
       headers: {
         'Content-Type': 'application/json', // 명시적으로 JSON 형식임을 지정 (선택적)
