@@ -36,7 +36,7 @@ import { useRouter } from 'vue-router'
 const title = ref('')
 const contents = ref('')
 const router = useRouter()
-const categories = ref(['자유', '자랑', '정보', '산책후기']);
+const categories = ref(['Free', 'Show', 'Info', 'Review']);
 const selectedCategory = ref('');
 const fileAttached = ref(); // fileAttached 추후 삭제
 const boardFile = ref(null); // 파일 데이터를 저장할 ref
