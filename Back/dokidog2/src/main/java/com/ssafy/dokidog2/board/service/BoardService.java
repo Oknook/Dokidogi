@@ -166,25 +166,6 @@ public class BoardService {
         boardRepository.deleteById(boardId);
     }
 
-    //    public Page<BoardDTO> paging(Pageable pageable) {
-//        int page = pageable.getPageNumber() - 1;
-//        int pageLimit = 3; // 한 페이지에 보여줄 글 갯수
-//        // 한페이지당 3개씩 글을 보여주고 정렬 기준은 id 기준으로 내림차순 정렬
-//        // page 위치에 있는 값은 0부터 시작
-//        Page<BoardEntity> boardEntities =
-//                boardRepository.findAll(PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.ASC, "boardId")));
-//        System.out.println("boardEntities.getContent() = " + boardEntities.getContent()); // 요청 페이지에 해당하는 글
-//        System.out.println("boardEntities.getTotalElements() = " + boardEntities.getTotalElements()); // 전체 글갯수
-//        System.out.println("boardEntities.getNumber() = " + boardEntities.getNumber()); // DB로 요청한 페이지 번호
-//        System.out.println("boardEntities.getTotalPages() = " + boardEntities.getTotalPages()); // 전체 페이지 갯수
-//        System.out.println("boardEntities.getSize() = " + boardEntities.getSize()); // 한 페이지에 보여지는 글 갯수
-//        System.out.println("boardEntities.hasPrevious() = " + boardEntities.hasPrevious()); // 이전 페이지 존재 여부
-//        System.out.println("boardEntities.isFirst() = " + boardEntities.isFirst()); // 첫 페이지 여부
-//        System.out.println("boardEntities.isLast() = " + boardEntities.isLast()); // 마지막 페이지 여부
-//        // 목록: id, writer, title, hits, createdTime, likes, category
-//        Page<BoardDTO> boardDTOS = boardEntities.map(board -> new BoardDTO(board.getBoardId(), board.getBoardWriter(), board.getTitle(), board.getBoardHits(), board.getCreatedTime(), board.getLikes(), board.getBoardCategory()));
-//        return boardDTOS;
-//    }
     public List<BoardDTO> findByCategory(String category) {
         BoardCategory boardCategory = BoardCategory.of(category);
         if (boardCategory == null) {
@@ -199,6 +180,7 @@ public class BoardService {
         }
         return boardDTOList;
     }
+
 
     public List<BoardDTO> findAllPosts() {
         List<BoardEntity> boardEntities = boardRepository.findAll();
@@ -217,27 +199,4 @@ public class BoardService {
         boardRepository.save(board);
     }
 
-//    private File convert(MultipartFile file) {
-//        File convFile = null;
-//        boolean result = true;
-//        try {
-//            // 혹시나 파일 이름이 중복될 수 있으니 파일 이름 앞에 랜덤한 숫자값을 덧붙여줌
-//            convFile = new File(tmpLocation + "/" + Math.abs(LocalDateTime.now().hashCode()) + "_" + URLDecoder.decode(file.getOriginalFilename(), "UTF-8"));
-//            convFile.createNewFile();
-//            FileOutputStream fos = new FileOutputStream(convFile);
-//            fos.write(file.getBytes());
-//            fos.close();
-//            return convFile;
-//
-//        } catch (Exception e){
-//            result = false;
-//            e.printStackTrace();
-//
-//        } finally {
-//            if(result=false && convFile.exists()){
-//                convFile.delete();
-//            }
-//        }
-//        return null;
-//    }
 }
