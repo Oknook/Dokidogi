@@ -122,6 +122,27 @@ export const usePostStore = defineStore('post', () => {
     });
   };
 
+  // 카테고리 찾는 로직
+  const getPostsByCategory = function (categoryName) {
+    axios({
+      method: 'post', // POST 메소드 사용
+      url: '/api/board/category', // 백엔드의 카테고리별 게시글 조회 엔드포인트
+      data: {
+        category: categoryName, // 카테고리 이름을 JSON 객체로 전송
+      },
+      headers: {
+        'Content-Type': 'application/json', // 명시적으로 JSON 형식임을 지정 (선택적)
+      }
+    })
+    .then((response) => {
+      postList.value = response.data; // 응답 데이터로 게시글 목록 업데이트
+      console.log(postList.value);
+    })
+    .catch((error) => {
+      console.error('게시글 목록 조회 에러:', error);
+    });
+  };
+
   return {
     postList,
     getPostList,
@@ -133,6 +154,7 @@ export const usePostStore = defineStore('post', () => {
     commentList,
     createComment,
     deleteComment,
-    likePost
+    likePost,
+    getPostsByCategory,
   }
 })

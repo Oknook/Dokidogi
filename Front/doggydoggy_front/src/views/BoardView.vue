@@ -2,6 +2,15 @@
   <div class="board-container">
     <h1>자유게시판</h1>
     <RouterLink :to="{name:'postcreate'}" class="create-post-button">게시글 생성</RouterLink>
+    <!-- 카테고리 선택 드롭다운 메뉴 -->
+    <select v-model="selectedCategory" @change="fetchPostsByCategory">
+      <option value="">모든 카테고리</option>
+      <option value="자유">자유</option>
+      <option value="자랑">자랑</option>
+      <option value="정보">정보</option>
+      <option value="산책리뷰">산책리뷰</option>
+    </select>
+
     <ul class="post-list">
       <li v-for="post in store.postList" :key="post.boardId" class="post-item"
           @click="goDetail(post.boardId)">
@@ -22,12 +31,13 @@
 </template>
 
 <script setup>
-import {onMounted} from 'vue';
+import {ref, onMounted} from 'vue';
 import {usePostStore} from '@/stores/posts';
 import {useRouter} from 'vue-router';
 
 const store = usePostStore();
 const router = useRouter();
+const selectedCategory = ref('')
 
 onMounted(() => {
   store.getPostList();
@@ -35,6 +45,15 @@ onMounted(() => {
 
 const goDetail = (boardId) => {
   router.push({name: 'detail', params: {boardId}});
+};
+
+// 카테고리가 변경될 때 호출될 메소드
+const fetchPostsByCategory = () => {
+  if (selectedCategory.value === '') {
+    store.getPostList(); // 모든 카테고리의 게시글을 가져옴
+  } else {
+    store.getPostsByCategory(selectedCategory.value); // 선택된 카테고리의 게시글을 가져옴
+  }
 };
 
 const formatCreatedAt = (createdAt) => {
