@@ -48,6 +48,10 @@ import axios from 'axios';
 import editIcon from '@/assets/images/edit.png';
 import removeIcon from '@/assets/images/remove.png';
 import createIcon from '@/assets/images/plus.png';
+import marker1 from '@/assets/images/marker1.png';
+import marker2 from '@/assets/images/marker2.png';
+import marker3 from '@/assets/images/marker3.png';
+import marker4 from '@/assets/images/marker4.png';
 
 const isModalOpen = ref(false); // 모달 상태 관리
 const isDestinationModalOpen = ref(false);
@@ -73,19 +77,17 @@ const isUpdateModalOpen = ref(false); // 모달 상태 관리
 //--------------
 
 //Geolocation API를 사용하여 사용자의 현재 위치(위도와 경도)를 가져옴 // PWA
-function getUserLocationAndInitMap() {
-  navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        // 위치 정보 성공적으로 가져옴
-        userLocation.latitude = pos.coords.latitude;
-        userLocation.longitude = pos.coords.longitude;
-        initMap(); // 지도 초기화 호출
-      },
-      () => {
-        initMap(); // 위치 정보를 가져오지 못한 경우 기본 설정으로 지도 초기화
-      }
-  );
-}
+// function getUserLocationAndInitMap() {
+//   navigator.geolocation.getCurrentPosition(
+//       (pos) => {
+//         // 위치 정보 성공적으로 가져옴
+//         userLocation.latitude = pos.coords.latitude;
+//         userLocation.longitude = pos.coords.longitude;
+//         console.log('test',typeof (127.4147562))
+//
+//       }
+//   );
+// }
 
 onMounted(() => {
   loadKakaoMapsAPI();
@@ -140,195 +142,201 @@ async function fetchMarkersAndDisplay() {
 
 // 지도 그리는 함수
 // 초기 맵 그리려는 위치 받아오기??
-function initMap() {
+async function initMap() {
   const container = document.getElementById('map');
-  const options = {
-    center: new kakao.maps.LatLng(36.32882145702877, 127.40634269304897), // 초기 맵 그리는 위치
-    level: 5
-  };
 
-  map = new kakao.maps.Map(container, options);
-  ps = new kakao.maps.services.Places();
-
-  clusterer = new kakao.maps.MarkerClusterer({
-    map: map,
-    averageCenter: true,
-    minLevel: 1,
-    disableClickZoom: true,
-
-    calculator: [3, 5, 8], // 클러스터의 크기 구분 값 (미만), 각 사이값마다 설정된 text나 style이 적용된다
-    texts: getTexts, // texts는 ['삐약', '꼬꼬', '꼬끼오', '치멘'] 이렇게 배열로도 설정할 수 있다
-    styles: [{ // calculator 각 사이 값 마다 적용될 스타일을 지정한다
-      width: '30px', height: '30px',
-      background: 'rgba(51, 204, 255, .8)',
-      borderRadius: '15px',
-      color: '#000',
-      textAlign: 'center',
-      fontWeight: 'bold',
-      lineHeight: '31px'
-    },
-      {
-        width: '40px', height: '40px',
-        background: 'rgba(255, 153, 0, .8)',
-        borderRadius: '20px',
-        color: '#000',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        lineHeight: '41px'
-      },
-      {
-        width: '50px', height: '50px',
-        background: 'rgba(255, 51, 204, .8)',
-        borderRadius: '25px',
-        color: '#000',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        lineHeight: '51px'
-      },
-      {
-        width: '60px', height: '60px',
-        background: 'rgba(255, 80, 80, .8)',
-        borderRadius: '30px',
-        color: '#000',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        lineHeight: '61px'
-      }
-    ]
-
-    // 클러스터러에 대한 추가 옵션을 여기에 추가
-  });
-
-  // 클러스터 오버레이 만드는 함수 // 클러스터된 마커들의 데이터를 합쳐주는 함수
-  // markerInfos 받아오기
-  function createClusterInfoWindowContent(markerInfos, infoWindow, map) {
-
-
-    const infoContentDiv = document.createElement('div');
-    infoContentDiv.style.cssText = "width: 250px; height: 400px; overflow-y: auto; position: relative;";
-    // for문처럼 각각 데이터 돌면서 각 마커마다 찍어주는거
-    // 변수 정의 하는 느낌 각각 돌면서
-    markerInfos.forEach(info => {
-      const markerInfoDiv = document.createElement('div');
-      markerInfoDiv.style.marginBottom = '10px'; // 여백 추가
-
-      // 제목
-      const titleDiv = document.createElement('div');
-      titleDiv.textContent = `${info.title}`;
-      titleDiv.style.fontWeight = '600';
-      markerInfoDiv.appendChild(titleDiv);
-
-      // 내용
-      const contentDiv = document.createElement('div');
-      contentDiv.textContent = `${info.content}`;
-      markerInfoDiv.appendChild(contentDiv);
-
-      // 위도, 경도
-      const latLngDiv = document.createElement('div');
-      latLngDiv.textContent = `Latitude: ${info.latitude}, Longitude: ${info.longitude}`;
-      markerInfoDiv.appendChild(latLngDiv);
-
-      // 이미지가 있을 경우 이미지 추가
-      if (info.image) {
-        const image = document.createElement('img');
-        let fullImgUrl = `http://localhost:8080/images/${info.image}`;
-        image.src = fullImgUrl;
-        // image.src = info.image;
-        image.style.cssText = 'max-width: 100%; height: auto; margin-top: 5px;';
-        markerInfoDiv.appendChild(image);
-      }
-
-      const commentsDiv = document.createElement('div');
-      commentsDiv.className = 'comments';
-      console.log('클러스터', info)
-      loadComments(info, commentsDiv);
-      markerInfoDiv.appendChild(commentsDiv);
-
-
-      // 클러스터 생성에 참조된 마커 정보에 클릭 이벤트 추가
-      // 해당 마커 정보에 클릭 시 현재 오버레이를 닫고
-      // 해당 마커의 오버레이를 출력
-
-      markerInfoDiv.addEventListener('click', () => {
-
-        if (currentOpenOverlay) {
-          currentOpenOverlay.close();
-          currentOpenOverlay = null;
-        }
-
-
-        infoWindow.close(); // 클러스터의 인포윈도우를 닫습니다.
-
-
-        const moveLatLon = new kakao.maps.LatLng(info.latitude, info.longitude);
-
-        const level = 3
-
-        // 지도를 1레벨 내립니다 (지도가 확대됩니다)
-        map.setLevel(level);
-        map.panTo(moveLatLon);
-
-
-        const overlay = createOverlay(info, info.marker); // 마커의 오버레이를 생성합니다.
-        overlay.open(map, info.marker); // 마커의 오버레이를 엽니다.
-        currentOpenOverlay = overlay;
+  function getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        maximumAge: 600000,
+        timeout: 5000,
+        enableHighAccuracy: true, // Corrected here
       });
-
-      infoContentDiv.appendChild(markerInfoDiv);
     });
-
-    // 닫기 버튼
-    const closeButton = document.createElement('button');
-    closeButton.textContent = 'X';
-    closeButton.className = 'overlay-close-btn';
-    closeButton.style.cssText = 'position: absolute; top: 5px; right: 5px;';
-    closeButton.addEventListener('click', () => {
-      infoWindow.close();
-    });
-    infoContentDiv.appendChild(closeButton);
-
-    return infoContentDiv;
   }
 
-  // 클러스터 클릭 이벤트 핸들러에서 마커 정보에 이미지 정보를 포함시키는 부분
-  kakao.maps.event.addListener(clusterer, 'clusterclick', function (cluster) {
-    // 클러스터에 포함된 마커들의 정보를 가져옵니다.
-    const markers = cluster.getMarkers();
-    const markerInfos = markers.map(marker => {
-      return {
-        id: marker.customInfo.id,
-        title: marker.customInfo.title,
-        content: marker.customInfo.content,
-        latitude: marker.customInfo.latitude,
-        longitude: marker.customInfo.longitude,
-        image: marker.customInfo.image, // 이미지 정보 추가
-        comments: marker.customInfo.comments,
-        marker: marker
-      };
+
+    const position = await getCurrentLocation();
+    const userLatitude = position.coords.latitude;
+    const userLongitude = position.coords.longitude;
+
+
+    const options = {
+      center: new kakao.maps.LatLng(userLatitude, userLongitude), // 초기 맵 그리는 위치
+      level: 5
+    };
+
+    map = new kakao.maps.Map(container, options);
+    ps = new kakao.maps.services.Places();
+
+    clusterer = new kakao.maps.MarkerClusterer({
+      map: map,
+      averageCenter: true,
+      minLevel: 1,
+      disableClickZoom: true,
+
+      calculator: [3, 5, 8], // 클러스터의 크기 구분 값 (미만), 각 사이값마다 설정된 text나 style이 적용된다
+      texts: getTexts, // texts는 ['삐약', '꼬꼬', '꼬끼오', '치멘'] 이렇게 배열로도 설정할 수 있다
+      styles: [{ // calculator 각 사이 값 마다 적용될 스타일을 지정한다
+        width: '50px', height: '50px',
+        background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker1.png") no-repeat center center',
+        borderRadius: '15px',
+        backgroundSize: 'contain',
+
+      },
+        {
+          width: '50px', height: '50px',
+          background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker2.png") no-repeat center center',
+          borderRadius: '15px',
+          backgroundSize: 'contain',
+        },
+        {
+          width: '50px', height: '50px',
+          background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker3.png") no-repeat center center',
+          borderRadius: '15px',
+          backgroundSize: 'contain',
+        },
+        {
+          width: '50px', height: '50px',
+          background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker4.png") no-repeat center center',
+          borderRadius: '15px',
+          backgroundSize: 'contain',
+        }
+      ]
+
+      // 클러스터러에 대한 추가 옵션을 여기에 추가
     });
 
-    if (currentOpenOverlay) {
-      currentOpenOverlay.close();
-      currentOpenOverlay = null;
+    // 클러스터 오버레이 만드는 함수 // 클러스터된 마커들의 데이터를 합쳐주는 함수
+    // markerInfos 받아오기
+    function createClusterInfoWindowContent(markerInfos, infoWindow, map) {
+
+
+      const infoContentDiv = document.createElement('div');
+      infoContentDiv.style.cssText = "width: 250px; height: 400px; overflow-y: auto; position: relative;";
+      // for문처럼 각각 데이터 돌면서 각 마커마다 찍어주는거
+      // 변수 정의 하는 느낌 각각 돌면서
+      markerInfos.forEach(info => {
+        const markerInfoDiv = document.createElement('div');
+        markerInfoDiv.style.marginBottom = '10px'; // 여백 추가
+
+        // 제목
+        const titleDiv = document.createElement('div');
+        titleDiv.textContent = `${info.title}`;
+        titleDiv.style.fontWeight = '600';
+        markerInfoDiv.appendChild(titleDiv);
+
+        // 내용
+        const contentDiv = document.createElement('div');
+        contentDiv.textContent = `${info.content}`;
+        markerInfoDiv.appendChild(contentDiv);
+
+        // 위도, 경도
+        const latLngDiv = document.createElement('div');
+        latLngDiv.textContent = `Latitude: ${info.latitude}, Longitude: ${info.longitude}`;
+        markerInfoDiv.appendChild(latLngDiv);
+
+        // 이미지가 있을 경우 이미지 추가
+        if (info.image) {
+          const image = document.createElement('img');
+          let fullImgUrl = `http://localhost:8080/images/${info.image}`;
+          image.src = fullImgUrl;
+          // image.src = info.image;
+          image.style.cssText = 'max-width: 100%; height: auto; margin-top: 5px;';
+          markerInfoDiv.appendChild(image);
+        }
+
+        const commentsDiv = document.createElement('div');
+        commentsDiv.className = 'comments';
+        console.log('클러스터', info)
+        loadComments(info, commentsDiv);
+        markerInfoDiv.appendChild(commentsDiv);
+
+
+        // 클러스터 생성에 참조된 마커 정보에 클릭 이벤트 추가
+        // 해당 마커 정보에 클릭 시 현재 오버레이를 닫고
+        // 해당 마커의 오버레이를 출력
+
+        markerInfoDiv.addEventListener('click', () => {
+
+          if (currentOpenOverlay) {
+            currentOpenOverlay.close();
+            currentOpenOverlay = null;
+          }
+
+
+          infoWindow.close(); // 클러스터의 인포윈도우를 닫습니다.
+
+
+          const moveLatLon = new kakao.maps.LatLng(info.latitude, info.longitude);
+
+          const level = 3
+
+          // 지도를 1레벨 내립니다 (지도가 확대됩니다)
+          map.setLevel(level);
+          map.panTo(moveLatLon);
+
+
+          const overlay = createOverlay(info, info.marker); // 마커의 오버레이를 생성합니다.
+          overlay.open(map, info.marker); // 마커의 오버레이를 엽니다.
+          currentOpenOverlay = overlay;
+        });
+
+        infoContentDiv.appendChild(markerInfoDiv);
+      });
+
+      // 닫기 버튼
+      const closeButton = document.createElement('button');
+      closeButton.textContent = 'X';
+      closeButton.className = 'overlay-close-btn';
+      closeButton.style.cssText = 'position: absolute; top: 5px; right: 5px;';
+      closeButton.addEventListener('click', () => {
+        infoWindow.close();
+      });
+      infoContentDiv.appendChild(closeButton);
+
+      return infoContentDiv;
     }
 
-    // 인포윈도우 생성 및 표시
-    const infoWindow = new kakao.maps.InfoWindow({
-      position: cluster.getCenter()
-    });
-    const infoWindowContent = createClusterInfoWindowContent(markerInfos, infoWindow, map);
-    infoWindow.setContent(infoWindowContent);
-    infoWindow.open(map);
-    currentOpenOverlay = infoWindow;
-  });
+    // 클러스터 클릭 이벤트 핸들러에서 마커 정보에 이미지 정보를 포함시키는 부분
+    kakao.maps.event.addListener(clusterer, 'clusterclick', function (cluster) {
+      // 클러스터에 포함된 마커들의 정보를 가져옵니다.
+      const markers = cluster.getMarkers();
+      const markerInfos = markers.map(marker => {
+        return {
+          id: marker.customInfo.id,
+          title: marker.customInfo.title,
+          content: marker.customInfo.content,
+          latitude: marker.customInfo.latitude,
+          longitude: marker.customInfo.longitude,
+          image: marker.customInfo.image, // 이미지 정보 추가
+          comments: marker.customInfo.comments,
+          marker: marker
+        };
+      });
 
-  // 클릭 이벤트 리스너 추가
-  // .addListener() = > 첫 번째 인수 - 대상 개체(map) , 두 번째 인수 - 이벤트 유형('클릭'), 세 번째 인수 - 콜백 함수:지도를 클릭할 때 호출되는 함수
-  // function(mouseEvent) ->마우스 이벤트 변수를 받아서 현재의 위치를 객체에 담음 - 즉 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출
-  kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
-    onMapClick(mouseEvent);
-    DestinationClick(mouseEvent);
-  });
+      if (currentOpenOverlay) {
+        currentOpenOverlay.close();
+        currentOpenOverlay = null;
+      }
+
+      // 인포윈도우 생성 및 표시
+      const infoWindow = new kakao.maps.InfoWindow({
+        position: cluster.getCenter()
+      });
+      const infoWindowContent = createClusterInfoWindowContent(markerInfos, infoWindow, map);
+      infoWindow.setContent(infoWindowContent);
+      infoWindow.open(map);
+      currentOpenOverlay = infoWindow;
+    });
+
+    // 클릭 이벤트 리스너 추가
+    // .addListener() = > 첫 번째 인수 - 대상 개체(map) , 두 번째 인수 - 이벤트 유형('클릭'), 세 번째 인수 - 콜백 함수:지도를 클릭할 때 호출되는 함수
+    // function(mouseEvent) ->마우스 이벤트 변수를 받아서 현재의 위치를 객체에 담음 - 즉 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출
+    kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+      onMapClick(mouseEvent);
+      DestinationClick(mouseEvent);
+    });
 
 }
 
@@ -737,29 +745,35 @@ async function createNewOverlay(markerData, marker) {
 
 function createPostOverlay(markerData, marker) {
   const newOverlayDiv = document.createElement('div');
-  newOverlayDiv.style.cssText = "width: 250px; height: 400px; overflow-y: auto; position: relative;";
+  newOverlayDiv.style.cssText = "width: 400px; height: 400px; overflow-y: auto; position: relative; background-color: #FFF; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.5); border-radius: 10px;";
+
+
+  const postContainer = document.createElement('div');
+  postContainer.style.cssText = "height: 300px; margin-top: 15px; background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);";
 
   const titleInput = document.createElement('input');
-  titleInput.placeholder = '제목';
-  newOverlayDiv.appendChild(titleInput);
+  titleInput.placeholder = '제목을 입력해 주세요';
+  titleInput.style.cssText = "font-weight: bold; text-align: center; margin-bottom: 10px; width:80%; margin-left: 30px";
+  postContainer.appendChild(titleInput);
 
   // 날짜 입력 필드 생성
   const dateInput = document.createElement('input');
   dateInput.type = 'date'; // 입력 필드 유형을 날짜 선택으로 설정
   dateInput.name = 'date'; // 필드의 이름 설정
-  dateInput.style.cssText = 'margin-bottom: 10px;'; // 스타일 설정
-  newOverlayDiv.appendChild(dateInput); // 생성한 날짜 입력 필드를 오버레이에 추가
+  dateInput.style.cssText = " text-align: center; margin-bottom: 10px; width:80%; margin-left: 30px"; // 스타일 설정
+  postContainer.appendChild(dateInput); // 생성한 날짜 입력 필드를 오버레이에 추가
 
   // 시간 입력 필드 생성
   const timeInput = document.createElement('input');
   timeInput.type = 'time'; // 입력 필드 유형을 시간 선택으로 설정
   timeInput.name = 'time'; // 필드의 이름 설정
-  timeInput.style.cssText = 'margin-bottom: 10px;'; // 스타일 설정
-  newOverlayDiv.appendChild(timeInput); // 생성한 시간 입력 필드를 오버레이에 추가
+  timeInput.style.cssText = " text-align: center; margin-bottom: 10px; width:80%; margin-left: 30px"; // 스타일 설정
+  postContainer.appendChild(timeInput); // 생성한 시간 입력 필드를 오버레이에 추가
 
   // 도착 지점 설정
   const destinationButton = document.createElement('button');
   destinationButton.textContent = '도착지점 설정';
+  destinationButton.style.cssText = " text-align: center; margin-bottom: 10px; width:82%; margin-left: 30px";
 
   destinationButton.addEventListener('click', () => {
     openDestinationModal();
@@ -773,12 +787,15 @@ function createPostOverlay(markerData, marker) {
     }
   });
 
-  newOverlayDiv.appendChild(destinationButton);
+  postContainer.appendChild(destinationButton);
 
 
   // 완료 버튼
   const submitButton = document.createElement('button');
   submitButton.textContent = '완료';
+  submitButton.style.cssText = "margin-top: 10px; text-align: center; margin-bottom: 20px; width:80%; margin-left: 35px;" +
+      "border-radius: 15px; background-color: rgb(0, 123, 255); color: white; border: none; box-shadow: none;" +
+      " appearance: none;  appearance: none; height: 30px"
   submitButton.addEventListener('click', async () => { // async 키워드 추가
     const newPost = {
       walkPostTitle: titleInput.value,
@@ -806,7 +823,7 @@ function createPostOverlay(markerData, marker) {
       alert("Failed to create a walking post.");
     }
   });
-  newOverlayDiv.appendChild(submitButton);
+  postContainer.appendChild(submitButton);
 
   // Create and add close button
   const closeButton = document.createElement('button');
@@ -817,11 +834,14 @@ function createPostOverlay(markerData, marker) {
     newInfoWindow.close();
     currentOpenOverlay = null;
   });
-  newOverlayDiv.appendChild(closeButton);
+  postContainer.appendChild(closeButton);
 
 
   const switchButton = document.createElement('button');
   switchButton.textContent = '뒤로가기';
+  switchButton.style.cssText = "margin-top: 10px; text-align: center; margin-bottom: 20px; width:80%; margin-left: 35px;" +
+      "border-radius: 15px; background-color: rgb(0, 123, 255); color: white; border: none; box-shadow: none;" +
+      " appearance: none;  appearance: none; height: 30px"
   switchButton.addEventListener('click', async () => {
     if (currentOpenOverlay) {
       currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
@@ -831,7 +851,10 @@ function createPostOverlay(markerData, marker) {
     test2.open(map, marker); // 첫 번째 오버레이 다시 열기(마커 위에 오버레이 띄우는 메서드)
     currentOpenOverlay = test2; // 현재 열린 오버레이 업데이트
   });
-  newOverlayDiv.appendChild(switchButton);
+  postContainer.appendChild(switchButton);
+
+
+  newOverlayDiv.appendChild(postContainer);
 
 
   const position = new kakao.maps.LatLng(markerData.latitude, markerData.longitude);
@@ -854,6 +877,7 @@ function createUpdatePostOverlay(markerData, marker) {
   newOverlayDiv.style.cssText = "width: 250px; height: 400px; overflow-y: auto; position: relative;";
 
   const titleInput = document.createElement('input');
+  titleInput.style.cssText = "text-align: center; margin-bottom: 5px;";
   titleInput.placeholder = '제목';
   newOverlayDiv.appendChild(titleInput);
 
@@ -1079,13 +1103,13 @@ function getTexts(count) {
 
 // 한 클러스터 객체가 포함하는 마커의 개수에 따라 다른 텍스트 값을 표시합니다
   if (count < 3) {
-    return '삐약';
+    return '';
   } else if (count < 5) {
-    return '꼬꼬';
+    return '';
   } else if (count < 8) {
-    return '꼬끼오';
+    return '';
   } else {
-    return '치멘';
+    return '';
   }
 }
 
