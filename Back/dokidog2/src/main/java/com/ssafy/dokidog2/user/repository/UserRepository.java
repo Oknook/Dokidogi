@@ -17,5 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM users WHERE (6371 * acos(cos(radians(:latitude)) * cos(radians(latitude)) * cos(radians(longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(latitude)))) < :distance", nativeQuery = true)
     List<User> findUsersWithinDistance(double latitude, double longitude, double distance);
 
-
+    @Query(value = "SELECT u.userId FROM users u where u.companyId = :companyId and u.companyName = :companyName")
+    Long findByCompanyIdAndCompanyName(String companyId, String companyName);
 }

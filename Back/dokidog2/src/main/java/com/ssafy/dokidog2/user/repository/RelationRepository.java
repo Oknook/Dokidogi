@@ -18,4 +18,6 @@ public interface RelationRepository extends JpaRepository<Relation, Long> {
     @Query("SELECT r FROM Relation r WHERE r.user.userId IN :userIds")
     List<Relation> findRelationsby(List<Long> userIds);
 
+    @Query("select r.user.userId from Relation r where r.pet.petId = :petId and r.prime is true")
+    User getOwner(Long petId);
 }

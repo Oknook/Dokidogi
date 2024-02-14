@@ -1,6 +1,7 @@
 package com.ssafy.dokidog2.user.service;
 
 import com.ssafy.dokidog2.user.dto.GrassDTO;
+import com.ssafy.dokidog2.user.dto.PutUserDTO;
 import com.ssafy.dokidog2.user.entity.Grass;
 import com.ssafy.dokidog2.user.repository.GrassRepository;
 import com.ssafy.dokidog2.user.dto.PetDTO;
@@ -10,6 +11,8 @@ import com.ssafy.dokidog2.user.entity.User;
 import com.ssafy.dokidog2.user.repository.PetRepository;
 import com.ssafy.dokidog2.user.repository.RelationRepository;
 import com.ssafy.dokidog2.user.repository.UserRepository;
+import com.ssafy.dokidog2.util.Response;
+import com.ssafy.dokidog2.util.UserGrade;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,67 +29,106 @@ import org.springframework.stereotype.Service;
 public class UserService {
     @Value("${spring.jwt.secret}")
     private String secretKey;
-
     private final UserRepository userRepository;
     private final RelationRepository relationRepository;
     private final GrassRepository grassRepository;
-    public UserService(UserRepository userRepository, PetRepository petRepository, RelationRepository relationRepository, GrassRepository grassRepository) {
+    private final PetRepository petRepository;
+    public UserService(UserRepository userRepository, RelationRepository relationRepository, GrassRepository grassRepository, PetRepository petRepository) {
         this.userRepository = userRepository;
         this.relationRepository = relationRepository;
         this.grassRepository = grassRepository;
+        this.petRepository = petRepository;
     }
+    
+    public Response associate(long userId, PutUserDTO dto) {
+        Response response = new Response();
+        try {
+            User user = userRepository.findByUserId(userId);
+            user.setBirth(dto.getBirth());
+            user.setNickname(dto.getNickname());
+            user.setSex(dto.getSex());
+            user.setEmail(dto.getEmail());
+            user.setLatitude(dto.getLatitude());
+            user.setLongitude(dto.getLongitude());
+            if (user.getGrade().equals(UserGrade.TEMPORARY)) user.setGrade(UserGrade.ASSOCIATE);
+            userRepository.save(user);
 
-    public void updateGenders() {
-        ArrayList<Long> userIds = new ArrayList<>();
-        for (long i = 1; i <= 300; i++) {
-            userIds.add(i);
+            response.builder()
+                .code("200")
+                .message("입력 성공")
+                .build();
         }
-        List<User> users = userRepository.findAllById(userIds);
-        Random random = new Random();
-        for (User user : users) {
-            if (random.nextInt() % 2 == 0) {
-                user.setSex(false);
-            }
-            else {
-                user.setSex(true);
-            }
+        catch (NullPointerException e) {
+            e.printStackTrace();
+            response.builder()
+                .code("400")
+                .message("입력 오류")
+                .build();
         }
+        return response;
     }
 
-    public void associate(long userId, UserDTO userDTO) {
-        User user = userRepository.findByUserId(userId);
-        user.setSex(userDTO.getSex());
-        user.setNickname(userDTO.getNickname());
-        user.setBirth(userDTO.getBirth());
-        user.setAddress(userDTO.getAddress());
-    }
-    public void modifyUserDetails(long id, UserDTO userDTO) {
-        User member = userRepository.findByUserId(id);
-        member.setSex(userDTO.getSex());
-        member.setNickname(userDTO.getNickname());
-        member.setBirth(userDTO.getBirth());
-        member.setAddress(userDTO.getAddress());
+    public Response modifyMember (long userId, PutUserDTO dto) {
+        Response response = new Response();
+        try {
+            User user = userRepository.findByUserId(userId);
+            if (dto.getBirth() != null) user.setBirth(dto.getBirth());
+            if (dto.getNickname() != null) user.setNickname(dto.getNickname());
+            if (dto.getSex() != null) user.setSex(dto.getSex());
+            if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+            if (dto.getLatitude() != null) user.setLatitude(dto.getLatitude());
+            if (dto.getLongitude() != null) user.setLongitude(dto.getLongitude());
+            userRepository.save(user);
+
+            response.builder()
+                .code("200")
+                .message("입력 성공")
+                .build();
+        }
+        catch (NullPointerException e) {
+            e.printStackTrace();
+            response.builder()
+                .code("400")
+                .message("입력 오류")
+                .build();
+        }
+        return response;
     }
 
-    public void signout(long id) {
+    public Response signout(long id) {
         User member = userRepository.findByUserId(id);
         member.setDelYN(true);
+        return Response.builder()
+            .code("200")
+            .message("탈퇴 성공")
+            .build();
     }
 
-    public void putGrass() {
-        LocalDateTime date = LocalDateTime.now();
+    public Response getUserProfile(long userId) {
+        User user = userRepository.findByUserId(userId);
 
-        Random rand = new Random();
-        User user = userRepository.findByUserId(1l);
-        System.out.println(user.getNickname());
-        System.out.println(user.getGrasses());
-
-        for (int i = 0; i < 100; i++) {
-            int ran = rand.nextInt(37);
-            grassRepository.save(new Grass(user, date.minusDays(ran)));
-        }
+        return Response.builder()
+            .code("200")
+            .message("유저 조회")
+            .data(UserDTO.builder()
+                .userId(user.getUserId())
+                .grade(user.getGrade())
+                .nickname(user.getNickname())
+                .email(user.getEmail())
+                .sex(user.getSex())
+                .birth(user.getBirth())
+                .latitude(user.getLatitude())
+                .longitude(user.getLongitude())
+                .grass(grassData(userId))
+                .pets(petRepository.findMyPets(userId))
+                .imageId(user.getImageId())
+                .point(user.getPoint())
+                .delYN(user.getDelYN())
+                .regDttm(user.getRegDttm())
+                .modDttm(user.getModDttm())
+                .build())
+            .build();
     }
-
     public JSONObject grassData(long userId) {
         List<GrassDTO> list = grassRepository.getGrassesByUserId(userId);
         HashMap<String, Long> map = new HashMap<>();
@@ -121,57 +163,57 @@ public class UserService {
         return data;
     }
 
-    // { code:200, message: "message" }
-    public JSONObject successResponse(String message) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code", HttpStatus.OK);
-        jsonObject.put("message", message);
-        return jsonObject;
-    }
+//    public void updateGenders() {
+//        ArrayList<Long> userIds = new ArrayList<>();
+//        for (long i = 1; i <= 300; i++) {
+//            userIds.add(i);
+//        }
+//        List<User> users = userRepository.findAllById(userIds);
+//        Random random = new Random();
+//        for (User user : users) {
+//            if (random.nextInt() % 2 == 0) {
+//                user.setSex(false);
+//            }
+//            else {
+//                user.setSex(true);
+//            }
+//        }
+//    }
+//
+//    public void putGrass() {
+//        LocalDateTime date = LocalDateTime.now();
+//
+//        Random rand = new Random();
+//        User user = userRepository.findByUserId(1l);
+//        System.out.println(user.getNickname());
+//        System.out.println(user.getGrasses());
+//
+//        for (int i = 0; i < 100; i++) {
+//            int ran = rand.nextInt(37);
+//            grassRepository.save(new Grass(user, date.minusDays(ran)));
+//        }
+//    }
 
-    public JSONObject failResponse(String message, HttpStatus status) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code", status);
-        jsonObject.put("message", message);
-        return jsonObject;
-    }
-
-    public UserDTO signin(UserDTO userDTO) {
-        User member = userRepository.findByUserId(userDTO.getId());
-        UserDTO memberDTO = new UserDTO();
-        memberDTO.setId(member.getUserId());
-        memberDTO.setNickname(member.getNickname());
-        return memberDTO;
-    }
-
-    public UserDTO signintest(long id) {
-        User member = userRepository.findByUserId(id);
-        UserDTO memberDTO = new UserDTO();
-        memberDTO.setNickname(member.getNickname());
-        return memberDTO;
-    }
-
-    public PetDTO signintest2(long id) {
-        List<Pet> relations = relationRepository.findPetsByUserId(id);
-
-        PetDTO petDTO = new PetDTO();
-        petDTO.setName(relations.get(0).getName());
-        return petDTO;
-    }
-
-    public UserDTO getUserProfile(long userId) {
-        UserDTO userDTO = new UserDTO();
-
-        User user = userRepository.findByUserId(userId);
-        userDTO.setNickname(user.getNickname());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setSex(user.getSex());
-        userDTO.setBirth(user.getBirth());
-        userDTO.setAddress(user.getAddress());
-        userDTO.setImageId(user.getImageId());
-        userDTO.setGrass(grassData(userId));
-        userDTO.setPets(relationRepository.findPetsByUserId(userId));
-        return userDTO;
-    }
-    // blockservice 차단 등록, 목록, 해제 3개 해야 함!
+//    public UserDTO signin(UserDTO userDTO) {
+//        User member = userRepository.findByUserId(userDTO.getId());
+//        UserDTO memberDTO = new UserDTO();
+//        memberDTO.setId(member.getUserId());
+//        memberDTO.setNickname(member.getNickname());
+//        return memberDTO;
+//    }
+//
+//    public UserDTO signintest(long id) {
+//        User member = userRepository.findByUserId(id);
+//        UserDTO memberDTO = new UserDTO();
+//        memberDTO.setNickname(member.getNickname());
+//        return memberDTO;
+//    }
+//
+//    public PetDTO signintest2(long id) {
+//        List<Pet> relations = relationRepository.findPetsByUserId(id);
+//
+//        PetDTO petDTO = new PetDTO();
+//        petDTO.setName(relations.get(0).getName());
+//        return petDTO;
+//    }
 }
