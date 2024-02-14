@@ -71,6 +71,7 @@ let currentPolyline = null;
 
 let d_marker = ref(null);
 
+let passedPath = []; // 사용자가 지나온 경로를 저장할 배열
 
 const isUpdateModalOpen = ref(false); // 모달 상태 관리
 // ----- 경로 그리기-----
@@ -215,13 +216,13 @@ async function initMap() {
 
 
     const infoContentDiv = document.createElement('div');
-    infoContentDiv.style.cssText = "width: 400px; height: 400px; overflow-y: auto; position: relative; ";
+    infoContentDiv.style.cssText = "width: 400px; height: 400px; overflow-y: auto; position: relative; text-align: center; ";
     // for문처럼 각각 데이터 돌면서 각 마커마다 찍어주는거
     // 변수 정의 하는 느낌 각각 돌면서
     markerInfos.forEach(info => {
       const markerInfoDiv = document.createElement('div');
       markerInfoDiv.style.marginBottom = '10px'; // 여백 추가
-      markerInfoDiv.style.cssText = "margin-top: 30px; background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);";
+      markerInfoDiv.style.cssText = "width: 350px; margin-left: auto; margin-right: auto; margin-top: 15px; background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);";
 
       // 제목
       const titleDiv = document.createElement('div');
@@ -590,41 +591,37 @@ async function getCarDirection(map, postLat, postLng, markerLat, markerLng) {
 
 
 // 경로 추적 및 그리기 함수를 외부로 이동
-async function trackAndDrawRoute(linePath) {
-  let passedPath = []; // 사용자가 지나온 경로를 저장할 배열
-
-  navigator.geolocation.watchPosition(async (position) => {
+function trackAndDrawRoute(linePath) {
+  navigator.geolocation.watchPosition((position) => {
     const { latitude, longitude } = position.coords;
     const userLocation = new kakao.maps.LatLng(latitude, longitude);
 
+    // Check if a given pathPoint is unique in the passedPath array
+    function isUniquePoint(pathPoint) {
+      return !passedPath.some((existingPoint) =>
+          existingPoint.getLat() === pathPoint.getLat() && existingPoint.getLng() === pathPoint.getLng());
+    }
 
-
-    // linePath는 getCarDirection에서 미리 계산된 경로의 좌표 배열
     for (let i = 0; i < linePath.length; i++) {
       const pathPoint = linePath[i];
-      console.log('i',i)
-      console.log('path',linePath.length)
-      const distance = calculateDistance(userLocation.La, userLocation.Ma, pathPoint.La, pathPoint.Ma);
-      console.log('거리테스트', userLocation.La, userLocation.Ma, pathPoint.La, pathPoint.Ma)
-      console.log('실거리', distance)
-      if (distance <= 1000) {
-        // 거리가 50m 이내일 경우, passedPath에 추가
+      const distance = calculateDistance(userLocation.getLat(), userLocation.getLng(), pathPoint.getLat(), pathPoint.getLng());
+
+      if (distance <= 200 && isUniquePoint(pathPoint)) {
         passedPath.push(pathPoint);
-        break; // 가장 가까운 포인트를 찾으면 루프 종료
+        break; // Stop the loop when the closest point is found
       }
     }
 
-    // passedPath를 사용하여 폴리라인 다시 그리기
     if (window.currentPolyline) {
-      window.currentPolyline.setMap(null); // 이전 폴리라인 제거
+      window.currentPolyline.setMap(null); // Remove the previous polyline
     }
 
     window.currentPolyline = new kakao.maps.Polyline({
-      path: passedPath, // 사용자가 지나온 경로
-      strokeColor: '#0e0e0e', // 선의 색깔
-      strokeOpacity: 1, // 선의 불투명도
-      strokeStyle: 'solid', // 선의 스타일
-      strokeWeight: 8, // 선의 두께
+      path: passedPath,
+      strokeColor: '#0e0e0e',
+      strokeOpacity: 1,
+      strokeStyle: 'solid',
+      strokeWeight: 8,
     });
 
     window.currentPolyline.setMap(map);
@@ -636,7 +633,6 @@ async function trackAndDrawRoute(linePath) {
     timeout: 5000
   });
 }
-
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
   var R = 6371e3; // metres
