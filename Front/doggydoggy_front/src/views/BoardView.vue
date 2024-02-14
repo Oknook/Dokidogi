@@ -4,11 +4,11 @@
     <RouterLink :to="{name:'postcreate'}" class="create-post-button">게시글 생성</RouterLink>
     <!-- 카테고리 선택 드롭다운 메뉴 -->
     <select v-model="selectedCategory" @change="fetchPostsByCategory">
-      <option value="">모든 카테고리</option>
-      <option value="자유">자유</option>
-      <option value="자랑">자랑</option>
-      <option value="정보">정보</option>
-      <option value="산책리뷰">산책리뷰</option>
+      <option value="All">모든 카테고리</option>
+      <option value="Free">Free</option>
+      <option value="Show">Show</option>
+      <option value="Info">Info</option>
+      <option value="Review">Review</option>
     </select>
 
     <ul class="post-list">

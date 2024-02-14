@@ -83,14 +83,17 @@ public class BoardController {
     // 카테고리별 게시글 리스트 검색 및 반환
     @PostMapping("/category")
     public ResponseEntity<List<BoardDTO>> findByCategory(@RequestBody CategoryDTO categoryDTO) {
-        System.out.println("받는 카테고리");
-        System.out.println(categoryDTO);
-        List<BoardDTO> boardDTOs = boardService.findByCategory(categoryDTO.getBoardCategory());
+        List<BoardDTO> boardDTOs;
+        // "All" 인 경우 모든 게시글 조회
+        if ("All".equals(categoryDTO.getBoardCategory())) {
+            boardDTOs = boardService.findAll();
+        } else {
+            // 그 외의 경우 해당 카테고리에 맞는 게시글 조회
+            boardDTOs = boardService.findByCategory(categoryDTO.getBoardCategory());
+        }
         if (boardDTOs.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        System.out.println("다시 보내는");
-        System.out.println(boardDTOs);
         return ResponseEntity.ok(boardDTOs);
     }
 }

@@ -1,7 +1,7 @@
 package com.ssafy.dokidog2.board.entity;
 
 public enum BoardCategory {
-    자유, 자랑, 정보, 산책후기 ;
+    Free,Show,Info,Review ;
 
     // 문자열로부터 해당 BoardCategory를 찾는 메서드
     public static BoardCategory of(String category) {
