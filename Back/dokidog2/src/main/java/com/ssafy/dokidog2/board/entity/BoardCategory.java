@@ -1,21 +1,19 @@
 package com.ssafy.dokidog2.board.entity;
 
 public enum BoardCategory {
-    AAA, BBB, CCC, DDD;
+    자유, 자랑, 정보, 산책후기 ;
 
-    // article 연관관계 메서드 of 정의
+    // 문자열로부터 해당 BoardCategory를 찾는 메서드
     public static BoardCategory of(String category) {
-        if (category.equalsIgnoreCase("aaa")) {
-            return BoardCategory.AAA;
-        } else if (category.equalsIgnoreCase("bbb")) {
-            return BoardCategory.BBB;
-        } else if (category.equalsIgnoreCase("ccc")) {
-            return BoardCategory.CCC;
-        } else if (category.equalsIgnoreCase("ddd")) {
-            return BoardCategory.DDD;
-        } else {
-            return null;
+        // 주어진 문자열을 이용하여 해당하는 BoardCategory 반환
+        for (BoardCategory value : BoardCategory.values()) {
+            if (value.name().equals(category)) {
+                return value;
+            }
         }
+        // 일치하는 카테고리가 없을 경우 null 반환
+        return null;
     }
+
 }
 

@@ -2,6 +2,7 @@ package com.ssafy.dokidog2.board.controller;
 
 
 import com.ssafy.dokidog2.board.dto.BoardDTO;
+import com.ssafy.dokidog2.board.dto.CategoryDTO;
 import com.ssafy.dokidog2.board.service.BoardService;
 import com.ssafy.dokidog2.board.service.CommentService;
 import java.io.IOException;
@@ -77,5 +78,15 @@ public class BoardController {
     public ResponseEntity<?> likeBoard(@PathVariable Long boardId) {
         boardService.likeBoard(boardId);
         return ResponseEntity.ok().build();
+    }
+
+    // 카테고리별 게시글 리스트 검색 및 반환
+    @PostMapping("/category")
+    public ResponseEntity<List<BoardDTO>> findByCategory(@RequestBody CategoryDTO categoryDTO) {
+        List<BoardDTO> boardDTOs = boardService.findByCategory(categoryDTO.getCategory());
+        if (boardDTOs.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(boardDTOs);
     }
 }
