@@ -35,19 +35,6 @@ public class MarkerController {
         MarkerDTO savedMarkerDTO = markerService.markerSave(markerDTO);
         return ResponseEntity.ok(savedMarkerDTO);
     }
-//    @PostMapping("/save")
-//    public ResponseEntity<?> save(@ModelAttribute MarkerDTO markerDTO) throws IOException {
-//        log.info("마커 저장 요청 받음: {}", markerDTO); // 요청 받음
-//        MarkerDTO savedMarkerDTO = null;
-//        try {
-//            savedMarkerDTO = markerService.markerSave(markerDTO);
-//            log.info("마커 저장 성공: {}", savedMarkerDTO); // 처리 완료
-//        } catch (Exception e) {
-//            log.error("마커 저장 실패", e); // 예외 처리
-//            return ResponseEntity.badRequest().body("마커 저장 실패: " + e.getMessage());
-//        }
-//        return ResponseEntity.ok(savedMarkerDTO);
-//    }
 
     // 마커 전체 리스트
     @GetMapping("/")
@@ -76,12 +63,16 @@ public class MarkerController {
     // MarkerController.java에 마커 업데이트 API 추가
     @PostMapping("/{markerId}/update")
     public ResponseEntity<?> update(@PathVariable Long markerId,
-        @ModelAttribute MarkerDTO markerDTO) throws IOException {
-        MarkerDTO updatedMarkerDTO = markerService.updateMarker(markerId, markerDTO
-            );
-        return ResponseEntity.ok(updatedMarkerDTO);
-    }
+        @ModelAttribute MarkerDTO markerDTO) {
+        try {
+            MarkerDTO updatedMarkerDTO = markerService.updateMarker(markerId, markerDTO);
+            return ResponseEntity.ok(updatedMarkerDTO);
+        } catch (IOException e) {
+            log.error("File upload error during marker update: ", e);
+            return ResponseEntity.internalServerError().body("File upload error during board update");
+        }
 
+    }
 }
 
 

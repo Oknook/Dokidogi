@@ -4,6 +4,10 @@ package com.ssafy.dokidog2.board.service;
 // Entity -> DTO (DTO Class)
 
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.dokidog2.board.dto.BoardDTO;
 import com.ssafy.dokidog2.board.entity.BoardCategory;
 import com.ssafy.dokidog2.board.entity.BoardEntity;
@@ -33,44 +37,46 @@ public class BoardService {
     private final BoardFileRepository boardFileRepository;
     private final BoardLikeRepository boardLikeRepository;
 
-    // 이미지 파일을 저장할 기본 경로
-//    private final String imageDirectoryPath = "C:/Users/zxcas/imgtest/";
-    private final String imageDirectoryPath = "C:/Users/SSAFY/imgtest/";
+    private final AmazonS3 amazonS3Client;
+
+    private String bucketName = "donghotest";
+
+    public String uploadFileToS3(MultipartFile file, String storedFileName) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        amazonS3Client.putObject(new PutObjectRequest(bucketName, storedFileName, file.getInputStream(), metadata)
+            .withCannedAcl(CannedAccessControlList.PublicRead)); // 파일을 public-read 권한으로 업로드
+
+        return amazonS3Client.getUrl(bucketName, storedFileName).toString(); // 업로드된 파일의 URL 반환
+    }
 
     public BoardDTO save(BoardDTO boardDTO) throws IOException {
         BoardEntity savedBoardEntity;
         if (boardDTO.getBoardFile() != null && !boardDTO.getBoardFile().isEmpty()) {
             // 파일 첨부가 있는 경우의 로직
-            MultipartFile boardFile = boardDTO.getBoardFile(); // 1. DTO에 담긴 파일을 꺼냄
-            String originalFilename = boardFile.getOriginalFilename(); // 2. 파일의 이름 가져옴
-            String storedFileName =
-                System.currentTimeMillis() + "_" + originalFilename; // 3. 서버 저장용 이름을 만듦
+            MultipartFile boardFile = boardDTO.getBoardFile();
+            String originalFilename = boardFile.getOriginalFilename();
+            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
 
-            // 이미 선언된 imageDirectoryPath를 사용하여 저장 경로 설정
-            String imgUrl = "/images/" + storedFileName; // 이미지 URL 생성
-            File directory = new File(imageDirectoryPath);
-            if (!directory.exists()) {
-                directory.mkdirs(); // 디렉토리가 존재하지 않으면 생성
-            }
-            File targetFile = new File(imageDirectoryPath + storedFileName); // 파일 저장 경로
-            try {
-                boardFile.transferTo(targetFile); // 5. 해당 경로에 파일 저장
-            } catch (IOException e) {
-                e.printStackTrace(); // 오류 처리 로직
-            }
+            // S3에 파일 업로드하고 URL 반환
+            String imgUrl = uploadFileToS3(boardFile, storedFileName);
 
-            // BoardDTO에 파일 이름 설정
+            // BoardDTO에 파일 정보와 URL 설정
             boardDTO.setOriginalFileName(originalFilename);
             boardDTO.setStoredFileName(storedFileName);
-            boardDTO.setImgUrl(imgUrl);
+            boardDTO.setImgUrl(imgUrl); // S3 URL 설정
 
             // 엔티티 저장 로직
             BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
             Long savedId = boardRepository.save(boardEntity).getBoardId();
             savedBoardEntity = boardRepository.findById(savedId).get();
 
-            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(savedBoardEntity,
-                originalFilename, storedFileName, imgUrl);
+            // 파일 정보 엔티티 생성 및 저장
+            BoardFileEntity boardFileEntity = new BoardFileEntity();
+            boardFileEntity.setOriginalFileName(originalFilename);
+            boardFileEntity.setStoredFileName(storedFileName);
+            boardFileEntity.setImgUrl(imgUrl);
+            boardFileEntity.setBoardEntity(savedBoardEntity);
             boardFileRepository.save(boardFileEntity);
         } else {
             // 첨부 파일 없음
@@ -78,7 +84,7 @@ public class BoardService {
             savedBoardEntity = boardRepository.save(boardEntity);
         }
         boardDTO.setBoardId(savedBoardEntity.getBoardId());
-        return boardDTO; // 업데이트된 BoardDTO 반환
+        return BoardDTO.toBoardDTO(savedBoardEntity); // 업데이트된 BoardDTO 반환
     }
 
 
@@ -109,39 +115,41 @@ public class BoardService {
         }
     }
 
+    // 파일을 S3에서 삭제하는 메서드를 추가합니다.
+    public void deleteFileFromS3(String storedFileName) {
+        if (amazonS3Client.doesObjectExist(bucketName, storedFileName)) {
+            amazonS3Client.deleteObject(bucketName, storedFileName);
+        }
+    }
+
     @Transactional
     public BoardDTO update(BoardDTO boardDTO, Long boardId) throws IOException {
-        // 게시글 정보 조회
         BoardEntity existingBoard = boardRepository.findById(boardId)
             .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다. ID: " + boardId));
 
-        // 기존 이미지 파일 삭제
-        if (!existingBoard.getBoardFileEntityList().isEmpty()) {
-            for (BoardFileEntity fileEntity : existingBoard.getBoardFileEntityList()) {
-                Path filePath = Paths.get(imageDirectoryPath + fileEntity.getStoredFileName());
-                Files.deleteIfExists(filePath); // 파일 시스템에서 파일 삭제
+        // 새 이미지 파일이 있을 경우 처리
+        if (boardDTO.getBoardFile() != null && !boardDTO.getBoardFile().isEmpty()) {
+            // 기존 이미지 파일 처리 (S3에서 삭제)
+            existingBoard.getBoardFileEntityList().forEach(fileEntity -> {
+                deleteFileFromS3(fileEntity.getStoredFileName()); // S3에서 파일 삭제
                 boardFileRepository.delete(fileEntity); // DB에서 파일 정보 삭제
-            }
+            });
             existingBoard.getBoardFileEntityList().clear(); // 엔티티 내 파일 리스트 클리어
-        }
 
-        // 새 이미지 파일 저장
-        MultipartFile newImageFile = boardDTO.getBoardFile();
-        if (newImageFile != null && !newImageFile.isEmpty()) {
+            MultipartFile newImageFile = boardDTO.getBoardFile();
             String originalFilename = newImageFile.getOriginalFilename();
             String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
-            Path storagePath = Paths.get(imageDirectoryPath + storedFileName);
-            Files.copy(newImageFile.getInputStream(), storagePath); // 파일 시스템에 파일 저장
+
+            // S3에 파일 업로드
+            String imgUrl = uploadFileToS3(newImageFile, storedFileName);
 
             // 파일 정보 엔티티 생성 및 저장
             BoardFileEntity newFileEntity = new BoardFileEntity();
             newFileEntity.setOriginalFileName(originalFilename);
             newFileEntity.setStoredFileName(storedFileName);
-            newFileEntity.setImgUrl("/images/" + storedFileName);
+            newFileEntity.setImgUrl(imgUrl); // S3 URL 설정
             newFileEntity.setBoardEntity(existingBoard);
             boardFileRepository.save(newFileEntity);
-
-            existingBoard.getBoardFileEntityList().add(newFileEntity); // 게시글 엔티티에 파일 정보 추가
         }
 
         // 게시글 정보 업데이트

@@ -16,16 +16,5 @@ public class MultipartConfig {
         return new StandardServletMultipartResolver();
     }
 
-    @Bean
-    public MultipartConfigElement multipartConfigElement() {
-        MultipartConfigFactory factory = new MultipartConfigFactory();
-
-        factory.setLocation("C:/Users/SSAFY/imgtest/"); // 파일 저장 경로 싸트북
-//        factory.setLocation("C:/Users/zxcas/imgtest/"); // 파일 저장 경로 집트북
-        // 파일 사이즈
-        factory.setMaxRequestSize(DataSize.ofMegabytes(100L));
-        factory.setMaxFileSize(DataSize.ofMegabytes(100L));
-        return factory.createMultipartConfig();
-    }
 }
 
