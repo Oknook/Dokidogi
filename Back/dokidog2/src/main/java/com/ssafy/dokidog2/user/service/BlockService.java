@@ -5,7 +5,9 @@ import com.ssafy.dokidog2.user.repository.BlockRepository;
 import com.ssafy.dokidog2.user.repository.UserRepository;
 import com.ssafy.dokidog2.util.Response;
 import java.time.LocalDateTime;
+import org.springframework.stereotype.Service;
 
+@Service
 public class BlockService {
 
     private final BlockRepository blockRepository;
