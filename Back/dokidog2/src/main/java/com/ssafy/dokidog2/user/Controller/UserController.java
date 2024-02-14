@@ -1,18 +1,12 @@
 package com.ssafy.dokidog2.user.Controller;
 
-import com.ssafy.dokidog2.user.dto.PetDTO;
 import com.ssafy.dokidog2.user.dto.PutPetDTO;
 import com.ssafy.dokidog2.user.dto.PutUserDTO;
-import com.ssafy.dokidog2.user.dto.UserDTO;
 import com.ssafy.dokidog2.user.service.BlockService;
 import com.ssafy.dokidog2.user.service.PetService;
 import com.ssafy.dokidog2.user.service.UserService;
 import com.ssafy.dokidog2.util.JwtTokenProvider;
 import com.ssafy.dokidog2.util.Response;
-import org.json.simple.JSONObject;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -143,50 +137,4 @@ public class UserController {
             .data(blockService.unblock(userId, blockId))
             .build();
     }
-//
-//    @PostMapping("/signin")
-//    public ResponseEntity<String> signin(@RequestParam(name = "select") int select) {
-//        /*
-//        header
-//        {
-//          "alg": "HS256",
-//          "typ": "JWT"
-//        }
-//        .
-//        {
-//          "userId": "1",
-//          "accessToken": "access_allowed"
-//        }
-//        .
-//        HMACSHA256(
-//          base64UrlEncode(header) + "." +
-//          base64UrlEncode(payload),
-//        kimmoonkwanhecanrightfullybecalledalegend
-//        )
-//         */
-//        String jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjZXNzVG9rZW4iOiJhY2Nlc3NfYWxsb3dlZCJ9.wVPMRMwF1nzKcI_D7eQX6Ysg6izLml7zB8yKMi4zLFQ";
-//        String jwt2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyIiwiYWNjZXNzVG9rZW4iOiJhY2Nlc3NfYWxsb3dlZCJ9.ACLN1vSQ9yn9dsPzA3MlJ0U3FAprxwb95XxblHWMrHA";
-//        HttpHeaders headers = new HttpHeaders();
-//        if (select == 1) {
-//            headers.add("Authorization", "Bearer " + jwt);
-//        }
-//        else {
-//            headers.add("Authorization", "Bearer " + jwt2);
-//        }
-//        return ResponseEntity.ok()
-//            .headers(headers)
-//            .body("tmpLogin");
-//    }
-
-//    @GetMapping("/test")
-//    public UserDTO test(@RequestParam(name = "id") long id) {
-//        UserDTO res = userService.signintest(id);
-//        return res;
-//    }
-//
-//    @GetMapping("/test2")
-//    public PetDTO test2(@RequestParam(name = "id") long id) {
-//        PetDTO res = userService.signintest2(id);
-//        return res;
-//    }
 }

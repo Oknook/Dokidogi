@@ -29,22 +29,22 @@ public class JwtTokenProvider {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createAccessToken(long userId, UserGrade grade) {
+    public String createAccessToken(long userId, UserGrade grade, long time) {
         return Jwts.builder()
             .claim("userId", userId)
             .claim("grade", grade)
-            .issuedAt(new Date(System.currentTimeMillis()))
-            .expiration(new Date(System.currentTimeMillis()+10800000))
+            .issuedAt(new Date(time))
+            .expiration(new Date(time+10800000))
             .signWith(secretKey)
             .compact();
     }
 
-    public String createRefreshToken(long userId, UserGrade grade) {
+    public String createRefreshToken(long userId, UserGrade grade, long time) {
         return Jwts.builder()
             .claim("userId", userId)
             .claim("grade", grade)
-            .issuedAt(new Date(System.currentTimeMillis()))
-            .expiration(new Date(System.currentTimeMillis()+604800000))
+            .issuedAt(new Date(time))
+            .expiration(new Date(time+604800000))
             .signWith(secretKey)
             .compact();
     }
