@@ -11,7 +11,7 @@
 export default {
   data() {
     return {
-      naverAuthUrl: `https://nid.naver.com/oauth2.0/authorize?client_id=vUqy0Bu7rsgnsZgs11EW&redirect_uri=http://i10b202.p.ssafy.io/api/callback/naver&response_type=code`
+      naverAuthUrl: `https://nid.naver.com/oauth2.0/authorize?client_id=vUqy0Bu7rsgnsZgs11EW&redirect_uri=https://i10b202.p.ssafy.io/api/callback/naver&response_type=code`
     };
   },
 };
