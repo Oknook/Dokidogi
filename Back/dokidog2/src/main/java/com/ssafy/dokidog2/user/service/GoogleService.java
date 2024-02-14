@@ -33,7 +33,7 @@ public class GoogleService {
 	// https://antdev.tistory.com/72
 //	private final String GOOGLE_E_MAIL = "https://www.googleapis.com/auth/userinfo.profile";
 	private final String GOOGLE_SNS_CLIENT_ID = "25526902806-o0qoq0iel49ca0sev5vrptq86i6kdmed.apps.googleusercontent.com";
-	private final String GOOGLE_SNS_CALLBACK_URL = "http://localhost:8080/api/callback/google";
+	private final String GOOGLE_SNS_CALLBACK_URL = "http://i10b202.p.ssafy.io/api/callback/google";
 	private final String GOOGLE_SNS_CLIENT_SECRET = "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";
 	private final String GOOGLE_SNS_TOKEN_BASE_URL = "https://oauth2.googleapis.com/token";
 
@@ -100,6 +100,7 @@ public class GoogleService {
 		String id = (String) jsonObj.get("sub");
 
 		Long checkId = userRepository.findByCompanyIdAndCompanyName(id, "google");
+		long time = System.currentTimeMillis();
 		if (checkId == null) {
 			User user = new User();
 			user.setCompanyId(id);
@@ -110,13 +111,13 @@ public class GoogleService {
 			
 			long userId = savedUser.getUserId();
 			UserGrade grade = savedUser.getGrade();
-			return jwtTokenProvider.createAccessToken(userId, grade);
+			return jwtTokenProvider.createAccessToken(userId, grade, time);
 		}
 		else {
 			User user = userRepository.findByUserId(checkId);
 			long userId = user.getUserId();
 			UserGrade grade = user.getGrade();
-			return jwtTokenProvider.createAccessToken(userId, grade);
+			return jwtTokenProvider.createAccessToken(userId, grade, time);
 		}
     }
 }
