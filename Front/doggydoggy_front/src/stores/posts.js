@@ -49,20 +49,16 @@ export const usePostStore = defineStore('post', () => {
     .catch(err => console.error(err));
   };
 
-  const putPost = function (boardId, {title, contents, boardCategory}) {
-    return axios({
-      method: 'post',
-      url: `/api/board/${boardId}/update`,
-      // headers: {
-      //   Authorization: `Token ${store.token}`
-      // },
-      data: {
-        title,
-        contents,
-        boardCategory,
-      }
-    });
-  }
+  const updatePost = async (boardId, formData) => {
+    try {
+      const response = await axios.post(`/api/board/${boardId}/update`, formData, {
+        headers: {'Content-Type': 'multipart/form-data'},
+      });
+      console.log("게시글이 성공적으로 업데이트 되었습니다.", response.data);
+    } catch (err) {
+      console.error("게시글 업데이트 중 에러 발생", err);
+    }
+  };
 
   const getCommentList = function (boardId) {
     axios({
@@ -132,7 +128,7 @@ export const usePostStore = defineStore('post', () => {
     detailPost,
     getDetailPost,
     deletePost,
-    putPost,
+    updatePost,
     getCommentList,
     commentList,
     createComment,

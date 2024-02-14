@@ -239,7 +239,7 @@ async function initMap() {
         // 이미지가 있을 경우 이미지 추가
         if (info.image) {
           const image = document.createElement('img');
-          let fullImgUrl = `http://localhost:8080/images/${info.image}`;
+          let fullImgUrl = `https://donghotest.s3.ap-northeast-2.amazonaws.com/${info.image}`;
           image.src = fullImgUrl;
           // image.src = info.image;
           image.style.cssText = 'max-width: 100%; height: auto; margin-top: 5px;';
@@ -413,7 +413,7 @@ function createOverlay(markerData, marker) {
   // 사진 값 넣기
   if (markerData.image) {
     const image = document.createElement('img');
-    let fullImgUrl = `http://localhost:8080/images/${markerData.image}`;
+    let fullImgUrl = `https://donghotest.s3.ap-northeast-2.amazonaws.com/${markerData.image}`;
     image.src = fullImgUrl;
     image.style.cssText = 'width: 90%; height: 350px; object-fit: cover; margin-top: 10px; margin: auto;' +
         '    display: block;';
