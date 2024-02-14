@@ -15,6 +15,7 @@ import PostDetailView from '@/views/PostDetailView.vue';
 import PostDetailUpdateView from '@/views/PostDetailUpdate.vue';
 import KakaoMapView from '@/views/KakaoMapView.vue';
 import CommentCreateView from '@/views/CommentCreateView.vue';
+import MatchingView from "@/views/MatchingView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -104,6 +105,12 @@ const router = createRouter({
       path: '/comments',
       name: 'comments',
       component: CommentCreateView,
+    },
+    // 댓글 생성 뷰
+    {
+      path: '/matching',
+      name: 'matching',
+      component: MatchingView,
     },
   ],
 });
