@@ -15,7 +15,7 @@
           :latitude="latitude"
           :longitude="longitude"
           @marker-added="addNewMarkerToMap"/>
-      <button v-if="!isModalOpen" class="create-marker-btn" @click="openModalForCreatingMarker">마커 생성</button>
+
     </div>
     <DestinationModal
         v-if="isDestinationModalOpen"
@@ -26,13 +26,15 @@
     />
 
     <div class="modal-component">
-    <MarkerUpdateModal
-        v-if="isUpdateModalOpen"
-        :close="closeModal"
-        :latitude="latitude"
-        :longitude="longitude"
-        @marker-added="addNewMarkerToMap"/>
+      <MarkerUpdateModal
+          v-if="isUpdateModalOpen"
+          :close="closeModal"
+          :latitude="latitude"
+          :longitude="longitude"
+          @marker-added="addNewMarkerToMap"/>
     </div>
+    <img v-if="!isModalOpen" src="@/assets/images/plus.png" alt="Create marker" class="create-marker-img" @click="openModalForCreatingMarker" style="cursor: pointer;">
+    <!--    <button v-if="!isModalOpen" class="create-marker-btn" @click="openModalForCreatingMarker">마커 생성</button>-->
 
   </div>
 
@@ -156,187 +158,188 @@ async function initMap() {
   }
 
 
-    const position = await getCurrentLocation();
-    const userLatitude = position.coords.latitude;
-    const userLongitude = position.coords.longitude;
+  const position = await getCurrentLocation();
+  const userLatitude = position.coords.latitude;
+  const userLongitude = position.coords.longitude;
 
 
-    const options = {
-      center: new kakao.maps.LatLng(userLatitude, userLongitude), // 초기 맵 그리는 위치
-      level: 5
-    };
+  const options = {
+    center: new kakao.maps.LatLng(userLatitude, userLongitude), // 초기 맵 그리는 위치
+    level: 5
+  };
 
-    map = new kakao.maps.Map(container, options);
-    ps = new kakao.maps.services.Places();
+  map = new kakao.maps.Map(container, options);
+  ps = new kakao.maps.services.Places();
 
-    clusterer = new kakao.maps.MarkerClusterer({
-      map: map,
-      averageCenter: true,
-      minLevel: 1,
-      disableClickZoom: true,
+  clusterer = new kakao.maps.MarkerClusterer({
+    map: map,
+    averageCenter: true,
+    minLevel: 1,
+    disableClickZoom: true,
 
-      calculator: [3, 5, 8], // 클러스터의 크기 구분 값 (미만), 각 사이값마다 설정된 text나 style이 적용된다
-      texts: getTexts, // texts는 ['삐약', '꼬꼬', '꼬끼오', '치멘'] 이렇게 배열로도 설정할 수 있다
-      styles: [{ // calculator 각 사이 값 마다 적용될 스타일을 지정한다
+    calculator: [3, 5, 8], // 클러스터의 크기 구분 값 (미만), 각 사이값마다 설정된 text나 style이 적용된다
+    texts: getTexts, // texts는 ['삐약', '꼬꼬', '꼬끼오', '치멘'] 이렇게 배열로도 설정할 수 있다
+    styles: [{ // calculator 각 사이 값 마다 적용될 스타일을 지정한다
+      width: '50px', height: '50px',
+      background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker1.png") no-repeat center center',
+      borderRadius: '15px',
+      backgroundSize: 'contain',
+
+    },
+      {
         width: '50px', height: '50px',
-        background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker1.png") no-repeat center center',
+        background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker2.png") no-repeat center center',
         borderRadius: '15px',
         backgroundSize: 'contain',
-
       },
-        {
-          width: '50px', height: '50px',
-          background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker2.png") no-repeat center center',
-          borderRadius: '15px',
-          backgroundSize: 'contain',
-        },
-        {
-          width: '50px', height: '50px',
-          background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker3.png") no-repeat center center',
-          borderRadius: '15px',
-          backgroundSize: 'contain',
-        },
-        {
-          width: '50px', height: '50px',
-          background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker4.png") no-repeat center center',
-          borderRadius: '15px',
-          backgroundSize: 'contain',
-        }
-      ]
+      {
+        width: '50px', height: '50px',
+        background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker3.png") no-repeat center center',
+        borderRadius: '15px',
+        backgroundSize: 'contain',
+      },
+      {
+        width: '50px', height: '50px',
+        background: 'url("https://donghotest.s3.ap-northeast-2.amazonaws.com/marker4.png") no-repeat center center',
+        borderRadius: '15px',
+        backgroundSize: 'contain',
+      }
+    ]
 
-      // 클러스터러에 대한 추가 옵션을 여기에 추가
-    });
+    // 클러스터러에 대한 추가 옵션을 여기에 추가
+  });
 
-    // 클러스터 오버레이 만드는 함수 // 클러스터된 마커들의 데이터를 합쳐주는 함수
-    // markerInfos 받아오기
-    function createClusterInfoWindowContent(markerInfos, infoWindow, map) {
+  // 클러스터 오버레이 만드는 함수 // 클러스터된 마커들의 데이터를 합쳐주는 함수
+  // markerInfos 받아오기
+  function createClusterInfoWindowContent(markerInfos, infoWindow, map) {
 
 
-      const infoContentDiv = document.createElement('div');
-      infoContentDiv.style.cssText = "width: 250px; height: 400px; overflow-y: auto; position: relative;";
-      // for문처럼 각각 데이터 돌면서 각 마커마다 찍어주는거
-      // 변수 정의 하는 느낌 각각 돌면서
-      markerInfos.forEach(info => {
-        const markerInfoDiv = document.createElement('div');
-        markerInfoDiv.style.marginBottom = '10px'; // 여백 추가
+    const infoContentDiv = document.createElement('div');
+    infoContentDiv.style.cssText = "width: 400px; height: 400px; overflow-y: auto; position: relative; ";
+    // for문처럼 각각 데이터 돌면서 각 마커마다 찍어주는거
+    // 변수 정의 하는 느낌 각각 돌면서
+    markerInfos.forEach(info => {
+      const markerInfoDiv = document.createElement('div');
+      markerInfoDiv.style.marginBottom = '10px'; // 여백 추가
+      markerInfoDiv.style.cssText = "margin-top: 30px; background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);";
 
-        // 제목
-        const titleDiv = document.createElement('div');
-        titleDiv.textContent = `${info.title}`;
-        titleDiv.style.fontWeight = '600';
-        markerInfoDiv.appendChild(titleDiv);
-
-        // 내용
-        const contentDiv = document.createElement('div');
-        contentDiv.textContent = `${info.content}`;
-        markerInfoDiv.appendChild(contentDiv);
-
-        // 위도, 경도
-        const latLngDiv = document.createElement('div');
-        latLngDiv.textContent = `Latitude: ${info.latitude}, Longitude: ${info.longitude}`;
-        markerInfoDiv.appendChild(latLngDiv);
-
-        // 이미지가 있을 경우 이미지 추가
-        if (info.image) {
-          const image = document.createElement('img');
-          let fullImgUrl = `https://donghotest.s3.ap-northeast-2.amazonaws.com/${info.image}`;
-          image.src = fullImgUrl;
-          // image.src = info.image;
-          image.style.cssText = 'max-width: 100%; height: auto; margin-top: 5px;';
-          markerInfoDiv.appendChild(image);
-        }
-
-        const commentsDiv = document.createElement('div');
-        commentsDiv.className = 'comments';
-        console.log('클러스터', info)
-        loadComments(info, commentsDiv);
-        markerInfoDiv.appendChild(commentsDiv);
+      // 제목
+      const titleDiv = document.createElement('div');
+      titleDiv.textContent = `${info.title}`;
+      titleDiv.style.cssText = "font-weight: 600; text-align: center; margin-top: 5px; margin-bottom: 10px; ";
+      markerInfoDiv.appendChild(titleDiv);
 
 
-        // 클러스터 생성에 참조된 마커 정보에 클릭 이벤트 추가
-        // 해당 마커 정보에 클릭 시 현재 오버레이를 닫고
-        // 해당 마커의 오버레이를 출력
-
-        markerInfoDiv.addEventListener('click', () => {
-
-          if (currentOpenOverlay) {
-            currentOpenOverlay.close();
-            currentOpenOverlay = null;
-          }
 
 
-          infoWindow.close(); // 클러스터의 인포윈도우를 닫습니다.
-
-
-          const moveLatLon = new kakao.maps.LatLng(info.latitude, info.longitude);
-
-          const level = 3
-
-          // 지도를 1레벨 내립니다 (지도가 확대됩니다)
-          map.setLevel(level);
-          map.panTo(moveLatLon);
-
-
-          const overlay = createOverlay(info, info.marker); // 마커의 오버레이를 생성합니다.
-          overlay.open(map, info.marker); // 마커의 오버레이를 엽니다.
-          currentOpenOverlay = overlay;
-        });
-
-        infoContentDiv.appendChild(markerInfoDiv);
-      });
-
-      // 닫기 버튼
-      const closeButton = document.createElement('button');
-      closeButton.textContent = 'X';
-      closeButton.className = 'overlay-close-btn';
-      closeButton.style.cssText = 'position: absolute; top: 5px; right: 5px;';
-      closeButton.addEventListener('click', () => {
-        infoWindow.close();
-      });
-      infoContentDiv.appendChild(closeButton);
-
-      return infoContentDiv;
-    }
-
-    // 클러스터 클릭 이벤트 핸들러에서 마커 정보에 이미지 정보를 포함시키는 부분
-    kakao.maps.event.addListener(clusterer, 'clusterclick', function (cluster) {
-      // 클러스터에 포함된 마커들의 정보를 가져옵니다.
-      const markers = cluster.getMarkers();
-      const markerInfos = markers.map(marker => {
-        return {
-          id: marker.customInfo.id,
-          title: marker.customInfo.title,
-          content: marker.customInfo.content,
-          latitude: marker.customInfo.latitude,
-          longitude: marker.customInfo.longitude,
-          image: marker.customInfo.image, // 이미지 정보 추가
-          comments: marker.customInfo.comments,
-          marker: marker
-        };
-      });
-
-      if (currentOpenOverlay) {
-        currentOpenOverlay.close();
-        currentOpenOverlay = null;
+      // 이미지가 있을 경우 이미지 추가
+      if (info.image) {
+        const image = document.createElement('img');
+        let fullImgUrl = `https://donghotest.s3.ap-northeast-2.amazonaws.com/${info.image}`;
+        image.src = fullImgUrl;
+        // image.src = info.image;
+        image.style.cssText = 'width: 90%; height: 350px; object-fit: cover; margin-top: 10px; margin: auto;' +
+            '    display: block;';
+        markerInfoDiv.appendChild(image);
       }
 
-      // 인포윈도우 생성 및 표시
-      const infoWindow = new kakao.maps.InfoWindow({
-        position: cluster.getCenter()
+      // 내용
+      const contentDiv = document.createElement('div');
+      contentDiv.textContent = `${info.content}`;
+      contentDiv.style.cssText =  'margin: auto; width: 90%; margin-top: 20px;';
+      markerInfoDiv.appendChild(contentDiv);
+
+      // const commentsDiv = document.createElement('div');
+      // commentsDiv.className = 'comments';
+      // console.log('클러스터', info)
+      // loadComments(info, commentsDiv);
+      // markerInfoDiv.appendChild(commentsDiv);
+
+
+      // 클러스터 생성에 참조된 마커 정보에 클릭 이벤트 추가
+      // 해당 마커 정보에 클릭 시 현재 오버레이를 닫고
+      // 해당 마커의 오버레이를 출력
+
+      markerInfoDiv.addEventListener('click', () => {
+
+        if (currentOpenOverlay) {
+          currentOpenOverlay.close();
+          currentOpenOverlay = null;
+        }
+
+
+        infoWindow.close(); // 클러스터의 인포윈도우를 닫습니다.
+
+
+        const moveLatLon = new kakao.maps.LatLng(info.latitude, info.longitude);
+
+        const level = 3
+
+        // 지도를 1레벨 내립니다 (지도가 확대됩니다)
+        map.setLevel(level);
+        map.panTo(moveLatLon);
+
+
+        const overlay = createOverlay(info, info.marker); // 마커의 오버레이를 생성합니다.
+        overlay.open(map, info.marker); // 마커의 오버레이를 엽니다.
+        currentOpenOverlay = overlay;
       });
-      const infoWindowContent = createClusterInfoWindowContent(markerInfos, infoWindow, map);
-      infoWindow.setContent(infoWindowContent);
-      infoWindow.open(map);
-      currentOpenOverlay = infoWindow;
+
+      infoContentDiv.appendChild(markerInfoDiv);
     });
 
-    // 클릭 이벤트 리스너 추가
-    // .addListener() = > 첫 번째 인수 - 대상 개체(map) , 두 번째 인수 - 이벤트 유형('클릭'), 세 번째 인수 - 콜백 함수:지도를 클릭할 때 호출되는 함수
-    // function(mouseEvent) ->마우스 이벤트 변수를 받아서 현재의 위치를 객체에 담음 - 즉 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출
-    kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
-      onMapClick(mouseEvent);
-      DestinationClick(mouseEvent);
+    // 닫기 버튼
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'X';
+    closeButton.className = 'overlay-close-btn';
+    closeButton.style.cssText = 'position: absolute; top: 5px; right: 5px;';
+    closeButton.addEventListener('click', () => {
+      infoWindow.close();
     });
+    infoContentDiv.appendChild(closeButton);
+
+    return infoContentDiv;
+  }
+
+  // 클러스터 클릭 이벤트 핸들러에서 마커 정보에 이미지 정보를 포함시키는 부분
+  kakao.maps.event.addListener(clusterer, 'clusterclick', function (cluster) {
+    // 클러스터에 포함된 마커들의 정보를 가져옵니다.
+    const markers = cluster.getMarkers();
+    const markerInfos = markers.map(marker => {
+      return {
+        id: marker.customInfo.id,
+        title: marker.customInfo.title,
+        content: marker.customInfo.content,
+        latitude: marker.customInfo.latitude,
+        longitude: marker.customInfo.longitude,
+        image: marker.customInfo.image, // 이미지 정보 추가
+        comments: marker.customInfo.comments,
+        marker: marker
+      };
+    });
+
+    if (currentOpenOverlay) {
+      currentOpenOverlay.close();
+      currentOpenOverlay = null;
+    }
+
+    // 인포윈도우 생성 및 표시
+    const infoWindow = new kakao.maps.InfoWindow({
+      position: cluster.getCenter()
+    });
+    const infoWindowContent = createClusterInfoWindowContent(markerInfos, infoWindow, map);
+    infoWindow.setContent(infoWindowContent);
+    infoWindow.open(map);
+    currentOpenOverlay = infoWindow;
+  });
+
+  // 클릭 이벤트 리스너 추가
+  // .addListener() = > 첫 번째 인수 - 대상 개체(map) , 두 번째 인수 - 이벤트 유형('클릭'), 세 번째 인수 - 콜백 함수:지도를 클릭할 때 호출되는 함수
+  // function(mouseEvent) ->마우스 이벤트 변수를 받아서 현재의 위치를 객체에 담음 - 즉 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출
+  kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+    onMapClick(mouseEvent);
+    DestinationClick(mouseEvent);
+  });
 
 }
 
@@ -413,6 +416,7 @@ function createOverlay(markerData, marker) {
   // 사진 값 넣기
   if (markerData.image) {
     const image = document.createElement('img');
+
     let fullImgUrl = `https://donghotest.s3.ap-northeast-2.amazonaws.com/${markerData.image}`;
     image.src = fullImgUrl;
     image.style.cssText = 'width: 90%; height: 350px; object-fit: cover; margin-top: 10px; margin: auto;' +
@@ -548,24 +552,108 @@ async function getCarDirection(map, postLat, postLng, markerLat, markerLng) {
       });
       return path;
     }, []);
-
+    console.log('경로',linePath)
     if (currentPolyline) {
       currentPolyline.setMap(null); // 이전 폴리라인 제거
     }
     console.log(linePath)
+
+
+    // 경로 추적 테스트
+
+    //////////////
     currentPolyline = new kakao.maps.Polyline({
       path: linePath,
+      strokeColor: '#d91349', // 선의 색깔입니다
+      strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+      strokeStyle: 'dashed', // 선의 스타일 입니다
+      fillColor: '#CFE7FF', // 채우기 색깔입니다
+      fillOpacity: 0.7 , // 채우기 불투명도 입니다
       strokeWeight: 5,
-      strokeColor: '#000003',
-      strokeOpacity: 0.7,
-      strokeStyle: 'solid'
     });
 
+
+
     currentPolyline.setMap(map);
+
+    trackAndDrawRoute(linePath);
   } catch (error) {
     console.error('Error in getCarDirection:', error);
   }
 }
+
+
+
+
+
+/////////
+
+
+// 경로 추적 및 그리기 함수를 외부로 이동
+async function trackAndDrawRoute(linePath) {
+  let passedPath = []; // 사용자가 지나온 경로를 저장할 배열
+
+  navigator.geolocation.watchPosition(async (position) => {
+    const { latitude, longitude } = position.coords;
+    const userLocation = new kakao.maps.LatLng(latitude, longitude);
+
+
+
+    // linePath는 getCarDirection에서 미리 계산된 경로의 좌표 배열
+    for (let i = 0; i < linePath.length; i++) {
+      const pathPoint = linePath[i];
+      console.log('i',i)
+      console.log('path',linePath.length)
+      const distance = calculateDistance(userLocation.La, userLocation.Ma, pathPoint.La, pathPoint.Ma);
+      console.log('거리테스트', userLocation.La, userLocation.Ma, pathPoint.La, pathPoint.Ma)
+      console.log('실거리', distance)
+      if (distance <= 1000) {
+        // 거리가 50m 이내일 경우, passedPath에 추가
+        passedPath.push(pathPoint);
+        break; // 가장 가까운 포인트를 찾으면 루프 종료
+      }
+    }
+
+    // passedPath를 사용하여 폴리라인 다시 그리기
+    if (window.currentPolyline) {
+      window.currentPolyline.setMap(null); // 이전 폴리라인 제거
+    }
+
+    window.currentPolyline = new kakao.maps.Polyline({
+      path: passedPath, // 사용자가 지나온 경로
+      strokeColor: '#0e0e0e', // 선의 색깔
+      strokeOpacity: 1, // 선의 불투명도
+      strokeStyle: 'solid', // 선의 스타일
+      strokeWeight: 8, // 선의 두께
+    });
+
+    window.currentPolyline.setMap(map);
+  }, error => {
+    console.error("Error watching position:", error);
+  }, {
+    enableHighAccuracy: true,
+    maximumAge: 10000,
+    timeout: 5000
+  });
+}
+
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  var R = 6371e3; // metres
+  var φ1 = lat1 * Math.PI / 180; // φ, λ in radians
+  var φ2 = lat2 * Math.PI / 180;
+  var Δφ = (lat2 - lat1) * Math.PI / 180;
+  var Δλ = (lon2 - lon1) * Math.PI / 180;
+
+  var a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) *
+      Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  var distance = R * c; // in metres
+  return distance;
+}
+
 
 
 //-----------------------
@@ -1288,7 +1376,7 @@ async function refreshOverlay(markerData, marker) {
 
 .modal-component {
   position: absolute;
-  top: 71%; /* adjust as necessary */
+  top: 75%; /* adjust as necessary */
   left: 50%; /* adjust as necessary */
   transform: translate(-50%, -50%); /* centers the modal */
   z-index: 10; /* ensure it's above other content */
@@ -1296,20 +1384,32 @@ async function refreshOverlay(markerData, marker) {
 }
 
 .create-marker-btn {
-  position: absolute;
+  position: fixed;
   width: 90px;
   height: 30px;
-  margin-top: 150px;
-  border: none; /* Remove border */
+  right: 30px;
+  bottom: 50px;
+  border: none;
   background-color: rgb(0, 123, 255);
   border-radius: 15px;
   color: white;
   font-size: small;
-  left: 50%; /* Adjust as necessary */
-  z-index: 10; /* Ensure it's above other content */
-  box-shadow: none; /* Remove box shadow */
-  -webkit-appearance: none; /* Reset default styling for buttons in WebKit browsers */
-  appearance: none; /* Reset default styling for buttons in modern browsers */
+  z-index: 10;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.create-marker-img {
+  position: fixed;
+  width: 60px; /* You might want to adjust this based on your image */
+  height: 60px; /* Adjust height as well to maintain aspect ratio if needed */
+  right: 30px;
+  bottom: 50px;
+  border-radius: 15px;
+  z-index: 10;
+  box-shadow: none;
+  cursor: pointer; /* To indicate it's clickable */
 }
 
 
