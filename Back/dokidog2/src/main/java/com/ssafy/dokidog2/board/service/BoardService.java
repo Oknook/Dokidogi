@@ -167,13 +167,16 @@ public class BoardService {
     }
 
     public List<BoardDTO> findByCategory(String category) {
+        System.out.println("category11" + category);
         BoardCategory boardCategory = BoardCategory.of(category);
+        System.out.println("cate22" + boardCategory);
         if (boardCategory == null) {
             // 카테고리가 enum 값과 일치하지 않는 경우 처리
             // 예를 들어, 빈 리스트를 반환하거나 예외를 발생시킴
             return new ArrayList<>();
         }
         List<BoardEntity> boardEntities = boardRepository.findByBoardCategory(boardCategory);
+        System.out.println("cate33" + boardEntities);
         List<BoardDTO> boardDTOList = new ArrayList<>();
         for (BoardEntity boardEntity : boardEntities) {
             boardDTOList.add(BoardDTO.toBoardDTO(boardEntity));
