@@ -22,16 +22,20 @@ public class MarkerFileEntity extends BaseEntity {
     @Column
     private String markerStoredFileName;
 
+    @Column
+    private String imgUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "marker_id")
     private MarkerEntity markerEntity;
 
     public static MarkerFileEntity toMarkerFileEntity(MarkerEntity markerEntity,
-        String markerOriginalFileName, String markerStoredFileName) {
+        String markerOriginalFileName, String markerStoredFileName, String imgUrl) {
         MarkerFileEntity markerFileEntity = new MarkerFileEntity();
         markerFileEntity.setMarkerOriginalFileName(markerOriginalFileName);
         markerFileEntity.setMarkerStoredFileName(markerStoredFileName);
         markerFileEntity.setMarkerEntity(markerEntity);
+        markerFileEntity.setImgUrl(imgUrl);
         return markerFileEntity;
     }
 }

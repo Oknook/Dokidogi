@@ -4,6 +4,7 @@ package com.ssafy.dokidog2.board.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.dokidog2.board.entity.BoardCategory;
 import com.ssafy.dokidog2.board.entity.BoardEntity;
+import com.ssafy.dokidog2.board.entity.BoardFileEntity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import java.time.LocalDateTime;
@@ -62,38 +63,25 @@ public class BoardDTO {
         BoardDTO boardDTO = new BoardDTO();
         boardDTO.setBoardId(boardEntity.getBoardId());
         boardDTO.setBoardWriter(boardEntity.getBoardWriter());
-        boardDTO.setBoardPass(boardEntity.getBoardPass());
         boardDTO.setTitle(boardEntity.getTitle());
         boardDTO.setContents(boardEntity.getContents());
         boardDTO.setBoardHits(boardEntity.getBoardHits());
         boardDTO.setBoardCreatedTime(boardEntity.getCreatedTime());
         boardDTO.setBoardUpdatedTime(boardEntity.getUpdatedTime());
-        // likes
         boardDTO.setLikes(boardEntity.getLikes());
-        // category
         boardDTO.setBoardCategory(boardEntity.getBoardCategory());
 
-        if (boardEntity.getFileAttached() == 0) {
-            boardDTO.setFileAttached(boardEntity.getFileAttached()); // 0 파일첨부 없는 경우
+        // 파일 리스트가 비어있지 않은 경우에만 파일 정보 설정
+        if (!boardEntity.getBoardFileEntityList().isEmpty()) {
+            BoardFileEntity boardFileEntity = boardEntity.getBoardFileEntityList().get(0);
+            boardDTO.setOriginalFileName(boardFileEntity.getOriginalFileName());
+            boardDTO.setStoredFileName(boardFileEntity.getStoredFileName());
+            boardDTO.setImgUrl(boardFileEntity.getImgUrl());
+            boardDTO.setFileAttached(1);
         } else {
-            List<String> originalFileNameList = new ArrayList<>();
-            List<String> storedFileNameList = new ArrayList<>();
-            boardDTO.setFileAttached(boardEntity.getFileAttached()); // 1 파일 첨부 있는 경우
-
-//            // 첨부파일이 1개인 경우라 0번 인덱스 여러개면 for문 돌리기
-//            for (BoardFileEntity boardFileEntity: boardEntity.getBoardFileEntityList()) {
-//                originalFileNameList.add(boardFileEntity.getOriginalFileName());
-//                storedFileNameList.add(boardFileEntity.getStoredFileName());
-//            }
-//            boardDTO.setOriginalFileName(originalFileNameList);
-//            boardDTO.setStoredFileName(storedFileNameList);
-            boardDTO.setOriginalFileName(
-                boardEntity.getBoardFileEntityList().get(0).getOriginalFileName());
-            boardDTO.setStoredFileName(
-                boardEntity.getBoardFileEntityList().get(0).getStoredFileName());
-//            boardDTO.setImgUrl(boardEntity.get);
-
+            boardDTO.setFileAttached(0);
         }
+
         return boardDTO;
     }
 }

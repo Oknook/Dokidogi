@@ -1,6 +1,10 @@
 package com.ssafy.dokidog2.map.service;
 
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.dokidog2.map.dto.MarkerDTO;
 import com.ssafy.dokidog2.map.entity.MarkerEntity;
 import com.ssafy.dokidog2.map.entity.MarkerFileEntity;
@@ -23,42 +27,45 @@ public class MarkerService {
     private final MarkerRepository markerRepository;
     private final MarkerFileRepository markerFileRepository;
 
+    private final AmazonS3 amazonS3Client;
+
+    private String bucketName = "donghotest";
+
+    public String uploadFileToS3(MultipartFile file, String storedFileName) throws IOException {
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        amazonS3Client.putObject(new PutObjectRequest(bucketName, storedFileName, file.getInputStream(), metadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead)); // 파일을 public-read 권한으로 업로드
+
+        return amazonS3Client.getUrl(bucketName, storedFileName).toString(); // 업로드된 파일의 URL 반환
+    }
+
     public MarkerDTO markerSave(MarkerDTO markerDTO) throws IOException {
         MarkerEntity savedMarkerEntity; // Declare a variable to hold the saved entity
 
         if (markerDTO.getMarkerBoardFile() != null && !markerDTO.getMarkerBoardFile().isEmpty()) {
             // If there is a file attachment
             MultipartFile markerBoardFile = markerDTO.getMarkerBoardFile();
-
             String markerOriginalFileName = markerBoardFile.getOriginalFilename();
             String markerStoredFileName = System.currentTimeMillis() + "_" + markerOriginalFileName;
-            String directoryPath = "C:/Users/SSAFY/imgtest/"; // Directory path to save
-//            String directoryPath = "C:/Users/zxcas/imgtest/"; // Directory path to save
-            File directory = new File(directoryPath);
-            if (!directory.exists()) {
-                directory.mkdirs(); // Create directory if it does not exist
-            }
-            File targetFile = new File(directoryPath + markerStoredFileName);
-            try {
-                markerBoardFile.transferTo(targetFile); // save file
-            } catch (IOException e) {
-                e.printStackTrace();
-                // Error handling logic (logging exceptions, notifying users of errors, etc.)
-            }
 
-            // set dto file name
+            // S3에 파일 업로드하고 URL 반환
+            String imgUrl = uploadFileToS3(markerBoardFile, markerStoredFileName);
+
+            // 파일 정보와 URL 설정
             markerDTO.setMarkerOriginalFileName(markerOriginalFileName);
             markerDTO.setMarkerStoredFileName(markerStoredFileName);
+            markerDTO.setImgUrl(imgUrl);
 
-            // Save entity with file
+            // 엔티티 저장 로직
             MarkerEntity markerEntity = MarkerEntity.toSaveFileMarkerEntity(markerDTO);
             savedMarkerEntity = markerRepository.save(markerEntity); // Save and get saved entity
 
             MarkerFileEntity markerFileEntity = MarkerFileEntity.toMarkerFileEntity(
-                savedMarkerEntity, markerOriginalFileName, markerStoredFileName);
+                savedMarkerEntity, markerOriginalFileName, markerStoredFileName, imgUrl);
             markerFileRepository.save(markerFileEntity);
         } else {
-            // No attachments
+            // 첨부 파일 없음
             MarkerEntity markerEntity = MarkerEntity.toSaveMarkerEntity(markerDTO);
             savedMarkerEntity = markerRepository.save(markerEntity); // Save and get saved entity
         }
@@ -90,45 +97,42 @@ public class MarkerService {
             return null;
         }
     }
+    // 파일을 S3에서 삭제하는 메서드를 추가합니다.
+    public void deleteFileFromS3(String storedFileName) {
+        if (amazonS3Client.doesObjectExist(bucketName, storedFileName)) {
+            amazonS3Client.deleteObject(bucketName, storedFileName);
+        }
+    }
 
     // MarkerService.java에 마커 업데이트 로직 추가
-    public MarkerDTO updateMarker(Long markerId, MarkerDTO markerDTO, MultipartFile file)
+    public MarkerDTO updateMarker(Long markerId, MarkerDTO markerDTO)
         throws IOException {
         MarkerEntity markerEntity = markerRepository.findById(markerId)
             .orElseThrow(
                 () -> new IllegalArgumentException("Marker not found with ID: " + markerId));
 
-        // 기존 파일 처리 로직 (기존 파일이 있다면 삭제)
+        // 새 이미지 파일 있는 경우 처리
         if (!markerEntity.getMarkerFileEntityList().isEmpty()) {
-            MarkerFileEntity existingFile = markerEntity.getMarkerFileEntityList()
-                .get(0); // 예시는 단일 파일을 가정
-            File oldFile = new File("your_storage_path" + existingFile.getMarkerStoredFileName());
-            if (oldFile.exists()) {
-                oldFile.delete(); // 실제 파일 삭제
-                markerFileRepository.delete(existingFile); // DB에서 파일 엔티티 삭제
-                markerEntity.getMarkerFileEntityList().clear(); // 엔티티 리스트에서 제거
-            }
-        }
+            markerEntity.getMarkerFileEntityList().forEach(fileEntity -> {
+                deleteFileFromS3(fileEntity.getMarkerStoredFileName()); // S3에서 파일 삭제
+                markerFileRepository.delete(fileEntity); // DB에서 파일 정보 삭제
+            });
+            markerEntity.getMarkerFileEntityList().clear(); // 엔티티 내 파일 리스트 클리어
 
-        // 새 파일 처리
-        if (file != null && !file.isEmpty()) {
-            String originalFileName = file.getOriginalFilename();
-            String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
-            File targetFile = new File("your_storage_path" + storedFileName);
-            file.transferTo(targetFile);
+            MultipartFile newImageFile = markerDTO.getMarkerBoardFile();
+            String originalFilename = newImageFile.getOriginalFilename();
+            String storedFileName = System.currentTimeMillis() + "_" + originalFilename;
 
-            // 파일 엔티티 생성 및 저장
+            // S3에 파일 업로드 및 URL 저장
+            String imgUrl = uploadFileToS3(newImageFile, storedFileName);
+
+            // 파일 정보 엔티티 생성 및 저장
             MarkerFileEntity newFileEntity = new MarkerFileEntity();
-            newFileEntity.setMarkerOriginalFileName(originalFileName);
+            newFileEntity.setMarkerOriginalFileName(originalFilename);
             newFileEntity.setMarkerStoredFileName(storedFileName);
-            newFileEntity.setMarkerEntity(markerEntity); // 관계 설정
+            newFileEntity.setImgUrl(imgUrl); // S3 URL 설정
+            newFileEntity.setMarkerEntity(markerEntity);
             markerFileRepository.save(newFileEntity);
-
-            // 엔티티 리스트에 추가
-            markerEntity.getMarkerFileEntityList().add(newFileEntity);
-            markerEntity.setMarkerFileAttached(1); // 파일 첨부 여부 업데이트
-        } else {
-            markerEntity.setMarkerFileAttached(0); // 파일 미첨부 상태로 업데이트
         }
 
         // 마커 정보 업데이트

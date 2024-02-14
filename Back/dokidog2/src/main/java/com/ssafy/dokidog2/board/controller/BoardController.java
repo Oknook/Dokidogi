@@ -53,11 +53,14 @@ public class BoardController {
 
     // 게시글 수정
     @PostMapping("/{boardId}/update")
-    public ResponseEntity<BoardDTO> update(@PathVariable Long boardId,
-        @RequestBody BoardDTO boardDTO) {
-        boardDTO.setBoardId(boardId); // 이 부분 추가
-        BoardDTO updatedBoard = boardService.update(boardDTO);
-        return ResponseEntity.ok(updatedBoard);
+    public ResponseEntity<?> update(@PathVariable Long boardId, @ModelAttribute BoardDTO boardDTO) {
+        try {
+            BoardDTO updatedBoard = boardService.update(boardDTO, boardId); // 수정된 BoardService.update 메서드 호출 변경
+            return ResponseEntity.ok(updatedBoard);
+        } catch (IOException e) {
+            log.error("File upload error during board update: ", e);
+            return ResponseEntity.internalServerError().body("File upload error during board update");
+        }
     }
 
     // 게시글 삭제
