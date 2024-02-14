@@ -11,7 +11,7 @@
 export default {
   data() {
     return {
-      googleAuthUrl: 'https://accounts.google.com/o/oauth2/v2/auth?client_id=25526902806-o0qoq0iel49ca0sev5vrptq86i6kdmed.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/callback/google&response_type=code&scope=profile',
+      googleAuthUrl: 'https://accounts.google.com/o/oauth2/v2/auth?client_id=25526902806-o0qoq0iel49ca0sev5vrptq86i6kdmed.apps.googleusercontent.com&redirect_uri=http://i10b202.p.ssafy.io/api/callback/google&response_type=code&scope=profile',
     };
   },
 };

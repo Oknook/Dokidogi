@@ -17,7 +17,7 @@ env 파일에서 카카오 인증을 위한 URL을 불러와서 a:href에 넣음
 export default {
   data() {
     return {
-      kakaoAuthUrl: `https://kauth.kakao.com/oauth/authorize?client_id=42b106f94eb8a895079519f464d951b1&redirect_uri=http://localhost:8080/api/callback/kakao&response_type=code`
+      kakaoAuthUrl: `https://kauth.kakao.com/oauth/authorize?client_id=42b106f94eb8a895079519f464d951b1&redirect_uri=http://i10b202.p.ssafy.io/api/callback/kakao&response_type=code`
     };
   },
 };
