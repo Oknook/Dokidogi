@@ -1,4 +1,4 @@
-package com.ssafy.dokidog2.user;
+package com.ssafy.dokidog2.user.Controller;
 
 import com.ssafy.dokidog2.user.dto.PetDTO;
 import com.ssafy.dokidog2.user.dto.PutPetDTO;

@@ -49,13 +49,13 @@ public class MatchController {
         return ResponseEntity.ok(filteredPets);
     }
 
-    @GetMapping("/api/test")
-    public String test () {
-        matchService.updateGenders();
-
-        System.out.println("!");
-        return "hi";
-    }
+//    @GetMapping("/api/test")
+//    public String test () {
+//        matchService.updateGenders();
+//
+//        System.out.println("!");
+//        return "hi";
+//    }
 
 
     // 재 탐색 >> 현재 gps 프론트에서 값 주고 위의 코드랑 똑같이 생각하면 될듯?

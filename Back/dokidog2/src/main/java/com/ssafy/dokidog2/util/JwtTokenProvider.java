@@ -21,20 +21,30 @@ public class JwtTokenProvider {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", Long.class);
     }
 
-    public String getAccessToken(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("accessToken", String.class);
+    public UserGrade getUserGrade(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("grade", UserGrade.class);
     }
 
     public Boolean isExpired(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createJwt(String userId, String accessToken) {
+    public String createAccessToken(long userId, UserGrade grade) {
         return Jwts.builder()
             .claim("userId", userId)
-            .claim("accessToken", accessToken)
+            .claim("grade", grade)
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis()+10800000))
+            .signWith(secretKey)
+            .compact();
+    }
+
+    public String createRefreshToken(long userId, UserGrade grade) {
+        return Jwts.builder()
+            .claim("userId", userId)
+            .claim("grade", grade)
+            .issuedAt(new Date(System.currentTimeMillis()))
+            .expiration(new Date(System.currentTimeMillis()+604800000))
             .signWith(secretKey)
             .compact();
     }

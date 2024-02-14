@@ -22,7 +22,6 @@ import org.json.simple.JSONObject;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 public class UserDTO {
     private Long userId;

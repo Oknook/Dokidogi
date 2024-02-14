@@ -18,7 +18,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
 // https://lealea.tistory.com/195

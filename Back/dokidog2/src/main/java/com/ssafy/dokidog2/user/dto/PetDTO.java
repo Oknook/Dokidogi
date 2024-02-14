@@ -12,7 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
 public class PetDTO {
