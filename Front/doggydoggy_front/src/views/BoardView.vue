@@ -37,7 +37,7 @@ import {useRouter} from 'vue-router';
 
 const store = usePostStore();
 const router = useRouter();
-const selectedCategory = ref('')
+const selectedCategory = ref('All')
 
 onMounted(() => {
   store.getPostList();
