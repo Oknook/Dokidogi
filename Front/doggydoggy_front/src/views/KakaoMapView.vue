@@ -608,6 +608,7 @@ function trackAndDrawRoute(linePath) {
 
       if (distance <= 200 && isUniquePoint(pathPoint)) {
         passedPath.push(pathPoint);
+        console.log('pass 위치추적',passedPath)
         break; // Stop the loop when the closest point is found
       }
     }
