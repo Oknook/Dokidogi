@@ -1,6 +1,5 @@
 package com.ssafy.dokidog2.user.service;
 
-import com.ssafy.dokidog2.user.dto.SocialDTO;
 import com.ssafy.dokidog2.user.entity.User;
 import com.ssafy.dokidog2.user.repository.UserRepository;
 import com.ssafy.dokidog2.util.JwtTokenProvider;
@@ -111,6 +110,7 @@ public class NaverService {
         String name = String.valueOf(account.get("name"));
 
         Long checkId = userRepository.findByCompanyIdAndCompanyName(id, "naver");
+        long time = System.currentTimeMillis();
         if (checkId == null) {
             User user = new User();
             user.setCompanyId(id);
@@ -121,13 +121,13 @@ public class NaverService {
 
             long userId = savedUser.getUserId();
             UserGrade grade = savedUser.getGrade();
-            return jwtTokenProvider.createAccessToken(userId, grade);
+            return jwtTokenProvider.createAccessToken(userId, grade, time);
         }
         else {
             User user = userRepository.findByUserId(checkId);
             long userId = user.getUserId();
             UserGrade grade = user.getGrade();
-            return jwtTokenProvider.createAccessToken(userId, grade);
+            return jwtTokenProvider.createAccessToken(userId, grade, time);
         }
     }
 
