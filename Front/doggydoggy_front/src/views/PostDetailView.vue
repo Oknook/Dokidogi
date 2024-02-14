@@ -66,7 +66,7 @@ const store2 = useCommentStore()
 const fullImgUrl = computed(() => {
   // console.log(store.detailPost.storedFileName)
   if (store.detailPost.storedFileName) {
-    return `http://localhost:8080/images/${store.detailPost.storedFileName}`;
+    return `https://donghotest.s3.ap-northeast-2.amazonaws.com/${store.detailPost.storedFileName}`;
   }
   return ''; // 이미지 URL이 없는 경우 빈 문자열 반환
 });
@@ -83,23 +83,23 @@ onMounted(() => {
 
 const createComment = () => {
   store.createComment(route.params.boardId, {commentContents: commentContents.value})
-  .then(() => {
-    commentContents.value = '';
-  })
-  .catch(err => {
-    console.error('Error creating comment:', err);
-  });
+      .then(() => {
+        commentContents.value = '';
+      })
+      .catch(err => {
+        console.error('Error creating comment:', err);
+      });
 };
 
 const deleteComment = (boardId, commentId) => {
   store.deleteComment(boardId, commentId)
-  .then(() => {
-    console.log("Deleting comment:", boardId, commentId)
-    store.getCommentList(boardId);
-  })
-  .catch(err => {
-    console.error('Error deleting comment:', err);
-  });
+      .then(() => {
+        console.log("Deleting comment:", boardId, commentId)
+        store.getCommentList(boardId);
+      })
+      .catch(err => {
+        console.error('Error deleting comment:', err);
+      });
 };
 
 onMounted(() => {
@@ -110,15 +110,15 @@ const deletePost = function (boardId) {
 
   // store.deletePost(store.detailPost.boardId)
   store.deletePost(boardId)
-  .then(() => {
-    // store.deletePost(route.params.boardId)
-    store.getPostList();
-    console.log(boardId)
-    router.push({name: 'communities'});
-  })
-  .catch(err => {
-    console.error('Error deleting post:', err);
-  })
+      .then(() => {
+        // store.deletePost(route.params.boardId)
+        store.getPostList();
+        console.log(boardId)
+        router.push({name: 'communities'});
+      })
+      .catch(err => {
+        console.error('Error deleting post:', err);
+      })
 }
 
 const updatePost = function () {
@@ -126,12 +126,12 @@ const updatePost = function () {
 }
 const putPost = function () {
   store.deletePost(store.detailPost.boardId)
-  .then(() => {
-    router.push({name: 'posts'});
-  })
-  .catch(err => {
-    console.error('Error deleting post:', err);
-  })
+      .then(() => {
+        router.push({name: 'posts'});
+      })
+      .catch(err => {
+        console.error('Error deleting post:', err);
+      })
 }
 
 const likePost = () => {
