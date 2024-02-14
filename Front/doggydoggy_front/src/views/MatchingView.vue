@@ -29,14 +29,36 @@
 
     <!-- API 응답 데이터 배열 표시 -->
     <div v-for="item in responseDataArray" :key="item.id">
-      <p>ID: {{ item.id }}</p>
-      <p>Name: {{ item.name }}</p>
-      <p>Info: {{ item.info }}</p>
-      <p>Kind: {{ item.kind }}</p>
-      <p>Size: {{ item.size }}</p>
-      <p>Sex: {{ item.sex }}</p>
-      <p>Neuter: {{ item.neuter }}</p>
-      <p>Age: {{ item.age }}</p>
+      <!--      <p>ID: {{ item.id }}</p>-->
+      <p>이름: {{ item.name }}</p>
+      <!--      <p>정보: {{ item.info }}</p>-->
+      <p>종류: {{
+          (item.kind.toLowerCase().trim() === 'maltese' ? '말티즈' :
+              item.kind.toLowerCase().trim() === 'poodle' ? '푸들' :
+                  item.kind.toLowerCase().trim() === 'mix' ? '믹스견' :
+                      item.kind.toLowerCase().trim() === 'pomeranian' ? '포메라니안' :
+                          item.kind.toLowerCase().trim() === 'jindo' ? '진돗개' :
+                              item.kind.toLowerCase().trim() === 'shihtzu' ? '시츄' :
+                                  item.kind.toLowerCase().trim() === 'bichonfrise' ? '비숑 프리제' :
+                                      item.kind.toLowerCase().trim() === 'golden retriever' ? '골든 리트리버' :
+                                          item.kind.toLowerCase().trim() === 'dachshund' ? '닥스훈트' :
+                                              item.kind.toLowerCase().trim() === 'greyhound' ? '그레이하운드' :
+                                                  item.kind.toLowerCase().trim() === 'beagle' ? '비글' :
+                                                      item.kind.toLowerCase().trim() === 'husky' ? '허스키' :
+                                                          item.kind.toLowerCase().trim() === 'shepherd' ? '셰퍼드' : '알 수 없음')
+        }}</p>
+      <p>크기: {{
+          item.size === 0 ? '소형' :
+              item.size === 1 ? '중형' :
+                  item.size === 2 ? '대형' : '알 수 없음'
+        }}</p>
+      <p>성별: {{
+          item.sex === 'F' ? '암컷' :
+              item.sex === 'M' ? '수컷' : '알 수 없음'
+        }}</p>
+      <!--      <p>Neuter: {{ item.neuter }}</p>-->
+      <p>나이: {{ item.age }}살</p>
+      <br>
     </div>
 
 
@@ -71,16 +93,16 @@ export default {
         age: age.value === "" ? null : age.value,
         size: size.value
       })
-      .then(response => {
-        // 서버로부터의 응답 처리
-        // console.log("응답")
-        // console.log(response.data)
-        responseDataArray.value = response.data; // 응답 데이터 저장
-        console.log(responseDataArray.value )
-      })
-      .catch(error => {
-        // 에러 처리
-      });
+          .then(response => {
+            // 서버로부터의 응답 처리
+            // console.log("응답")
+            // console.log(response.data)
+            responseDataArray.value = response.data; // 응답 데이터 저장
+            console.log(responseDataArray.value )
+          })
+          .catch(error => {
+            // 에러 처리
+          });
     };
 
     // 필요한 데이터 및 함수 반환
