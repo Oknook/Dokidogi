@@ -85,6 +85,7 @@ const createComment = () => {
   store.createComment(route.params.boardId, {commentContents: commentContents.value})
       .then(() => {
         commentContents.value = '';
+        store.getCommentList(route.params.boardId)
       })
       .catch(err => {
         console.error('Error creating comment:', err);
