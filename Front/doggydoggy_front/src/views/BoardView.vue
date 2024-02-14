@@ -40,7 +40,7 @@ const router = useRouter();
 const selectedCategory = ref('All')
 
 onMounted(() => {
-  store.getPostList();
+  fetchPostsByCategory();
 });
 
 const goDetail = (boardId) => {
