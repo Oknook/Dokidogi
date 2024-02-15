@@ -24,7 +24,8 @@ const postcode = ref('');
 const address = ref('');
 const detailAddress = ref('');
 
-
+const latitude= ref('');
+const longitude= ref('');
 
 
 let accessToken = ref('');
@@ -57,23 +58,60 @@ const openPostcodePopup = async () => {
 
 function getCodeAndRedirect() {
   const urlParams = new URL(window.location.href).searchParams;
-  accessToken = urlParams.get('token');
+  accessToken.value = urlParams.get('token');
 
-  if (accessToken) {
-    console.log('Token:', accessToken);
+  if (accessToken.value) {
+    console.log('Token:', accessToken.value);
     // You can now use the token to make authenticated requests
+  }
+}
+
+async function convertAddressToCoords(address) {
+  try {
+    const response = await axios.get(`https://dapi.kakao.com/v2/local/search/address.json`, {
+      params: { query: address },
+      headers: { Authorization: `KakaoAK {a879f5b64e7c2b76425b27f124ab5624}` } // 여기서 {REST_API_KEY}는 발급받은 JavaScript 키를 사용합니다.
+    });
+    if (response.data.documents.length > 0) {
+      const coords = response.data.documents[0];
+      return { latitude: coords.y, longitude: coords.x };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("주소-좌표 변환 에러", error);
+    return null;
   }
 }
 
 
 
-function clickSubmit() {
+
+async function clickSubmit() {
+  // 비동기 함수 내에서 await 사용
   console.log(nickname.value, sex.value, birthday.value);
   localStorage.setItem('nickname', nickname.value);
   localStorage.setItem('birthday', birthday.value);
   localStorage.setItem('sex', sex.value);
-  loginCheck.value = $cookies.isKey('token');
-  sendUserInfo();
+
+  // 주소로부터 위도와 경도 변환
+  try {
+    const coords = await convertAddressToCoords(address.value + " " + detailAddress.value);
+    if (coords) {
+      console.log(`위도: ${coords.latitude}, 경도: ${coords.longitude}`);
+      // 위도와 경도를 로컬 스토리지에 저장하거나 백엔드로 전송할 수 있습니다.
+      latitude.value = coords.latitude;
+      longitude.value = coords.longitude;
+      // 백엔드로 사용자 정보 및 위도, 경도 전송
+      await sendUserInfo();
+    } else {
+      console.error("주소로부터 위도와 경도를 변환할 수 없습니다.");
+    }
+  } catch (error) {
+    console.error("주소-좌표 변환 에러", error);
+  }
+
+  // loginCheck.value = $cookies.isKey('token');
   alert('정보 등록 완료!');
   router.push('/');
 }
@@ -84,12 +122,20 @@ function clickSubmit() {
 */
 async function sendUserInfo() {
   await axios
-    .post('http://192.168.31.229:8080/kakao/signup/associate', {
-      nickname: nickname.value,
-    })
-    .then((response) => {
-      console.log(response);
-    });
+      .post('https://i10b202.p.ssafy.io/api/user/signup', {
+        nickname: nickname.value,
+        sex: sex.value,
+        birth: birthday.value,
+        latitude: latitude.value,
+        longitude: longitude.value,
+
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error('There was an error sending the user info:', error);
+      });
 }
 
 
