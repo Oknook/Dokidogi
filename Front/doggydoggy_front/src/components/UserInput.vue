@@ -114,8 +114,9 @@ async function clickSubmit() {
 
 */
 async function sendUserInfo() {
+  console.log(accessToken.value)
   await axios
-      .post('https://i10b202.p.ssafy.io/api/user/signup', {
+      .post('api/user/signup', {
         nickname: nickname.value,
         sex: sex.value,
         birth: birthday.value,

@@ -2,14 +2,14 @@
   <div>
     <!-- 반려견 주인의 성별 선택 -->
     <select v-model="sex">
-      <option disabled value="">성별 선택</option>
+      <option disabled value="">견주 성별</option>
       <option value="M">남성</option>
       <option value="F">여성</option>
       <option value="N">상관없음</option>
     </select>
     <!-- 반려견 주인의 나이 범주 선택 -->
     <select v-model="age">
-      <option disabled value="">나이 범주 선택</option>
+      <option disabled value="">견주 나이 범주</option>
       <option value="20">20대</option>
       <option value="30">30대</option>
       <option value="40">40대</option>
@@ -17,15 +17,15 @@
     </select>
     <!-- 반려동물 크기 선택 -->
     <select v-model="size">
-      <option disabled value="">반려동물 크기 선택</option>
-      <option value="0">작음</option>
-      <option value="1">중간</option>
-      <option value="2">큼</option>
+      <option disabled value="">반려동물 크기</option>
+      <option value="0">소형</option>
+      <option value="1">중형</option>
+      <option value="2">대형</option>
       <option value="3">상관없음</option>
     </select>
 
     <!-- 탐색 버튼 -->
-    <button @click="explore">탐색하기</button>
+<!--    <button @click="explore">탐색하기</button>-->
 
     <button @click="exploreRealTime">실시간 탐색하기</button>
 
@@ -78,20 +78,20 @@ export default {
     const sex = ref("N");
     const responseDataArray = ref([]);
 
-    // 기존 탐색 함수
-    const explore = () => {
-      axios.post('/api/match/2', {
-        sex: sex.value,
-        age: age.value === "" ? null : age.value,
-        size: size.value
-      })
-      .then(response => {
-        responseDataArray.value = response.data;
-      })
-      .catch(error => {
-        console.error(error);
-      });
-    };
+    // // 기존 탐색 함수
+    // const explore = () => {
+    //   axios.post('/api/match/2', {
+    //     sex: sex.value,
+    //     age: age.value === "" ? null : age.value,
+    //     size: size.value
+    //   })
+    //   .then(response => {
+    //     responseDataArray.value = response.data;
+    //   })
+    //   .catch(error => {
+    //     console.error(error);
+    //   });
+    // };
 
     // 실시간 근처 탐색 함수
     const exploreRealTime = async () => {

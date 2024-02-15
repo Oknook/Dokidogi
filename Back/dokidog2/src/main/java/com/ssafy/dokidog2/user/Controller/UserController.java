@@ -32,8 +32,11 @@ public class UserController {
 
     @PostMapping("/user/signup")
     public Response associateMember(@RequestHeader("Authorization") String authorizationHeader, @RequestParam PutUserDTO dto) {
+
         String jwt = authorizationHeader.replace("Bearer ", "");
         Long id = jwtTokenProvider.getUserId(jwt);
+        System.out.println(id);
+        System.out.println(dto);
         return Response.builder()
             .code("200")
             .message("서버 응답")
