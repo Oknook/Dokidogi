@@ -70,10 +70,11 @@ async function convertAddressToCoords(address) {
   try {
     const response = await axios.get(`https://dapi.kakao.com/v2/local/search/address.json`, {
       params: { query: address },
-      headers: { Authorization: `KakaoAK {a879f5b64e7c2b76425b27f124ab5624}` } // 여기서 {REST_API_KEY}는 발급받은 JavaScript 키를 사용합니다.
+      headers: { Authorization: `KakaoAK {f263f4cccf14d7c0b53113b856a963a5}` } // 여기서 {REST_API_KEY}는 발급받은 JavaScript 키를 사용합니다.
     });
     if (response.data.documents.length > 0) {
       const coords = response.data.documents[0];
+      console.log(coords)
       return { latitude: coords.y, longitude: coords.x };
     } else {
       return null;
