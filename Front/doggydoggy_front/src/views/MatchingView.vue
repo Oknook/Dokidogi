@@ -238,12 +238,12 @@ p {
 }
 
 .search-btn {
-  background-color: #D9EED2;
+  background-color: #008000;
   font-family: "Noto Sans KR";
   font-weight: 600;
   width: 120px;
   height: 40px;
-  color: black;
+  color: white;
   border: none;
   border-radius: 7px;
 }

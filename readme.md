@@ -1,12 +1,14 @@
-# Dokidogi - 슬로건
+# Dokidogi - 모든 산책이 이야기가 되는 순간
 
 ## Dokidogi 링크 : [SSAFY 서버](https://i10b202.p.ssafy.io/)
 
-## 소개 영상 보기 : [UCC 링크]()
+<!-- ## 소개 영상 보기 : [UCC 링크]() -->
 
 
 ## 프로젝트 진행 기간
-- 2024.01.03(수) ~ 2024.02.16(금)
+- SSAFY 10기 2학기 공통프로젝트 - Dokidogi
+- 2024.01.03(수) ~ 2024.02.16(금) (45일간 진행)
+
 
 
 ## Dokidogi - 개요
@@ -204,3 +206,6 @@ main
 - [API명세서](https://docs.google.com/spreadsheets/d/134GKlgVexmzWVXY84XzOoArdb9h-kKX7bcR94Jh9Hw0/edit#gid=955200680)
 - [ERD](https://www.erdcloud.com/d/NfhYKc4YHmFybz72S)
 - [간트차트](https://docs.google.com/spreadsheets/d/134GKlgVexmzWVXY84XzOoArdb9h-kKX7bcR94Jh9Hw0/edit#gid=300850014)
+
+## ✔ 팀원 역할 분배
+![역할 배분](https://donghotest.s3.ap-northeast-2.amazonaws.com/teammate.jpg)

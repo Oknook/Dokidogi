@@ -27,10 +27,9 @@ export const loginCheck = ref($cookies.isKey('token'));
         src="@/assets/images/logo.png"
         alt="도기도기 로고"
     /></a>
-    <router-link to="" class="header__chat">채팅</router-link>
     <RouterLink :to="{name: 'matching'}" class="header__map">친구 찾기</RouterLink>
     <RouterLink :to="{name: 'kakaomaps'}" class="header__map">지도</RouterLink>
-    <RouterLink :to="{name: 'communities'}" class="header__post">자유게시판</RouterLink>
+    <RouterLink :to="{name: 'communities'}" class="header__post">게시판</RouterLink>
 
     <div class="header__user">
       <router-link :to="{ name: 'user-profile' }"

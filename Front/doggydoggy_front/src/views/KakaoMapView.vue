@@ -162,7 +162,6 @@ async function initMap() {
     });
   }
 
-
   const position = await getCurrentLocation();
   const userLatitude = position.coords.latitude;
   const userLongitude = position.coords.longitude;
