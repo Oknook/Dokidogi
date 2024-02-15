@@ -612,7 +612,7 @@ function trackAndDrawRoute(linePath) {
       const pathPoint = linePath[i];
       const distance = calculateDistance(userLocation.getLat(), userLocation.getLng(), pathPoint.getLat(), pathPoint.getLng());
 
-      if (distance <= 2000 && isUniquePoint(pathPoint)) {
+      if (distance <= 100 && isUniquePoint(pathPoint)) {
         passedPath.push(pathPoint);
         console.log('pass 위치추적',passedPath)
         break; // Stop the loop when the closest point is found
