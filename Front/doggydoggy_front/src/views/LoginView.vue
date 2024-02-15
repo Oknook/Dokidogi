@@ -48,6 +48,7 @@ h4 {
   flex-direction: column;
   align-items: center;
 }
+
 .login__border {
   height: 20%;
   width: 80%;

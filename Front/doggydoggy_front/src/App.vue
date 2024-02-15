@@ -1,7 +1,9 @@
 <template>
   <div class="App">
     <Header></Header>
-    <router-view />
+    <div class="content">
+      <router-view />
+    </div>
     <Footer></Footer>
   </div>
 </template>
@@ -22,6 +24,16 @@ export default {
 </script>
 
 <style scoped>
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+}
+
 * {
   margin: 0;
 }
