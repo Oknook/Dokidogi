@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 public class MatchDTO {

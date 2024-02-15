@@ -1,6 +1,7 @@
 package com.ssafy.dokidog2.matching.service;
 
 import com.ssafy.dokidog2.matching.dto.MatchDTO;
+import com.ssafy.dokidog2.matching.dto.MatchRealTimeDTO;
 import com.ssafy.dokidog2.user.dto.PetDTO;
 import com.ssafy.dokidog2.user.entity.Relation;
 import com.ssafy.dokidog2.user.entity.User;
@@ -113,48 +114,55 @@ public class MatchService {
         return filteredPetsList;
     }
 
-//    public void updateGenders() {
-//        ArrayList<Long> userIds = new ArrayList<>();
-//        for (long i = 1; i <= 300; i++) {
-//            userIds.add(i);
-//        }
-//        System.out.println(userIds);
-//
-//        List<User> users = userRepository.findAllById(userIds);
-//        System.out.println(users);
-//
-//        Random random = new Random();
-//        for (User user : users) {
-//            if (random.nextInt() % 3 == 0) {
-//                user.setSex(false);
-//            } else {
-//                user.setSex(true);
-//            }
-//            userRepository.save(user);
-//        }
-//    }
+    // 필터링 함수 MatchDTO는 프론트에서 받아오는 매칭 필터링 데이터 // userInList 는 주변에 거주하는 사용자 리스트
+    public List<PetDTO> filterRealtimePets(MatchRealTimeDTO matchRealTimeDTO, List<User> userInList) {
+        // 나이 범위 계산
+        int[] ageRange = calculateAgeRange(matchRealTimeDTO.getAge());
+        final int finalMinAge = ageRange[0];
+        final int finalMaxAge = ageRange[1];
+        // 사용자 ID를 필터링합니다.
+        List<Long> filteredUserIds = userInList.stream()
+            // 성별 상관없음 == null 값 받기 때문에
+            .filter(user -> matchRealTimeDTO.getSex() == 'N' || user.getSex() == matchRealTimeDTO.getSex())
+            // 나이 0으로 설정한 경우가 상관없음으로 표시
+            .filter(user -> {
+                if (finalMinAge == 0 && finalMaxAge == Integer.MAX_VALUE) {
+                    return true; // 나이 필터링 없음
+                } else {
+                    int userAge = user.calculateAge(user.getBirth());
+                    return userAge >= finalMinAge && userAge <= finalMaxAge;
+                }
+            })
+            // userId만 받는 리스트로 만든다
+            .map(User::getUserId)
+            // 필터들을 통해 만들어진게 합쳐진다
+            .collect(Collectors.toList());
+        System.out.println("1차 필터링");
+        System.out.println(filteredUserIds);
+        // RelationRepository를 사용하여 필터링된 사용자 ID에 해당하는 RelationEntity를 조회합니다.
 
-    /*
-     public List<User> findByCriteria(UserPetFilterDTO filter) {
-        Specification<User> spec = (root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
+        List<Relation> relations = relationRepository.findRelationsby(filteredUserIds);
+        System.out.println("관계 필터링");
+        System.out.println(relations);
 
-            if (filter.getAge() != null) {
-                predicates.add(cb.equal(root.get("age"), filter.getAge()));
-            }
-            if (!"상관없음".equals(filter.getGender())) {
-                predicates.add(cb.equal(root.get("gender"), filter.getGender()));
-            }
-            if (!"상관없음".equals(filter.getPetSize())) {
-                // 애완동물 크기에 따른 필터링은 조금 더 복잡한 로직을 요구할 수 있음
-                // 예를 들어, pets 컬렉션을 조인하여 크기를 필터링하는 방식 등
-            }
-
-            return cb.and(predicates.toArray(new Predicate[0]));
-        };
-
-        return userRepository.findAll(spec);
+        // 조회된 RelationEntity로부터 petId만 추출합니다.
+        List<Long> petIds = relations.stream()
+            .map(relation -> relation.getPet().getPetId())
+//            .distinct() // 중복 제거 해야 하나??
+            .collect(Collectors.toList());
+        System.out.println("펫");
+        System.out.println(petIds);
+        // PetRepository를 사용하여 petId에 해당하는 PetEntity 리스트를 조회합니다.
+        // 이 과정에서 petSize 조건에 따라 필터링합니다.
+        // 팻 사이즈 0: 소형 1: 중형 2: 대형 3: 상관 없음
+        List<PetDTO> filteredPetsList = petRepository.findAllById(petIds).stream()
+            .filter(pet -> matchRealTimeDTO.getSize() == 3 || pet.getSize() == matchRealTimeDTO.getSize())
+            .map(pet -> new PetDTO(pet)) // PetEntity를 PetDTO로 변환
+            .collect(Collectors.toList());
+        System.out.println("필터링 펫");
+        System.out.println(filteredPetsList);
+        return filteredPetsList;
     }
-     */
+
 
 }

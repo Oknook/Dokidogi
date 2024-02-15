@@ -27,6 +27,8 @@
     <!-- 탐색 버튼 -->
     <button @click="explore">탐색하기</button>
 
+    <button @click="exploreRealTime">실시간 탐색하기</button>
+
     <!-- API 응답 데이터 배열 표시 -->
     <div v-for="item in responseDataArray" :key="item.id">
       <!--      <p>ID: {{ item.id }}</p>-->
@@ -71,46 +73,71 @@ import { ref } from 'vue';
 
 export default {
   setup() {
-    // ref를 사용하여 반응형 데이터 정의
     const size = ref("3");
     const age = ref("");
     const sex = ref("N");
-    const responseDataArray = ref([]);// API 응답 데이터를 저장할 반응형 속성
+    const responseDataArray = ref([]);
 
-    // 탐색 함수 정의
+    // 기존 탐색 함수
     const explore = () => {
-      // Axios GET 요청 실행
-      // 여기서는 예시로 console.log를 사용하여 선택된 값을 출력
-      console.log({
-        sex: sex.value,
-        age: age.value,
-        size: size.value,
-      });
-      // 실제 서버 요청 예시
-      // axios.post 메소드를 사용하여 JSON 데이터를 서버에 전송
       axios.post('/api/match/2', {
         sex: sex.value,
         age: age.value === "" ? null : age.value,
         size: size.value
       })
-          .then(response => {
-            // 서버로부터의 응답 처리
-            // console.log("응답")
-            // console.log(response.data)
-            responseDataArray.value = response.data; // 응답 데이터 저장
-            console.log(responseDataArray.value )
-          })
-          .catch(error => {
-            // 에러 처리
-          });
+      .then(response => {
+        responseDataArray.value = response.data;
+      })
+      .catch(error => {
+        console.error(error);
+      });
     };
 
-    // 필요한 데이터 및 함수 반환
+    // 실시간 근처 탐색 함수
+    const exploreRealTime = async () => {
+      try {
+        const position = await getCurrentLocation();
+        const userLatitude = position.coords.latitude;
+        const userLongitude = position.coords.longitude;
+        console.log(userLatitude)
+        console.log(userLongitude)
+
+        axios.post('/api/match/realtime', {
+          sex: sex.value,
+          age: age.value === "" ? null : age.value,
+          size: size.value,
+          latitude: userLatitude,
+          longitude: userLongitude
+        })
+        .then(response => {
+          responseDataArray.value = response.data;
+          console.log("실시간" + responseDataArray.value)
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      } catch (error) {
+        console.error("위치 정보를 가져올 수 없습니다.", error);
+      }
+    };
+
+    // 사용자의 현재 위치를 얻는 함수
+    function getCurrentLocation() {
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          maximumAge: 600000,
+          timeout: 5000,
+          enableHighAccuracy: true,
+        });
+      });
+    }
+
     return {
       size,
       age,
       sex,
       explore,
+      exploreRealTime,
       responseDataArray,
     };
   },
