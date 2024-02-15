@@ -2,8 +2,8 @@
     <main>   
       <header>
         <h1>
-          <span class="span1">Dokki</span><br />
-          <span class="span2">Doggi</span><br />
+          <span class="span1">Doki</span><br />
+          <span class="span2">Dogi</span><br />
           <span class="span3">Service</span>
         </h1>
         <address>2024 SSAFY 2nd semester<br /> First PROJECT</address>
@@ -135,7 +135,7 @@
   
   <script>
   export default {
-    name: 'Home',
+    // name: 'Home',
     data() {
       return {}
     },
