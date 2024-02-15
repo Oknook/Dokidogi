@@ -19,13 +19,13 @@
     </div >
 
     <div class="modal-component">
-    <DestinationModal
-        v-if="isDestinationModalOpen"
-        :close="closeModal"
-        :latitude="latitude"
-        :longitude="longitude"
-        @destination-confirmed="handleDestinationConfirmed(d_marker)"
-    />
+      <DestinationModal
+          v-if="isDestinationModalOpen"
+          :close="closeModal"
+          :latitude="latitude"
+          :longitude="longitude"
+          @destination-confirmed="handleDestinationConfirmed(d_marker)"
+      />
     </div >
 
     <div class="modal-component">
@@ -71,6 +71,7 @@ let clusterer = null; // 클러스터러 객체 추가
 let currentOpenOverlay = null;
 let previousOpenOverlay = null;
 let currentPolyline = null;
+let currentPolyline2 = null;
 
 let d_marker = ref(null);
 
@@ -506,7 +507,9 @@ function createOverlay(markerData, marker) {
 
   const switchButton = document.createElement('button');
   switchButton.textContent = '산책 게시판';
-  switchButton.style.cssText = 'margin: auto; width: 93%; margin-top: 10px; margin-left: 15px; margin-bottom: 8px';
+  switchButton.style.cssText = "margin-top: 30px; text-align: center; margin-bottom: 20px; width:80%; margin-left: 35px;" +
+      "border-radius: 15px; background-color: rgb(0, 123, 255); color: white; border: none; box-shadow: none;" +
+      " appearance: none;  appearance: none; height: 30px" ;
   switchButton.addEventListener('click', async () => { // async 키워드 추가
     if (currentOpenOverlay) {
       currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
@@ -609,18 +612,18 @@ function trackAndDrawRoute(linePath) {
       const pathPoint = linePath[i];
       const distance = calculateDistance(userLocation.getLat(), userLocation.getLng(), pathPoint.getLat(), pathPoint.getLng());
 
-      if (distance <= 200 && isUniquePoint(pathPoint)) {
+      if (distance <= 2000 && isUniquePoint(pathPoint)) {
         passedPath.push(pathPoint);
         console.log('pass 위치추적',passedPath)
         break; // Stop the loop when the closest point is found
       }
     }
 
-    if (window.currentPolyline) {
-      window.currentPolyline.setMap(null); // Remove the previous polyline
+    if (currentPolyline2) {
+      currentPolyline2.setMap(null); // Remove the previous polyline
     }
 
-    window.currentPolyline = new kakao.maps.Polyline({
+    currentPolyline2 = new kakao.maps.Polyline({
       path: passedPath,
       strokeColor: '#0e0e0e',
       strokeOpacity: 1,
@@ -628,7 +631,7 @@ function trackAndDrawRoute(linePath) {
       strokeWeight: 8,
     });
 
-    window.currentPolyline.setMap(map);
+    currentPolyline2.setMap(map);
   }, error => {
     console.error("Error watching position:", error);
   }, {
@@ -717,9 +720,23 @@ async function createNewOverlay(markerData, marker) {
             " appearance: none;  appearance: none; height: 30px" ;
         routeButton.addEventListener('click', () => {
           // 경로 그리기 함수 호출
-          console.log(post.walkEnd, post.walkStart, markerData.latitude, markerData.longitude)
+
           getCarDirection(map, post.walkStart, post.walkEnd, markerData.latitude, markerData.longitude);
         });
+
+
+        const chatButton = document.createElement('button');
+        chatButton.textContent = '채팅방 입장';
+        chatButton.style.cssText = "text-align: center; margin-bottom: 20px; width:80%; margin-left: 35px;" +
+            "border-radius: 15px; background-color: rgb(0, 123, 255); color: white; border: none; box-shadow: none;" +
+            " appearance: none;  appearance: none; height: 30px" ;
+
+        chatButton.addEventListener('click', () => {
+          // 경로 그리기 함수 호출
+
+          window.location.href = 'http://3.19.32.200:8088';
+        });
+
 
         // 삭제 버튼
         const deleteButton = document.createElement('button');
@@ -757,6 +774,7 @@ async function createNewOverlay(markerData, marker) {
         postContainer.appendChild(postDateDiv);
         postContainer.appendChild(postTimeDiv);
         postContainer.appendChild(routeButton);
+        postContainer.appendChild(chatButton);
         postContainer.appendChild(deleteButton);
         postContainer.appendChild(postUpdateButton);
 
@@ -794,6 +812,11 @@ async function createNewOverlay(markerData, marker) {
       " appearance: none;  appearance: none; height: 30px" ;
   ResetButton.addEventListener('click', () => {
     if (currentPolyline) {
+
+
+      currentPolyline2.setMap(null);
+      currentPolyline2 = null;
+      passedPath = [];
       currentPolyline.setMap(null); // 지도에서 폴리라인 제거
       currentPolyline = null; // 폴리라인 참조 초기화
     }

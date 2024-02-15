@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -8,10 +7,11 @@ export const useUserStore = defineStore('user', {
       age: '',
       sex: '',
     },
-    token: ref(null), // Using ref here isn't typical for Pinia's state since Pinia is reactive by default. This line should be token: '',
+    token: '', // Adjusted from ref(null) to '', as Pinia state is reactive by default
+    isLoggedIn: false, // Added to manage login status
   }),
   getters: {
-    isLogin: (state) => state.token !== null && state.token !== '', // Simplified the logic here. No need for computed since getters are already reactive.
+    isLogin: (state) => state.isLoggedIn, // Updated to reflect the new login status state
   },
   actions: {
     setUser(nickname) {
@@ -19,6 +19,11 @@ export const useUserStore = defineStore('user', {
     },
     setToken(token) {
       this.token = token;
+    },
+    // New method to set login status
+    setLoginStatus(status) {
+      this.isLoggedIn = status;
+      console.log('로그인', status)
     },
   },
 });

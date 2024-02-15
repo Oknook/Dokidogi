@@ -9,6 +9,7 @@
 */
 import { useUserStore } from '@/stores/userStore';
 import { ref, ssrContextKey,onMounted } from 'vue';
+
 import { useRouter } from 'vue-router';
 import { loginCheck } from '@/components/common/Header.vue';
 import axios from 'axios';
@@ -66,73 +67,16 @@ function getCodeAndRedirect() {
   }
 }
 
-// async function convertAddressToCoords(address) {
-//   const REST_API_KEY = ref('a879f5b64e7c2b76425b27f124ab5624')
-//   try {
-//     const response = await axios.get(`https://dapi.kakao.com/v2/local/search/address.json`, {
-//       params: { query: address },
-//       headers: {Authorization: `KakaoAK ${REST_API_KEY.value}`, 'Content-Type': 'application/json'}
-//     });
-//     if (response.data.documents.length > 0) {
-//       const coords = response.data.documents[0];
-//       return { latitude: coords.y, longitude: coords.x };
-//     } else {
-//       return null;
-//     }
-//   } catch (error) {
-//     console.error("주소-좌표 변환 에러", error);
-//     return null;
-//   }
-// }
 
 
 
+function clickSubmit() {
+  console.log("현재 로그인 상태:", userStore.isLoggedIn);
+  userStore.setLoginStatus(true);
 
-async function clickSubmit() {
-  // 로그 출력 및 로컬 스토리지에 사용자 정보 저장
-  console.log(nickname.value, sex.value, birthday.value);
-  localStorage.setItem('nickname', nickname.value);
-  localStorage.setItem('birthday', birthday.value);
-  localStorage.setItem('sex', sex.value);
+  console.log("현재 로그인 상태:", userStore.isLoggedIn);
+  router.push('/')
 
-  // 백엔드로 사용자 정보 전송
-  try {
-    await sendUserInfo();
-    alert('정보 등록 완료!');
-    router.push('/'); // 사용자를 홈페이지 또는 다른 페이지로 리다이렉트
-  } catch (error) {
-    console.error("사용자 정보 전송 에러", error);
-    alert('정보 등록에 실패했습니다.'); // 에러 발생 시 사용자에게 알림
-  }
-
-  // 로그인 체크 상태 갱신
-  loginCheck.value = $cookies.isKey('token');
-}
-
-/*
-  백엔드 Spring에 입력한 정보를 보내는 Post request
-
-*/
-async function sendUserInfo() {
-  console.log(accessToken.value)
-  await axios
-      .post('api/user/signup', {
-        nickname: nickname.value,
-        sex: sex.value,
-        birth: birthday.value,
-        latitude: latitude.value,
-        longitude: longitude.value,
-      }, {
-        headers: {
-          'Authorization': accessToken.value
-        }
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error('There was an error sending the user info:', error);
-      });
 }
 
 

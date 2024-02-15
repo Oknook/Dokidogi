@@ -1,11 +1,13 @@
 <script setup>
 
-import { ref } from 'vue';
-
-
+import { ref, computed } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+const userStore = useUserStore();
+const loginCheck = computed(() => userStore.isLoggedIn);
 function onClickLogout() {
   $cookies.remove('token');
-  loginCheck.value = $cookies.isKey('token');
+  loginCheck.value = false; // 로그아웃 시 isLoggedIn 값을 false로 변경
+  userStore.setLoginStatus(false); // Pinia 스토어의 로그인 상태도 업데이트
   localStorage.removeItem('nickname');
   localStorage.removeItem('sex');
   localStorage.removeItem('birthday');
@@ -34,7 +36,7 @@ export const loginCheck = ref($cookies.isKey('token'));
       <router-link :to="{ name: 'user-profile' }"
         v-if="loginCheck" class="header__user--profile">
         프로필</router-link>
-      <router-link :to="{ name: 'login' }" class="header__user--login" v-else>
+      <router-link :to="{ name: 'login' }" v-if="!loginCheck" class="header__user--login">
         로그인</router-link>
       <button v-if="loginCheck" class="header__user--logout" @click="onClickLogout">
         로그아웃</button>
@@ -243,7 +245,7 @@ export const loginCheck = ref($cookies.isKey('token'));
 
 
 /* 작은 화면 크기에 대한 스타일 */
-@media (max-width: 400px) {
+@media (max-width: 600px) {
   .header__friend,
   .header__chat,
   .header__user,
@@ -251,7 +253,7 @@ export const loginCheck = ref($cookies.isKey('token'));
   .header__user--profile,
   .header__map,
   .header__post {
-    font-size: 10px; /* 화면 너비가 600px 이하일 때 글자 크기 조정 */
+    font-size: 20px; /* 화면 너비가 600px 이하일 때 글자 크기 조정 */
   }
 }
 
@@ -264,7 +266,7 @@ export const loginCheck = ref($cookies.isKey('token'));
   .header__user--profile,
   .header__map,
   .header__post  {
-    font-size: 25px; /* 화면 너비가 601px에서 1024px 사이일 때 글자 크기 조정 */
+    font-size: 30px; /* 화면 너비가 601px에서 1024px 사이일 때 글자 크기 조정 */
   }
 }
 
