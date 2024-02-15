@@ -128,7 +128,10 @@ async function sendUserInfo() {
         birth: birthday.value,
         latitude: latitude.value,
         longitude: longitude.value,
-
+      }, {
+        headers: {
+          'Authorization': accessToken.value
+        }
       })
       .then((response) => {
         console.log(response);

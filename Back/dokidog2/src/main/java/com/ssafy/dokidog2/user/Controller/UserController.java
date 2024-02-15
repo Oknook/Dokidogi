@@ -30,7 +30,7 @@ public class UserController {
         this.blockService = blockService;
     }
 
-    @PutMapping("/user/signup")
+    @PostMapping("/user/signup")
     public Response associateMember(@RequestHeader("Authorization") String authorizationHeader, @RequestParam PutUserDTO dto) {
         String jwt = authorizationHeader.replace("Bearer ", "");
         Long id = jwtTokenProvider.getUserId(jwt);
@@ -41,16 +41,16 @@ public class UserController {
             .build();
     }
 
-    @PostMapping("/user/signup")
-    public Response regularMember(@RequestHeader("Authorization") String authorizationHeader, @RequestParam PutPetDTO dto) {
-        String jwt = authorizationHeader.replace("Bearer ", "");
-        long userId = jwtTokenProvider.getUserId(jwt);
-        return Response.builder()
-            .code("200")
-            .message("서버 응답")
-            .data(petService.regular(userId, dto))
-            .build();
-    }
+//    @PostMapping("/user/signup")
+//    public Response regularMember(@RequestHeader("Authorization") String authorizationHeader, @RequestParam PutPetDTO dto) {
+//        String jwt = authorizationHeader.replace("Bearer ", "");
+//        long userId = jwtTokenProvider.getUserId(jwt);
+//        return Response.builder()
+//            .code("200")
+//            .message("서버 응답")
+//            .data(petService.regular(userId, dto))
+//            .build();
+//    }
 
     @PutMapping("/user/modify")
     public Response modifyMember(@RequestHeader("Authorization") String authorizationHeader, @RequestParam PutUserDTO dto) {
