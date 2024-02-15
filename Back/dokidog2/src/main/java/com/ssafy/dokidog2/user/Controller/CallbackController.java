@@ -35,7 +35,7 @@ public class CallbackController {
         String kakaoInfo = kakaoService.getKakaoInfo(code);
         log.info("kakao dto : " + kakaoInfo);
         // 여기서 RedirectView를 사용하여 다른 URL로 리다이렉트
-        return new RedirectView("https://i10b202.p.ssafy.io/user/input");
+        return new RedirectView("https://i10b202.p.ssafy.io/user/input?token=" + kakaoInfo);
     }
 
     @GetMapping("/naver")
