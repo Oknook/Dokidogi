@@ -116,3 +116,13 @@ const router = createRouter({
 });
 
 export default router;
+
+router.beforeEach((to, from, next) => {
+  const pageTitle = to.meta.title;
+  if (pageTitle) {
+    document.title = pageTitle;
+  } else {
+    document.title = 'DokiDogi'; // 기본 타이틀을 설정
+  }
+  next();
+});
