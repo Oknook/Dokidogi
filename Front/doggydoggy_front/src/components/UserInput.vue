@@ -8,7 +8,7 @@
 
 */
 import { useUserStore } from '@/stores/userStore';
-import { ref, ssrContextKey } from 'vue';
+import { ref, ssrContextKey,onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { loginCheck } from '@/components/common/Header.vue';
 import axios from 'axios';
@@ -24,7 +24,13 @@ const postcode = ref('');
 const address = ref('');
 const detailAddress = ref('');
 
+const latitude= ref('');
+const longitude= ref('');
 
+
+let accessToken = ref('');
+
+// 카카오에서 넘어온 인가코드를 URL에서 추출하여 코드 변수에 저장
 
 const loadDaumPostcode = () => {
   return new Promise((resolve, reject) => {
@@ -50,19 +56,57 @@ const openPostcodePopup = async () => {
   }).open();
 };
 
+function getCodeAndRedirect() {
+  const urlParams = new URL(window.location.href).searchParams;
+  accessToken.value = urlParams.get('token');
+
+  if (accessToken.value) {
+    console.log('Token:', accessToken.value);
+    // You can now use the token to make authenticated requests
+  }
+}
+
+// async function convertAddressToCoords(address) {
+//   const REST_API_KEY = ref('a879f5b64e7c2b76425b27f124ab5624')
+//   try {
+//     const response = await axios.get(`https://dapi.kakao.com/v2/local/search/address.json`, {
+//       params: { query: address },
+//       headers: {Authorization: `KakaoAK ${REST_API_KEY.value}`, 'Content-Type': 'application/json'}
+//     });
+//     if (response.data.documents.length > 0) {
+//       const coords = response.data.documents[0];
+//       return { latitude: coords.y, longitude: coords.x };
+//     } else {
+//       return null;
+//     }
+//   } catch (error) {
+//     console.error("주소-좌표 변환 에러", error);
+//     return null;
+//   }
+// }
 
 
 
 
-function clickSubmit() {
+async function clickSubmit() {
+  // 로그 출력 및 로컬 스토리지에 사용자 정보 저장
   console.log(nickname.value, sex.value, birthday.value);
   localStorage.setItem('nickname', nickname.value);
   localStorage.setItem('birthday', birthday.value);
   localStorage.setItem('sex', sex.value);
+
+  // 백엔드로 사용자 정보 전송
+  try {
+    await sendUserInfo();
+    alert('정보 등록 완료!');
+    router.push('/'); // 사용자를 홈페이지 또는 다른 페이지로 리다이렉트
+  } catch (error) {
+    console.error("사용자 정보 전송 에러", error);
+    alert('정보 등록에 실패했습니다.'); // 에러 발생 시 사용자에게 알림
+  }
+
+  // 로그인 체크 상태 갱신
   loginCheck.value = $cookies.isKey('token');
-  sendUserInfo();
-  alert('정보 등록 완료!');
-  router.push('/');
 }
 
 /*
@@ -70,17 +114,31 @@ function clickSubmit() {
 
 */
 async function sendUserInfo() {
+  console.log(accessToken.value)
   await axios
-    .post('http://192.168.31.229:8080/kakao/signup/associate', {
-      nickname: nickname.value,
-    })
-    .then((response) => {
-      console.log(response);
-    });
+      .post('api/user/signup', {
+        nickname: nickname.value,
+        sex: sex.value,
+        birth: birthday.value,
+        latitude: latitude.value,
+        longitude: longitude.value,
+      }, {
+        headers: {
+          'Authorization': accessToken.value
+        }
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error('There was an error sending the user info:', error);
+      });
 }
 
 
-
+onMounted(() => {
+  getCodeAndRedirect();
+});
 
 </script>
 

@@ -47,7 +47,6 @@ public class UserService {
             user.setBirth(dto.getBirth());
             user.setNickname(dto.getNickname());
             user.setSex(dto.getSex());
-            user.setEmail(dto.getEmail());
             user.setLatitude(dto.getLatitude());
             user.setLongitude(dto.getLongitude());
             if (user.getGrade().equals(UserGrade.TEMPORARY)) user.setGrade(UserGrade.ASSOCIATE);
@@ -75,7 +74,6 @@ public class UserService {
             if (dto.getBirth() != null) user.setBirth(dto.getBirth());
             if (dto.getNickname() != null) user.setNickname(dto.getNickname());
             if (dto.getSex() != null) user.setSex(dto.getSex());
-            if (dto.getEmail() != null) user.setEmail(dto.getEmail());
             if (dto.getLatitude() != null) user.setLatitude(dto.getLatitude());
             if (dto.getLongitude() != null) user.setLongitude(dto.getLongitude());
             userRepository.save(user);

@@ -177,7 +177,10 @@ export default {
 .modal-button-container {
   /* Specifies the style of the button container. */
   display: flex;
+  height: 50px;
   justify-content: center; /* Center items horizontally */
+  margin: 0; /* 마진 제거 */
+  padding: 0; /* 패딩 제거 */
 }
 
 .modal-submit-btn {
@@ -189,6 +192,7 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-size: 1em; /* Set the font size of the button. */
+  margin-bottom: 10px;
 }
 
 .modal-exit-btn {
@@ -256,12 +260,6 @@ export default {
 }
 
 /* Existing styles remain unchanged */
-
-.modal-button-container {
-  display: flex;
-  justify-content: center; /* Center the button */
-  margin-top: 50px; /* Add space above the button */
-}
 
 .placeholder-image {
   /* Adjust the size as needed */

@@ -6,7 +6,7 @@
       document.getElementById('map')
       과 같이 div id 를 map으로 지정해야 오류가 발생하지 않음
     -->
-    <div id="map" style="width:100%;height:930px"></div>
+    <div id="map" style="width:100%;height:700px"></div>
     <!-- if="isModalOpen" 조건은 isModalOpen 변수의 값에 따라 모달이 표시되거나 숨겨짐을 결정 -->
     <div class="modal-component">
       <MarkerModal
@@ -16,7 +16,9 @@
           :longitude="longitude"
           @marker-added="addNewMarkerToMap"/>
 
-    </div>
+    </div >
+
+    <div class="modal-component">
     <DestinationModal
         v-if="isDestinationModalOpen"
         :close="closeModal"
@@ -24,6 +26,7 @@
         :longitude="longitude"
         @destination-confirmed="handleDestinationConfirmed(d_marker)"
     />
+    </div >
 
     <div class="modal-component">
       <MarkerUpdateModal
@@ -541,7 +544,7 @@ async function getCarDirection(map, postLat, postLng, markerLat, markerLng) {
     const response = await axios.get(url, {
       params: {origin, destination},
       headers: {Authorization: `KakaoAK ${REST_API_KEY}`, 'Content-Type': 'application/json'}
-    });
+    })
 
     const data = response.data;
 
@@ -720,13 +723,25 @@ async function createNewOverlay(markerData, marker) {
 
         // 삭제 버튼
         const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
+
+        const image2 = document.createElement('img')
+        image2.src = removeIcon
+        image2.style.width = '20px';
+        image2.style.height = '20px';
+        deleteButton.style.cssText = 'margin-left: 220px; background-color: white; border: 0px solid #ccc;';
+        deleteButton.appendChild(image2)
+
         deleteButton.addEventListener('click', () => deletePost(post.walkPostId, markerData, marker));
 
         // 수정 버튼
         const postUpdateButton = document.createElement('button');
-        postUpdateButton.textContent = '게시글 수정';
-        postUpdateButton.style.cssText = 'margin-left: 210px;';
+        // postUpdateButton.textContent = '게시글 수정';
+        const image = document.createElement('img')
+        image.src = editIcon
+        image.style.width = '20px';
+        image.style.height = '20px';
+        postUpdateButton.appendChild(image)
+        postUpdateButton.style.cssText = 'margin-left: 10px; background-color: white; border: 0px solid #ccc;';
         postUpdateButton.addEventListener('click', () => {
           if (currentOpenOverlay) {
             currentOpenOverlay.close(); // 현재 열린 오버레이 닫기
@@ -786,7 +801,7 @@ async function createNewOverlay(markerData, marker) {
   newOverlayDiv.appendChild(ResetButton);
 
   const switchButton = document.createElement('button');
-  switchButton.textContent = '이전 오버레이 보기';
+  switchButton.textContent = '뒤로가기';
   switchButton.style.cssText = "margin-top: 10px; text-align: center; margin-bottom: 20px; width:80%; margin-left: 35px;" +
       "border-radius: 15px; background-color: rgb(0, 123, 255); color: white; border: none; box-shadow: none;" +
       " appearance: none;  appearance: none; height: 30px" ;
@@ -896,15 +911,15 @@ function createPostOverlay(markerData, marker) {
     try {
       const response = await axios.post(`/api/walkPost/${markerData.id}/save`, newPost);
       console.log(response.data); // Response logging
-      alert("The walking post was created successfully.");
+      alert("게시글이 성공적으로 만들어 졌습니다.");
 
       // Assuming createNewOverlay returns a promise that resolves to an overlay
       const backOverlay2 = await createNewOverlay(markerData, marker); // Await this call
-      console.log('가짜테스트',backOverlay2)
+
       backOverlay2.open(map, marker);
       currentOpenOverlay = backOverlay2;
     } catch (error) {
-      console.error("An error occurred while creating a walk post:", error);
+      console.error("게시글 생성 중 오류가 발생했습니다.:", error);
       alert("Failed to create a walking post.");
     }
   });
@@ -1280,12 +1295,12 @@ async function loadComments(markerData, commentsDiv) {
     // 받아온 댓글 데이터로 댓글을 표시
     comments.forEach(comment => {
       const commentElement = document.createElement('div');
-      const commentText = document.createTextNode(`${comment.markerCommentWriter}: ${comment.markerCommentContents}`);
+      const commentText = document.createTextNode(` ${comment.markerCommentContents}`);
       commentElement.appendChild(commentText);
 
 
       const editButton = document.createElement('button');
-      editButton.style.cssText = 'margin-left:30px';
+      editButton.style.cssText = 'margin-left:30px; background-color: white; border: 0px solid #ccc;';
       const image = document.createElement('img');
       image.src = editIcon
       image.style.width = '20px'; // 적당한 크기로 설정
@@ -1312,7 +1327,7 @@ async function loadComments(markerData, commentsDiv) {
 
       // 삭제 버튼 추가
       const deleteButton = document.createElement('button');
-      deleteButton.style.cssText = 'margin-left:5px';
+      deleteButton.style.cssText = 'margin-left:5px; background-color: white; border: 0px solid #ccc;' ;
       const image2 = document.createElement('img');
       image2.src = removeIcon
       image2.style.width = '20px'; // 적당한 크기로 설정
