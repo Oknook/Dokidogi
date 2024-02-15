@@ -32,6 +32,21 @@ const longitude= ref('');
 let accessToken = ref('');
 
 // 카카오에서 넘어온 인가코드를 URL에서 추출하여 코드 변수에 저장
+const boardFile = ref(null); // 파일 데이터를 저장할 ref
+
+const uploadedImageUrl = ref(null);
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  boardFile.value = file;
+  // Optional: Implement client-side logic to preview the image before uploading
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedImageUrl.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
 const loadDaumPostcode = () => {
   return new Promise((resolve, reject) => {
@@ -124,8 +139,40 @@ onMounted(() => {
         <label><b>상세 주소:</b></label>
         <input type="text" v-model="detailAddress" />
       </div>
+
+
+      <div>
+        <label><b>반려동물 이름:</b></label>
+        <input type="text" v-model="address" readonly />
+      </div>
+
+
+      <div>
+        <label><b>반려동물 종류:</b></label>
+        <input type="text" v-model="address" readonly />
+      </div>
+
+
+      <div>
+        <label><b>반려동물 성별:</b></label>
+        <input type="text" v-model="address" readonly />
+      </div>
+
+      <div>
+        <label><b>반려동물 나이:</b></label>
+        <input type="text" v-model="address" readonly />
+      </div>
+
+
+      <div class="form-group">
+        <input type="file" @change="handleFileUpload" />
+        <div v-if="uploadedImageUrl">
+          <img :src="uploadedImageUrl" alt="Uploaded Picture" style="width: 200px; height: auto;">
+        </div>
+      </div>
+      <button class="form-b">등록</button>
     </div>
-    <button class="form-b">등록</button>
+
   </form>
 </template>
 
@@ -136,13 +183,13 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  height: 600px;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-
+  height: 900px;
   width: 80%;
   border: 1px solid black;
   border-radius: 20px;
@@ -176,6 +223,11 @@ b {
   box-shadow: none;
   height: 30px;
   color: white;
+}
+
+.userInput {
+
+  height: 1200px;
 }
 
 </style>
