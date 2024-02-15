@@ -8,7 +8,7 @@
 
 */
 import { useUserStore } from '@/stores/userStore';
-import { ref, ssrContextKey } from 'vue';
+import { ref, ssrContextKey,onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { loginCheck } from '@/components/common/Header.vue';
 import axios from 'axios';
