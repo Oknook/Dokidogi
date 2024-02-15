@@ -26,6 +26,11 @@ const detailAddress = ref('');
 
 
 
+
+let accessToken = ref('');
+
+// 카카오에서 넘어온 인가코드를 URL에서 추출하여 코드 변수에 저장
+
 const loadDaumPostcode = () => {
   return new Promise((resolve, reject) => {
     if (window.daum && window.daum.Postcode) {
@@ -50,7 +55,15 @@ const openPostcodePopup = async () => {
   }).open();
 };
 
+function getCodeAndRedirect() {
+  const urlParams = new URL(window.location.href).searchParams;
+  accessToken = urlParams.get('token');
 
+  if (accessToken) {
+    console.log('Token:', accessToken);
+    // You can now use the token to make authenticated requests
+  }
+}
 
 
 
@@ -80,7 +93,9 @@ async function sendUserInfo() {
 }
 
 
-
+onMounted(() => {
+  getCodeAndRedirect();
+});
 
 </script>
 
