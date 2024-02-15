@@ -27,7 +27,7 @@ public class MatchService {
 
     // 주변 2km 유저 탐색하는 함수 UserRepository에서 정의
     public List<User> findUsersWithin2km(double latitude, double longitude) {
-        return userRepository.findUsersWithinDistance(latitude, longitude, 700.0);
+        return userRepository.findUsersWithinDistance(latitude, longitude, 900.0);
     }
 
     //    // 생년월일 기준 나이로 변환하는 함수
