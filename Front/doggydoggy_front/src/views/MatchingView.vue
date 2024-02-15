@@ -136,7 +136,6 @@ export default {
       size,
       age,
       sex,
-      explore,
       exploreRealTime,
       responseDataArray,
     };
