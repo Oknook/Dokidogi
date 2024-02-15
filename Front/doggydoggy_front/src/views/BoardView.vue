@@ -1,7 +1,8 @@
 <template>
   <div class="board-container">
     <h1>자유게시판</h1>
-    <RouterLink :to="{name:'postcreate'}" class="create-post-button">게시글 생성</RouterLink>
+    <!-- 헤더 영역을 위한 컨테이너 추가 -->
+    <div class="header-container">
     <!-- 카테고리 선택 드롭다운 메뉴 -->
     <select v-model="selectedCategory" @change="fetchPostsByCategory">
       <option value="All">모든 카테고리</option>
@@ -10,7 +11,9 @@
       <option value="Info">Info</option>
       <option value="Review">Review</option>
     </select>
-
+<!--      게시글 생성 버튼-->
+      <RouterLink :to="{name:'postcreate'}" class="create-post-button">게시글 생성</RouterLink>
+      </div>
     <ul class="post-list">
       <li v-for="post in store.postList" :key="post.boardId" class="post-item"
           @click="goDetail(post.boardId)">
@@ -80,6 +83,13 @@ const likePost = (postId) => {
 </script>
 
 <style scoped>
+.header-container {
+  display: flex;
+  justify-content: space-between; /* 요소들을 양 끝으로 정렬 */
+  align-items: center; /* 세로 축 중앙 정렬 */
+  margin-bottom: 1rem; /* 컨테이너와 게시글 목록 사이의 간격 */
+}
+
 .board-container {
   max-width: 800px;
   margin: auto;

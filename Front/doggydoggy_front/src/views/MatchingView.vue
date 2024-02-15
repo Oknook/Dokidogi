@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="">
     <!-- 드롭다운을 가로로 배치하기 위한 컨테이너 추가 -->
-    <div class="dropdown-container">
+    <div class="main-container">
       <!-- 반려견 주인의 성별 선택 -->
       <select v-model="sex">
         <option disabled value="">견주 성별</option>
@@ -164,6 +164,13 @@ export default {
 </script>
 
 <style scoped>
+.main-container{
+  max-width: 1200px; /* 전체 컨테이너의 최대 너비 */
+  max-height: 1200px;
+  margin: 0 auto; /* 페이지 중앙 정렬 */
+  padding: 20px; /* 내부 여백 */
+}
+
 .dropdown-container {
   display: flex;
   justify-content: center; /* 드롭다운과 버튼을 중앙 정렬 */
