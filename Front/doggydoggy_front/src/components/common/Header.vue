@@ -282,6 +282,8 @@ export const loginCheck = ref($cookies.isKey('token'));
   }
 }
 .header__link {
+  margin-left: 12px;
+  font-weight: bold;
   color: #222222;
 }
 </style>
