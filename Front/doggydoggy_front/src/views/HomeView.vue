@@ -31,11 +31,11 @@
           <div class="inner">
             <div class="txt">
               <h2>01</h2>
-              <p>Euichan<br /><br />Back</p>
+              <p>Walking<br /><br />with</p>
               <figure>
                 <video
                   class="article_figure_video"
-                  src="../assets/video/20240213_104611.mp4"
+                  src="../assets/video/walk.mp4"
                   muted
                   loop
                 ></video>
@@ -54,11 +54,11 @@
           <div class="inner">
             <div class="txt">
               <h2>02</h2>
-              <p>DongHo<br /><br />GOD</p>
+              <p>Meeting<br /><br />Friend</p>
               <figure>
                 <video
                   class="article_figure_video"
-                  src="../assets/video/20240212_200234.mp4"
+                  src="../assets/video/dog meet.mp4"
                   muted
                   loop
                 ></video>
@@ -77,11 +77,11 @@
           <div class="inner">
             <div class="txt">
               <h2>03</h2>
-              <p>Chiseung<br /><br />webRTC</p>
+              <p>Talk <br /><br />with</p>
               <figure>
                 <video
                   class="article_figure_video"
-                  src="../assets/video/20240213_104601.mp4"
+                  src="../assets/video/video03.mp4"
                   muted
                   loop
                 ></video>
@@ -100,11 +100,11 @@
           <div class="inner">
             <div class="txt">
               <h2>04</h2>
-              <p>JunHyoung<br /><br />Infra</p>
+              <p>Don't be<br /><br />afraid</p>
               <figure>
                 <video
                   class="article_figure_video"
-                  src="../assets/video/20240213_104641.mp4"
+                  src="../assets/video/dogyarn.mp4"
                   muted
                   loop
                 ></video>

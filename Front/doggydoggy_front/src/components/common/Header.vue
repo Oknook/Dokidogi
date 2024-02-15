@@ -243,7 +243,7 @@ export const loginCheck = ref($cookies.isKey('token'));
 
 
 /* 작은 화면 크기에 대한 스타일 */
-@media (max-width: 600px) {
+@media (max-width: 400px) {
   .header__friend,
   .header__chat,
   .header__user,
@@ -251,7 +251,7 @@ export const loginCheck = ref($cookies.isKey('token'));
   .header__user--profile,
   .header__map,
   .header__post {
-    font-size: 20px; /* 화면 너비가 600px 이하일 때 글자 크기 조정 */
+    font-size: 10px; /* 화면 너비가 600px 이하일 때 글자 크기 조정 */
   }
 }
 
@@ -264,7 +264,7 @@ export const loginCheck = ref($cookies.isKey('token'));
   .header__user--profile,
   .header__map,
   .header__post  {
-    font-size: 30px; /* 화면 너비가 601px에서 1024px 사이일 때 글자 크기 조정 */
+    font-size: 25px; /* 화면 너비가 601px에서 1024px 사이일 때 글자 크기 조정 */
   }
 }
 
