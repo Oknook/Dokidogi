@@ -120,8 +120,10 @@
           <h1>01</h1>
           <p>Healing<br /><br />Movie01</p>
           <span>
-            <Router-link :to="forrouter" id="close_text"> Try Service </Router-link>
-          </span>          
+            <Router-link :to="forrouter" id="close_text" style="color:white"> Try </Router-link>
+          </span>   
+          <br />
+          <br />       
           <span id="close_text" v-on:click="close">CLOSE</span>
         </div>
         <figure id="figure_text">
@@ -290,7 +292,7 @@
     /*안쪽의 자간 줄높이 초기화*/
     font-size: 0px;
     font-weight: 700;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     color: green;
   }
   main header h1 .span1 {
