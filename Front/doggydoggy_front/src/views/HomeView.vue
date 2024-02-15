@@ -140,7 +140,7 @@
       return {}
     },
     created() {
-      document.title = this.$route.name
+      document.title = 'DokiDogi'
     },
     methods: {
       run: function (e) {
