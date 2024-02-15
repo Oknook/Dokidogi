@@ -544,7 +544,7 @@ async function getCarDirection(map, postLat, postLng, markerLat, markerLng) {
     const response = await axios.get(url, {
       params: {origin, destination},
       headers: {Authorization: `KakaoAK ${REST_API_KEY}`, 'Content-Type': 'application/json'}
-    });
+    })
 
     const data = response.data;
 

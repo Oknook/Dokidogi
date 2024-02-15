@@ -67,15 +67,14 @@ function getCodeAndRedirect() {
 }
 
 async function convertAddressToCoords(address) {
+  const REST_API_KEY = ref('a879f5b64e7c2b76425b27f124ab5624')
   try {
     const response = await axios.get(`https://dapi.kakao.com/v2/local/search/address.json`, {
       params: { query: address },
-      headers: { Authorization: `KakaoAK {a879f5b64e7c2b76425b27f124ab5624}` } // 여기서 {REST_API_KEY}는 발급받은 JavaScript 키를 사용합니다.
+      headers: {Authorization: `KakaoAK ${REST_API_KEY.value}`, 'Content-Type': 'application/json'}
     });
-    console.log(response.data)
     if (response.data.documents.length > 0) {
       const coords = response.data.documents[0];
-      console.log(coords)
       return { latitude: coords.y, longitude: coords.x };
     } else {
       return null;
