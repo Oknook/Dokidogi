@@ -118,7 +118,10 @@
       <aside id="aside_video01">
         <div class="txt">
           <h1>01</h1>
-          <p>Healing`<br /><br />Movie01</p>
+          <p>Healing<br /><br />Movie01</p>
+          <span>
+            <Router-link :to="forrouter" id="close_text"> Try Service </Router-link>
+          </span>          
           <span id="close_text" v-on:click="close">CLOSE</span>
         </div>
         <figure id="figure_text">
@@ -134,13 +137,29 @@
   </template>
   
   <script>
+
   export default {
-    // name: 'Home',
+    name: 'Home',
     data() {
-      return {}
+      return {
+        temp : ''
+      }
     },
     created() {
       document.title = 'DokiDogi'
+    },
+    computed: {
+      forrouter() {          
+          if (this.temp == '01') {            
+            return '/kakaomaps'
+          } else if (this.temp == '02') {
+            return '/matching'
+          } else if (this.temp == '03') {
+            return '/board'
+          } else {
+            return '/login'
+          }
+        }        
     },
     methods: {
       run: function (e) {
@@ -152,9 +171,10 @@
       aside_on: function (e) {
         const aside = document.querySelector('aside')
         const tit = e.currentTarget.querySelector('h2').innerText
-        const txt = e.currentTarget.querySelector('p').innerText
+        const txt = e.currentTarget.querySelector('p').innerText      
         const vidSrc = e.currentTarget.querySelector('video').getAttribute('src')
-  
+        this.temp = tit
+
         aside.querySelector('h1').innerText = tit
         aside.querySelector('p').innerText = txt
         aside.querySelector('video').setAttribute('src', vidSrc)
