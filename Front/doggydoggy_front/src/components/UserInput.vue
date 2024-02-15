@@ -87,72 +87,95 @@ onMounted(() => {
 </script>
 
 <template>
-  <form action="" @submit.prevent="clickSubmit">
-    <div class="form__nickname">
-      <label for=""><b>닉네임: </b></label>
-      <input type="text" v-model="nickname" />
+  <form action="" @submit.prevent="clickSubmit" class="form-container">
+    <div class="input-group">
+      <div class="form__nickname">
+        <label for=""><b>닉네임: </b></label>
+        <input type="text" v-model="nickname" />
+      </div>
+      <div>
+        <b>성별: </b>
+        <label for="M">남성</label>
+        <input type="radio" name="sex" id="M" value="M" v-model="sex" />
+        <label for="F">여성</label>
+        <input type="radio" name="sex" id="F" value="F" v-model="sex" />
+      </div>
+      <div>
+        <b>생년월일: </b>
+        <input
+            type="text"
+            placeholder="생년월일 6자리..."
+            maxlength="6"
+            minlength="0"
+            pattern="\d*"
+            v-model="birthday"
+        />
+      </div>
+      <div class="form__address">
+        <label><b>우편 번호:</b></label>
+        <input type="text" v-model="postcode" readonly />
+        <button type="button" @click="openPostcodePopup">우편 번호 찾기</button>
+      </div>
+      <div>
+        <label><b>주소:</b></label>
+        <input type="text" v-model="address" readonly />
+      </div>
+      <div>
+        <label><b>상세 주소:</b></label>
+        <input type="text" v-model="detailAddress" />
+      </div>
     </div>
-    <div>
-      <b>성별: </b>
-      <label for="M">남성</label>
-      <input type="radio" name="sex" id="M" value="M" v-model="sex" />
-      <label for="F">여성</label>
-      <input type="radio" name="sex" id="F" value="F" v-model="sex" />
-    </div>
-    <div>
-      <b>생년월일: </b>
-      <input
-        type="text"
-        placeholder="생년월일 6자리..."
-        maxlength="6"
-        minlength="0"
-        pattern="\d*"
-        v-model="birthday"
-      />
-    </div>
-
-
-
-
-    <div class="form__address">
-      <label><b>우편 번호:</b></label>
-      <input type="text" v-model="postcode" readonly />
-      <button type="button" @click="openPostcodePopup">우편 번호 찾기</button>
-    </div>
-    <div>
-      <label><b>주소:</b></label>
-      <input type="text" v-model="address" readonly />
-    </div>
-    <div>
-      <label><b>상세 주소:</b></label>
-      <input type="text" v-model="detailAddress" />
-    </div>
-
-    
-    <!-- Submit button -->
-
-
-    <button>등록</button>
+    <button class="form-b">등록</button>
   </form>
 </template>
 
 <style scoped>
-form {
-  height: 50%;
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+
   width: 80%;
   border: 1px solid black;
   border-radius: 20px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  padding: 20px;
 }
 
-form div {
-  margin: 0 auto;
+.input-group div {
+  margin: 10px 0;
 }
+
 form button {
   width: 50%;
-  margin: 0 auto;
+  margin-left: 30px;
+  background-color: rgb(0, 123, 255);
+  border-radius: 15px;
+  border: none;
+  box-shadow: none;
+  height: 30px;
+  color: white;
 }
+
+b {
+  margin-right: 15px;
+}
+
+.form-b {
+  margin-top: 30px;
+  background-color: rgb(0, 123, 255);
+  border-radius: 15px;
+  border: none;
+  box-shadow: none;
+  height: 30px;
+  color: white;
+}
+
 </style>
