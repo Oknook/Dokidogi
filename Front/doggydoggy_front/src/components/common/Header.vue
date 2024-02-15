@@ -281,4 +281,7 @@ export const loginCheck = ref($cookies.isKey('token'));
     font-size: 40px; /* 화면 너비가 1025px 이상일 때 글자 크기 조정 */
   }
 }
+.header__link {
+  color: #222222;
+}
 </style>
