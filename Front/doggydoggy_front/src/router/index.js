@@ -8,6 +8,8 @@ import PetRegistListView from '@/views/PetRegistListView.vue';
 import PetRegisterView from '@/views/PetRegisterView.vue';
 import PetRegisterDetailView from '@/views/PetRegisterDetailView.vue';
 import BanneduserView from '@/views/BanneduserView.vue';
+import userEditViewVue from '@/components/userEditView.vue';
+import petRegisterViewVue from '@/components/petRegisterView.vue';
 
 import BoardView from '@/views/BoardView.vue';
 import PostCreateView from '@/views/PostCreateView.vue';
@@ -46,15 +48,21 @@ const router = createRouter({
       component: UserProfileView,
     },
     {
+      path: '/user/pet',
+      name: 'register',
+      component: petRegisterViewVue,
+    },
+    {
+      path: '/user/change',
+      name: 'user-edit',
+      component: userEditViewVue,
+    },
+    {
       path: '/pet/register-list',
       name: 'register-list',
       component: PetRegistListView,
     },
-    {
-      path: '/pet/register',
-      name: 'register',
-      component: PetRegisterView,
-    },
+    
     {
       path: '/pet/register-detail',
       name: 'register-detail',
