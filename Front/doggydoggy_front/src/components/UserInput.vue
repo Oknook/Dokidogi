@@ -183,56 +183,124 @@ onMounted(() => {
 
 <style scoped>
 .form-container {
+  position: relative; /* Adjusted to fit within Vue component structure */
+  margin-top: 50px;
+  margin-left: 28%;
+  width: 100%;
+  height: 1100px;
+  padding-bottom: 100px;
+
+
+  box-sizing: border-box; /* Include padding in width calculation */
+  background: #FFFFFF;
+  border: 1px solid #008000;
+  //box-shadow: 7px 7px 39px rgba(0, 104, 255, 0.25);
+  box-shadow: 1px 1px 2px #008000;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 600px;
+  align-items: center; /* Center items for better visual alignment */
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  height: 900px;
-  width: 80%;
-  border: 1px solid black;
-  border-radius: 20px;
-  padding: 20px;
+  width: 100%; /* Ensure input group takes full width of the container */
 }
 
-.input-group div {
-  margin: 10px 0;
-}
-
-form button {
-  width: 50%;
-  margin-left: 30px;
-  background-color: rgb(0, 123, 255);
-  border-radius: 15px;
+input[type="text"],
+input[type="file"],
+input[type="password"], /* Added password input type for styling */
+button {
+  padding: 10px;
+  margin: 10px 0; /* Add space above and below each field */
   border: none;
-  box-shadow: none;
-  height: 30px;
-  color: white;
+  border-bottom: 1px solid #CFCFCF; /* Style for bottom border only */
+  width: 100%; /* Full width to match container's width */
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
-b {
-  margin-right: 15px;
+/* Override for buttons to reset border style */
+button {
+  border: #008000 solid 1px;
+  background-color: #FFFFFF;
+  color: #008000;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.form-b {
-  margin-top: 30px;
-  background-color: rgb(0, 123, 255);
-  border-radius: 15px;
-  border: none;
-  box-shadow: none;
-  height: 30px;
-  color: white;
+button:hover {
+  background-color: #e7f3ff; /* Lighten background on hover */
 }
 
-.userInput {
-
-  height: 1200px;
+label {
+  color: lightgrey;
+  font-weight: normal; /* Reset font weight to match reference style */
 }
 
+/* Specific styles for radio buttons and checkboxes */
+.radio,
+input.agree {
+  margin-right: 5px; /* Add space between radio/checkbox and label text */
+}
+
+/* Add some styles for the header to match reference */
+h2 {
+  color: #0068FF;
+  font-weight: 700;
+  font-size: 32px;
+  text-align: center; /* Center the header text */
+  margin-bottom: 20px; /* Add some space below the header */
+}
+
+/* Add styles for form elements alignment and spacing */
+.form-group, .input-group div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Adjustments for file upload section to better match the overall style */
+.form-group {
+  border: 1px dashed #ccc;
+  padding: 10px;
+  width: calc(100% - 20px); /* Adjust width to account for padding */
+  margin: 10px 0; /* Consistent margin with other fields */
+  align-items: center; /* Center content */
+  justify-content: center;
+}
+
+.form-group img {
+  margin-top: 10px; /* Add space above the image */
+  max-width: 100%; /* Ensure image does not overflow its container */
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* Responsive adjustments */
+.form-container {
+  margin-bottom: auto; /* This pushes the footer down */
+  padding: 50px 100px; /* Adjusted padding */
+  max-width: 670px;
+  width: 100%;
+  /* Rest of your styles... */
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group {
+  height: 2000px;
+}
+/* Adjust the main content container to grow and take necessary space */
+
+userInput{
+  height: 1500px;
+
+}
 </style>

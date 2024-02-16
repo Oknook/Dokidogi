@@ -15,7 +15,8 @@ import UserInput from '@/components/UserInput.vue';
 <style scoped>
 .userInput {
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  padding-bottom: 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
