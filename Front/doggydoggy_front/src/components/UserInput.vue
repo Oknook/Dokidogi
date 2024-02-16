@@ -29,6 +29,12 @@ const latitude= ref('');
 const longitude= ref('');
 
 
+
+const dog_nickname = ref('');
+const dog_birthday = ref('');
+const dog_sex = ref('');
+const dog_dd = ref('');
+
 let accessToken = ref('');
 
 // 카카오에서 넘어온 인가코드를 URL에서 추출하여 코드 변수에 저장
@@ -141,26 +147,25 @@ onMounted(() => {
       </div>
 
 
-      <div>
-        <label><b>반려동물 이름:</b></label>
-        <input type="text" v-model="address" readonly />
+      <div class="form__nickname">
+        <label for=""><b>반려동물 이름: </b></label>
+        <input type="text" v-model="dog_nickname" />
+      </div>
+
+      <div class="form__nickname">
+        <label for=""><b>반려동물 종류: </b></label>
+        <input type="text" v-model="dog_dd" />
       </div>
 
 
-      <div>
-        <label><b>반려동물 종류:</b></label>
-        <input type="text" v-model="address" readonly />
+      <div class="form__nickname">
+        <label for=""><b>반려동물 성별: </b></label>
+        <input type="text" v-model="dog_sex" />
       </div>
 
-
-      <div>
-        <label><b>반려동물 성별:</b></label>
-        <input type="text" v-model="address" readonly />
-      </div>
-
-      <div>
-        <label><b>반려동물 나이:</b></label>
-        <input type="text" v-model="address" readonly />
+      <div class="form__nickname">
+        <label for=""><b>반려동물 나이: </b></label>
+        <input type="text" v-model="dog_birthday" />
       </div>
 
 
