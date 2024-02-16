@@ -14,7 +14,9 @@ function onClickLogout() {
   alert('로그아웃 완료');
 }
 </script>
-
+<script>
+export const loginCheck = ref($cookies.isKey('token'));
+</script>
 
 <template>
   <div class="header">
