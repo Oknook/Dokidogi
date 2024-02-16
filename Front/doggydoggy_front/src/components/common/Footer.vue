@@ -17,9 +17,11 @@
 
 <style scoped>
 footer {
+  left: 0;
+  bottom: 0;
   width: 100%;
   background: #333;
-  padding: 50px 0px;
+  padding: 50px 0;
   border-top: 1px solid #888;
 }
 footer .inner {
