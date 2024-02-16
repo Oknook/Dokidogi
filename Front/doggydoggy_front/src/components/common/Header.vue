@@ -15,9 +15,6 @@ function onClickLogout() {
 }
 </script>
 
-<script>
-export const loginCheck = ref($cookies.isKey('token'));
-</script>
 
 <template>
   <div class="header">

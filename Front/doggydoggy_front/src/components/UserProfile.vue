@@ -1,8 +1,4 @@
 <script setup>
-/*
-  UserProfile에 사용자 정보 표시
-
-*/
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import header from '@/components/common/Header.vue'
@@ -58,7 +54,6 @@ function gotochatroom(userID) {
 
 <template>
   <div>
-    <header></header>
     <div class="userProfile">
     <div class="userProfile__detail">
       <b>견주 프로필</b>
@@ -76,7 +71,7 @@ function gotochatroom(userID) {
       <button v-if="howdareyou" @click="seebannedusers(userID)">차단 목록</button>
     </div>
   </div>
-    <Calendar :userID="userID.value"/>
+    <!-- <Calendar :userID="userID.value"/> -->
     <!-- 태그 정보 -->
     <!-- 기타 로그 데이터 -->
   </div>
