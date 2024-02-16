@@ -303,4 +303,12 @@ userInput{
   height: 1500px;
 
 }
+
+b {
+  color: #222222;
+}
+
+label {
+  color: #222222;
+}
 </style>
