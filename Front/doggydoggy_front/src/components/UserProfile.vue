@@ -25,7 +25,7 @@
       </div>
       
       <div class="petlist">
-         <p>Hi</p>
+        <img src="https://donghotest.s3.ap-northeast-2.amazonaws.com/bishong.gif" alt="">
         <p></p> 
       </div>
     </div>

@@ -36,7 +36,7 @@ export const loginCheck = ref($cookies.isKey('token'));
         프로필</router-link>
       <router-link :to="{ name: 'login' }" v-if="!loginCheck" class="header__user--login">
         로그인</router-link>
-      <a href="#" v-if="loginCheck" class="header__link" @click.prevent="onClickLogout">로그아웃</a>
+      <a href="#" v-if="loginCheck" class="header__link" @click.prevent="onClickLogout">| 로그아웃</a>
     </div>
   </div>
 </template>

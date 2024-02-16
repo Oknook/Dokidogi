@@ -396,7 +396,8 @@ function addMarkerToMap(markerData) {
 function createOverlay(markerData, marker) {
 
 
-  const overlayDiv = document.createElement('div');
+  var overlayDiv = document.createElement('div');
+  overlayDiv.className = 'overlaybox';
   overlayDiv.style.cssText = "width: 400px; height: 400px; overflow-y: auto; position: relative; ";
   // Add title
   const titleDiv = document.createElement('div');
@@ -1400,7 +1401,7 @@ async function refreshOverlay(markerData, marker) {
 
 </script>
 
-<style scoped>
+<style >
 .map-wrap {
   position: relative;
 
@@ -1445,6 +1446,7 @@ async function refreshOverlay(markerData, marker) {
   box-shadow: none;
   cursor: pointer; /* To indicate it's clickable */
 }
+
 
 
 </style>

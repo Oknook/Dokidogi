@@ -225,7 +225,7 @@ select {
   border-radius: .5em;
   box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
 
-  width: calc(15% - 10px); /* 컨테이너 너비의 1/3에서 양 옆 마진을 고려한 값으로 조정 */
+  width: calc(20% - 10px); /* 컨테이너 너비의 1/3에서 양 옆 마진을 고려한 값으로 조정 */
   cursor: pointer; /* 드롭다운 화살표 대신 커서 변경으로 클릭 가능 표시 */
   text-align-last: center; /* 드롭다운 내의 글씨를 중앙 정렬 */
 }

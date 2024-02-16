@@ -141,35 +141,35 @@ onMounted(() => {
       </div>
 
 
-      <div>
-        <label><b>반려동물 이름:</b></label>
-        <input type="text" v-model="address" readonly />
-      </div>
+<!--      <div>-->
+<!--        <label><b>반려동물 이름:</b></label>-->
+<!--        <input type="text" v-model="address" readonly />-->
+<!--      </div>-->
 
 
-      <div>
-        <label><b>반려동물 종류:</b></label>
-        <input type="text" v-model="address" readonly />
-      </div>
+<!--      <div>-->
+<!--        <label><b>반려동물 종류:</b></label>-->
+<!--        <input type="text" v-model="address" readonly />-->
+<!--      </div>-->
 
 
-      <div>
-        <label><b>반려동물 성별:</b></label>
-        <input type="text" v-model="address" readonly />
-      </div>
+<!--      <div>-->
+<!--        <label><b>반려동물 성별:</b></label>-->
+<!--        <input type="text" v-model="address" readonly />-->
+<!--      </div>-->
 
-      <div>
-        <label><b>반려동물 나이:</b></label>
-        <input type="text" v-model="address" readonly />
-      </div>
+<!--      <div>-->
+<!--        <label><b>반려동물 나이:</b></label>-->
+<!--        <input type="text" v-model="address" readonly />-->
+<!--      </div>-->
 
 
-      <div class="form-group">
-        <input type="file" @change="handleFileUpload" />
-        <div v-if="uploadedImageUrl">
-          <img :src="uploadedImageUrl" alt="Uploaded Picture" style="width: 200px; height: auto;">
-        </div>
-      </div>
+<!--      <div class="form-group">-->
+<!--        <input type="file" @change="handleFileUpload" />-->
+<!--        <div v-if="uploadedImageUrl">-->
+<!--          <img :src="uploadedImageUrl" alt="Uploaded Picture" style="width: 200px; height: auto;">-->
+<!--        </div>-->
+<!--      </div>-->
       <button class="form-b">등록</button>
     </div>
 
@@ -182,7 +182,7 @@ onMounted(() => {
   margin-top: 50px;
   margin-left: 28%;
   width: 100%;
-  height: 1100px;
+  height: 700px;
   padding-bottom: 100px;
 
 
