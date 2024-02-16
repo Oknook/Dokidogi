@@ -59,7 +59,7 @@ const router = createRouter({
     },
     {
       path: '/pet/register-list',
-      name: 'register-list',
+      name: 'register-list', 
       component: PetRegistListView,
     },
     

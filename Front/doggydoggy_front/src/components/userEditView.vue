@@ -101,7 +101,7 @@ export default {
       }
     },
     registerPet() {
-      this.$router.push({ path: '/user/petregister' })
+      this.$router.push({ path: '/user/pet' })
     },
     moveBack() {
       this.$router.push({ path: '/user/profile' })
